@@ -1,10 +1,17 @@
-# Exercices Python
+# Exercices Python - Programme Complet
 
-Ce dépôt contient des exercices pratiques pour apprendre les bases du langage Python. Chaque exercice comprend :
-- Un dossier **énoncé/** avec les instructions détaillées et fichiers de départ
-- Un dossier **correction/** avec la solution complète
+Ce dépôt contient un programme complet d'apprentissage Python, de niveau débutant à expert, avec **28 modules** couvrant :
+- **Fondamentaux** (01-08) : Variables, listes, dictionnaires, boucles, fonctions, fichiers CSV
+- **Regex et BDD** (09) : Expressions régulières et SQLite
+- **POO** (10-13) : Classes, encapsulation, héritage, polymorphisme, projets complets
+- **Django** (14-22) : Framework web, ORM, templates, API REST, PostgreSQL
+- **Perfectionnement** (23-28) : Décorateurs, métaclasses, packaging, performance, parallélisme
 
-## Liste des exercices
+Chaque module comprend :
+- Un dossier **exercises/** avec instructions détaillées (instructions.md)
+- Des fichiers de départ (main.py) avec exemples et stubs
+
+## Liste des modules
 
 ### 01-introduction
 **Découverte de Python**
@@ -67,11 +74,22 @@ Ce dépôt contient des exercices pratiques pour apprendre les bases du langage 
 - Calculs conditionnels
 - Fonctions de traitement de données
 
+### 09-regex-database
+**Expressions Régulières et Bases de Données**
+- Validation avec regex (email, téléphone, dates, mots de passe)
+- Extraction de données (emails, URLs, IPs)
+- Parsing de logs
+- Base de données SQLite3
+- Tables avec relations (Foreign Keys)
+- Opérations CRUD (Create, Read, Update, Delete)
+- Requêtes SQL et jointures
+- Application CLI de gestion de bibliothèque
+
 ---
 
 ## Programmation Orientée Objet (POO)
 
-### 09-classes-objets
+### 10-classes-objets
 **Introduction à la POO**
 - Création de classes et objets
 - Attributs d'instance et de classe
@@ -80,7 +98,7 @@ Ce dépôt contient des exercices pratiques pour apprendre les bases du langage 
 - Interactions entre objets
 - Gestion de collections d'objets
 
-### 10-encapsulation-proprietes
+### 11-encapsulation-proprietes
 **Encapsulation et contrôle d'accès**
 - Attributs protégés et privés (`_`, `__`)
 - Getters et setters
@@ -89,7 +107,7 @@ Ce dépôt contient des exercices pratiques pour apprendre les bases du langage 
 - Properties calculées et read-only
 - Méthodes privées
 
-### 11-heritage-polymorphisme
+### 12-heritage-polymorphisme
 **Héritage et polymorphisme**
 - Héritage simple et multiple
 - Classes parentes et enfants
@@ -99,7 +117,7 @@ Ce dépôt contient des exercices pratiques pour apprendre les bases du langage 
 - Hiérarchies de classes complexes
 - Composition vs héritage
 
-### 12-projet-poo-complet
+### 13-projet-poo-complet
 **Projets intégrateurs**
 - Projet 1 : Système de gestion de bibliothèque
 - Projet 2 : Système de gestion d'école
@@ -112,7 +130,7 @@ Ce dépôt contient des exercices pratiques pour apprendre les bases du langage 
 
 ## Django Web Framework
 
-### 13-django-introduction
+### 14-django-introduction
 **Premiers pas avec Django**
 - Installation et configuration
 - Structure d'un projet Django
@@ -122,7 +140,7 @@ Ce dépôt contient des exercices pratiques pour apprendre les bases du langage 
 - Interface d'administration
 - Configuration de l'environnement
 
-### 14-django-models-orm
+### 15-django-models-orm
 **Modèles et ORM**
 - Création de modèles
 - Types de champs
@@ -133,7 +151,7 @@ Ce dépôt contient des exercices pratiques pour apprendre les bases du langage 
 - Managers personnalisés
 - Signaux
 
-### 15-django-views-urls
+### 16-django-views-urls
 **Vues et routage**
 - Function-Based Views (FBV)
 - Class-Based Views (CBV)
@@ -144,7 +162,7 @@ Ce dépôt contient des exercices pratiques pour apprendre les bases du langage 
 - Mixins réutilisables
 - Pagination
 
-### 16-django-templates
+### 17-django-templates
 **Système de templates**
 - Template inheritance
 - Variables et filtres
@@ -156,7 +174,7 @@ Ce dépôt contient des exercices pratiques pour apprendre les bases du langage 
 - Context processors
 - Messages framework
 
-### 17-django-forms-validation
+### 18-django-forms-validation
 **Formulaires et validation**
 - Django Forms
 - ModelForms
@@ -168,7 +186,7 @@ Ce dépôt contient des exercices pratiques pour apprendre les bases du langage 
 - Messages d'erreur
 - CSRF protection
 
-### 18-django-admin-auth
+### 19-django-admin-auth
 **Administration et authentification**
 - Personnalisation de l'admin Django
 - ModelAdmin et configurations
@@ -180,7 +198,7 @@ Ce dépôt contient des exercices pratiques pour apprendre les bases du langage 
 - Profil utilisateur
 - Reset de mot de passe
 
-### 19-django-rest-api
+### 20-django-rest-api
 **API REST avec DRF**
 - Installation Django REST Framework
 - Serializers et ModelSerializers
@@ -193,7 +211,7 @@ Ce dépôt contient des exercices pratiques pour apprendre les bases du langage 
 - Throttling
 - Documentation Swagger
 
-### 20-django-projet-complet
+### 21-django-projet-complet
 **Projets Django complets**
 - Projet 1 : Plateforme de Blog avancée
 - Projet 2 : Plateforme E-learning
@@ -203,7 +221,7 @@ Ce dépôt contient des exercices pratiques pour apprendre les bases du langage 
 - Tests et déploiement
 - Best practices Django
 
-### 21-django-postgresql
+### 22-django-postgresql
 **Django avec PostgreSQL**
 - Installation et configuration PostgreSQL
 - Migration SQLite vers PostgreSQL
@@ -221,7 +239,7 @@ Ce dépôt contient des exercices pratiques pour apprendre les bases du langage 
 
 ## Python Perfectionnement
 
-### 22-python-avance-rappels
+### 23-python-avance-rappels
 **Fondamentaux avancés**
 - Affectation par référence vs copie
 - Types mutables vs immutables
@@ -233,7 +251,7 @@ Ce dépôt contient des exercices pratiques pour apprendre les bases du langage 
 - **TP** : Optimisation intersection de listes
 - Complexité algorithmique (Big O)
 
-### 23-decorateurs-closures
+### 24-decorateurs-closures
 **Fonctions avancées**
 - Closures et scope
 - Décorateurs simples et paramétrés
@@ -245,7 +263,7 @@ Ce dépôt contient des exercices pratiques pour apprendre les bases du langage 
 - **TP** : Système d'événements avec décorateurs
 - **TP** : Pipeline de traitement de données
 
-### 24-poo-avancee
+### 25-poo-avancee
 **POO niveau expert**
 - Itérateurs personnalisés (`__iter__`, `__next__`)
 - Générateurs (yield, yield from)
@@ -258,7 +276,7 @@ Ce dépôt contient des exercices pratiques pour apprendre les bases du langage 
 - **TP** : Métaclasse Singleton
 - **TP** : ORM simplifié avec métaclasse
 
-### 25-packaging-deploiement
+### 26-packaging-deploiement
 **Distribution et environnements**
 - Structure de package Python
 - setup.py et setuptools
@@ -270,7 +288,7 @@ Ce dépôt contient des exercices pratiques pour apprendre les bases du langage 
 - Entry points et CLI
 - **TP** : Publier un package sur PyPI
 
-### 26-performance-profiling
+### 27-performance-profiling
 **Optimisation et mesure**
 - timeit pour micro-benchmarks
 - cProfile pour profiling complet
@@ -282,7 +300,7 @@ Ce dépôt contient des exercices pratiques pour apprendre les bases du langage 
 - Memoization et caching
 - **TP** : Profiler et optimiser un algorithme
 
-### 27-parallelisme-distribue
+### 28-parallelisme-distribue
 **Calcul parallèle et distribué**
 - GIL (Global Interpreter Lock)
 - Threading pour I/O-bound
