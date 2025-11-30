@@ -1,314 +1,526 @@
-# Exercices Python - Programme Complet
+<div align="center">
 
-Ce dépôt contient un programme complet d'apprentissage Python, de niveau débutant à expert, avec **28 modules** couvrant :
-- **Fondamentaux** (01-08) : Variables, listes, dictionnaires, boucles, fonctions, fichiers CSV
-- **Regex et BDD** (09) : Expressions régulières et SQLite
-- **POO** (10-13) : Classes, encapsulation, héritage, polymorphisme, projets complets
-- **Django** (14-22) : Framework web, ORM, templates, API REST, PostgreSQL
-- **Perfectionnement** (23-28) : Décorateurs, métaclasses, packaging, performance, parallélisme
+# Formation Python - Programme Complet
+### Du Débutant à l'Expert
 
-Chaque module comprend :
-- Un dossier **exercises/** avec instructions détaillées (instructions.md)
-- Des fichiers de départ (main.py) avec exemples et stubs
+![Python](https://img.shields.io/badge/Python-3.8%2B-blue?logo=python&logoColor=white)
+![Modules](https://img.shields.io/badge/Modules-28-green)
+![License](https://img.shields.io/badge/License-MIT-yellow)
+![Statut](https://img.shields.io/badge/Statut-Actif-success)
 
-## Liste des modules
+**Un parcours d'apprentissage Python complet et professionnel**
 
-### 01-introduction
-**Découverte de Python**
+[Démarrage](#-démarrage-rapide) • [Modules](#-programme) • [Projets](#-projets)
+
+</div>
+
+---
+
+## Table des Matières
+
+- [Aperçu](#-aperçu)
+- [Points Forts](#-points-forts)
+- [Démarrage Rapide](#-démarrage-rapide)
+- [Programme](#-programme)
+  - [Fondamentaux](#-fondamentaux-01-08)
+  - [Regex & Base de Données](#-regex--base-de-données-09)
+  - [Programmation Orientée Objet](#-programmation-orientée-objet-10-13)
+  - [Framework Django](#-framework-django-14-22)
+  - [Python Avancé](#-python-avancé-23-28)
+- [Projets](#-projets)
+- [Contribuer](#-contribuer)
+
+---
+
+## Aperçu
+
+Ce dépôt contient **28 modules complets** couvrant Python des fondamentaux aux concepts experts, incluant le développement web avec Django et des sujets avancés comme la métaprogrammation et le calcul distribué.
+
+### Ce que vous allez maîtriser
+
+| Niveau | Modules | Durée | Sujets |
+|--------|---------|-------|--------|
+| **Débutant** | 01-08 | 2-3 semaines | Variables, Types, Listes, Boucles, Fonctions, Fichiers |
+| **Intermédiaire** | 09-13 | 2-3 semaines | Regex, SQL, POO, Design Patterns |
+| **Avancé** | 14-22 | 4-5 semaines | Django, PostgreSQL, API REST, MVC/MTV |
+| **Expert** | 23-28 | 3-4 semaines | Métaprogrammation, Performance, Parallélisme |
+
+---
+
+## Points Forts
+
+- **200+ Exercices Pratiques** - Entraînement avec des scénarios réels
+- **12 Projets Complets** - Applications prêtes pour votre portfolio
+- **11 000+ Lignes de Code** - Exemples et solutions détaillés
+- **Apprentissage Progressif** - Curriculum structuré avec soin
+- **Production-Ready** - Bonnes pratiques de l'industrie
+- **À Votre Rythme** - Apprenez à votre vitesse
+
+---
+
+## Démarrage Rapide
+
+### Prérequis
+
+```bash
+# Python 3.8 ou supérieur
+python --version
+
+# Gestionnaire de paquets pip
+pip --version
+```
+
+### Installation
+
+```bash
+# Cloner le dépôt
+git clone https://github.com/htajmoua/python-exercises-complete.git
+cd python-exercises-complete
+
+# Naviguer vers un module
+cd 01-introduction/exercises
+
+# Lire les instructions
+cat instructions.md
+
+# Exécuter les exercices
+python main.py
+```
+
+### Structure du Projet
+
+```
+nom-module/
+└── exercises/
+    ├── instructions.md    # Exercices détaillés et théorie
+    ├── main.py           # Code de départ avec exemples
+    └── [fichiers annexes] # Fichiers supports (CSV, DB, etc.)
+```
+
+---
+
+## Programme
+
+### Fondamentaux (01-08)
+
+Construisez des bases solides avec les concepts essentiels de Python.
+
+<details>
+<summary><b>Module 01 : Introduction</b> - Premiers pas avec Python</summary>
+
 - Utilisation de la fonction `print()`
 - Opérations arithmétiques et priorités
 - Opérateurs mathématiques (puissance, modulo)
-- Questions bonus pour approfondir
+- Défis bonus
 
-### 02-variables
-**Gestion d'un catalogue de produits**
-- Déclaration et manipulation de variables
-- Formatage avec f-strings
+</details>
+
+<details>
+<summary><b>Module 02 : Variables</b> - Stockage et manipulation de données</summary>
+
+- Déclaration et affectation de variables
+- Formatage de chaînes (f-strings)
 - Calculs de prix (réductions, TVA)
-- Gestion de devises
+- Gestion des devises
 
-### 03-types
-**Système d'inventaire**
-- Types de données primitifs (str, int, float, bool)
+</details>
+
+<details>
+<summary><b>Module 03 : Types de Données</b> - Système de types</summary>
+
+- Types primitifs (str, int, float, bool)
 - Fonction `type()` et conversion de types
 - Calculs sur les stocks
 - Opérateurs de comparaison
 
-### 04-listes
-**Gestion de langages de programmation**
+</details>
+
+<details>
+<summary><b>Module 04 : Listes</b> - Structures de données séquentielles</summary>
+
 - Création et manipulation de listes
-- Méthodes : append, remove, insert, sort, reverse
+- Méthodes : `append`, `remove`, `insert`, `sort`, `reverse`
 - Indexation et slicing
-- Opérateurs et vérifications
-- **List comprehensions** : filtrage, transformation, conditions ternaires
+- **List comprehensions** : filtrage, transformation
 
-### 05-dictionnaires
-**Système de notation d'étudiants**
-- Création et manipulation de dictionnaires
-- Méthodes : keys, values, items
+</details>
+
+<details>
+<summary><b>Module 05 : Dictionnaires</b> - Paires clé-valeur</summary>
+
+- Opérations sur les dictionnaires
+- Méthodes : `keys()`, `values()`, `items()`
 - Calculs statistiques (moyenne)
-- Vérification d'existence de clés
-- **Dictionary comprehensions** : création, filtrage, transformation conditionnelle
+- **Dict comprehensions** : création dynamique
 
-### 06-boucles
-**Boucles et Algorithmes**
+</details>
+
+<details>
+<summary><b>Module 06 : Boucles</b> - Itération et algorithmes</summary>
+
 - Boucles `for` et `while`
 - Exercices algorithmiques : nombres premiers, factorielle, Fibonacci
 - Recherche et traitement de données
-- Pyramides et patterns
-- Optimisation algorithmique
+- Motifs et pyramides
 
-### 07-fonctions
-**Fonctions et Algorithmes avancés**
-- Définition et appel de fonctions
+</details>
+
+<details>
+<summary><b>Module 07 : Fonctions</b> - Réutilisabilité du code</summary>
+
+- Définition et appels de fonctions
 - Paramètres et valeurs de retour
 - Récursivité et mémoïsation
 - Algorithmes classiques : tri, PGCD, palindromes
-- FizzBuzz et anagrammes
-- Conversion et formatage
 
-### 08-fichiers-csv
-**Gestion de bibliothèque**
-- Lecture et écriture de fichiers CSV
-- Pattern Extract-Transform-Load (ETL)
-- Calculs conditionnels
-- Fonctions de traitement de données
+</details>
 
-### 09-regex-database
-**Expressions Régulières et Bases de Données**
-- Validation avec regex (email, téléphone, dates, mots de passe)
-- Extraction de données (emails, URLs, IPs)
-- Parsing de logs
-- Base de données SQLite3
-- Tables avec relations (Foreign Keys)
-- Opérations CRUD (Create, Read, Update, Delete)
-- Requêtes SQL et jointures
-- Application CLI de gestion de bibliothèque
+<details>
+<summary><b>Module 08 : Fichiers & CSV</b> - Persistance des données</summary>
+
+- Lecture et écriture de fichiers
+- Utilisation du module CSV
+- Pattern ETL (Extract-Transform-Load)
+- Pipelines de traitement de données
+
+</details>
 
 ---
 
-## Programmation Orientée Objet (POO)
+### Regex & Base de Données (09)
 
-### 10-classes-objets
-**Introduction à la POO**
-- Création de classes et objets
+Maîtrisez les expressions régulières et la persistance des données.
+
+<details>
+<summary><b>Module 09 : Expressions Régulières & SQLite</b> - Pattern matching et base de données</summary>
+
+**Expressions Régulières** :
+- Validation (email, téléphone, dates)
+- Extraction de données (URLs, IPs, emails)
+- Parsing de logs
+- Validation de mots de passe
+
+**Base de Données SQLite** :
+- Conception de base de données (3 tables avec relations)
+- Opérations CRUD (Create, Read, Update, Delete)
+- Requêtes SQL et jointures
+- Application CLI (gestion de bibliothèque)
+
+</details>
+
+---
+
+### Programmation Orientée Objet (10-13)
+
+Maîtrisez les principes de la POO et les design patterns.
+
+<details>
+<summary><b>Module 10 : Classes & Objets</b> - Introduction à la POO</summary>
+
+- Création de classes et d'objets
 - Attributs d'instance et de classe
 - Méthodes et constructeur `__init__`
 - Méthodes spéciales (`__str__`, `__repr__`)
 - Interactions entre objets
-- Gestion de collections d'objets
 
-### 11-encapsulation-proprietes
-**Encapsulation et contrôle d'accès**
+</details>
+
+<details>
+<summary><b>Module 11 : Encapsulation & Propriétés</b> - Protection des données</summary>
+
 - Attributs protégés et privés (`_`, `__`)
 - Getters et setters
 - Décorateur `@property`
 - Validation des données
-- Properties calculées et read-only
-- Méthodes privées
+- Propriétés calculées et en lecture seule
 
-### 12-heritage-polymorphisme
-**Héritage et polymorphisme**
+</details>
+
+<details>
+<summary><b>Module 12 : Héritage & Polymorphisme</b> - Réutilisation du code</summary>
+
 - Héritage simple et multiple
-- Classes parentes et enfants
 - Override de méthodes
 - Fonction `super()`
 - Polymorphisme et duck typing
-- Hiérarchies de classes complexes
 - Composition vs héritage
 
-### 13-projet-poo-complet
-**Projets intégrateurs**
-- Projet 1 : Système de gestion de bibliothèque
-- Projet 2 : Système de gestion d'école
-- Projet 3 : Plateforme e-commerce
-- Projet 4 : Jeu de combat RPG
-- Intégration de tous les concepts POO
-- Architecture logicielle complète
+</details>
+
+<details>
+<summary><b>Module 13 : Projets POO Complets</b> - Intégration</summary>
+
+**4 Projets Complets** :
+1. **Système de Gestion de Bibliothèque** - Livres, auteurs, emprunts
+2. **Système de Gestion d'École** - Étudiants, cours, notes
+3. **Plateforme E-commerce** - Produits, panier, commandes
+4. **Jeu de Combat RPG** - Personnages, combats, inventaire
+
+Intégration de tous les concepts POO dans des applications réelles.
+
+</details>
 
 ---
 
-## Django Web Framework
+### Framework Django (14-22)
 
-### 14-django-introduction
-**Premiers pas avec Django**
+Construisez des applications web modernes avec Django.
+
+<details>
+<summary><b>Module 14 : Introduction à Django</b> - Premiers pas</summary>
+
+**Théorie** :
+- Rappel des principes POO
+- **Pattern MVC/MTV**
+- Architecture et composants Django
+
+**Pratique** :
 - Installation et configuration
-- Structure d'un projet Django
-- Applications Django
+- Structure du projet
 - Serveur de développement
-- Base de données et migrations
 - Interface d'administration
-- Configuration de l'environnement
+- Migrations de base de données
 
-### 15-django-models-orm
-**Modèles et ORM**
-- Création de modèles
-- Types de champs
-- Relations (ForeignKey, ManyToMany, OneToOne)
+</details>
+
+<details>
+<summary><b>Module 15 : Modèles & ORM</b> - Couche base de données</summary>
+
+- Création de modèles et types de champs
+- Relations : **ForeignKey** (1-N), **ManyToMany** (N-N), **OneToOne** (1-1)
 - Migrations de base de données
 - QuerySets et requêtes ORM
-- Filtrage et agrégation
-- Managers personnalisés
-- Signaux
+- **Héritage de Modèles** :
+  - Classes de base abstraites
+  - Héritage multi-table
+  - Modèles Proxy
+- Managers personnalisés et signaux
 
-### 16-django-views-urls
-**Vues et routage**
+</details>
+
+<details>
+<summary><b>Module 16 : Vues & URLs</b> - Gestion des requêtes</summary>
+
 - Function-Based Views (FBV)
 - Class-Based Views (CBV)
-- ListView, DetailView, CreateView, UpdateView, DeleteView
-- Configuration des URLs
+- Vues génériques : ListView, DetailView, CreateView, UpdateView, DeleteView
+- Configuration des URLs et routage
 - Paramètres d'URL (int, slug, str)
-- Redirections et reverse
-- Mixins réutilisables
-- Pagination
+- Redirections et `reverse()`
 
-### 17-django-templates
-**Système de templates**
-- Template inheritance
-- Variables et filtres
-- Tags conditionnels et boucles
-- Template tags personnalisés
-- Filtres personnalisés
-- Static files (CSS, JS, images)
-- Inclusion de templates
+</details>
+
+<details>
+<summary><b>Module 17 : Templates</b> - Couche de présentation</summary>
+
+- Héritage de templates
+- Variables, filtres et tags
+- Structures de contrôle (if, for)
+- Tags et filtres personnalisés
+- Fichiers statiques (CSS, JS, images)
 - Context processors
-- Messages framework
 
-### 18-django-forms-validation
-**Formulaires et validation**
+</details>
+
+<details>
+<summary><b>Module 18 : Formulaires & Validation</b> - Entrées utilisateur</summary>
+
 - Django Forms
 - ModelForms
-- Validation de données
+- Validation et nettoyage des données
 - Widgets personnalisés
 - Formsets et inline formsets
 - Upload de fichiers
-- Rendu manuel de formulaires
-- Messages d'erreur
-- CSRF protection
+- Protection CSRF
 
-### 19-django-admin-auth
-**Administration et authentification**
-- Personnalisation de l'admin Django
-- ModelAdmin et configurations
+</details>
+
+<details>
+<summary><b>Module 19 : Admin & Authentification</b> - Gestion des utilisateurs</summary>
+
+- Personnalisation de l'admin
+- Configuration ModelAdmin
 - Inline admin
 - Actions personnalisées
 - Système d'authentification
-- Login, Logout, Register
+- Login, logout, inscription
 - Permissions et groupes
-- Profil utilisateur
-- Reset de mot de passe
+- Profils utilisateur
 
-### 20-django-rest-api
-**API REST avec DRF**
-- Installation Django REST Framework
+</details>
+
+<details>
+<summary><b>Module 20 : API REST</b> - Django REST Framework</summary>
+
 - Serializers et ModelSerializers
-- APIView et Generic Views
-- ViewSets et Routers
+- API Views et ViewSets
+- Routers
 - Authentification (Token, Session)
 - Permissions personnalisées
-- Filtrage et recherche
-- Pagination
+- Filtrage, recherche et pagination
 - Throttling
 - Documentation Swagger
 
-### 21-django-projet-complet
-**Projets Django complets**
-- Projet 1 : Plateforme de Blog avancée
-- Projet 2 : Plateforme E-learning
-- Projet 3 : Réseau Social
-- Projet 4 : Task Manager (type Trello)
-- Intégration complète (Models, Views, Templates, Forms, API)
-- Tests et déploiement
-- Best practices Django
+</details>
 
-### 22-django-postgresql
-**Django avec PostgreSQL**
-- Installation et configuration PostgreSQL
-- Migration SQLite vers PostgreSQL
-- Types de données PostgreSQL (ArrayField, JSONField)
-- Full-text search
-- Indexes et optimisation de performance
-- Contraintes et triggers PostgreSQL
-- Vues matérialisées
-- Connexions multiples
-- Backup et restore
-- Docker et PostgreSQL
-- PgAdmin
+<details>
+<summary><b>Module 21 : Projets Django Complets</b> - Applications full-stack</summary>
+
+**4 Projets Production-Ready** :
+1. **Plateforme de Blog Avancée** - Multi-utilisateurs, commentaires, tags
+2. **Plateforme E-learning** - Cours, leçons, quiz
+3. **Réseau Social** - Posts, amis, messagerie
+4. **Gestionnaire de Tâches** (type Trello) - Tableaux, listes, cartes
+
+Applications complètes avec toutes les fonctionnalités Django intégrées.
+
+</details>
+
+<details>
+<summary><b>Module 22 : Django & PostgreSQL</b> - Base de données de production</summary>
+
+- Installation et configuration de PostgreSQL
+- Migration de SQLite vers PostgreSQL
+- Types spécifiques PostgreSQL (ArrayField, JSONField)
+- Recherche full-text
+- Optimisation des performances (indexes)
+- Contraintes et triggers
+- Intégration Docker
+- Configuration PgAdmin
+
+</details>
 
 ---
 
-## Python Perfectionnement
+### Python Avancé (23-28)
 
-### 23-python-avance-rappels
-**Fondamentaux avancés**
-- Affectation par référence vs copie
-- Types mutables vs immutables
-- Passage d'arguments avancé (*args, **kwargs)
-- Variables de classe vs instance
-- Slices avancés
+Concepts experts et optimisation des performances.
+
+<details>
+<summary><b>Module 23 : Fondamentaux Python Avancés</b> - Approfondissement</summary>
+
+- Références vs copies (mutable/immutable)
+- Arguments avancés (`*args`, `**kwargs`)
+- Variables de classe vs d'instance
+- Techniques de slicing avancées
 - Introspection (dir, type, inspect)
 - Clause else dans for/while/try
-- **TP** : Optimisation intersection de listes
-- Complexité algorithmique (Big O)
+- Complexité algorithmique (notation Big O)
 
-### 24-decorateurs-closures
-**Fonctions avancées**
-- Closures et scope
+</details>
+
+<details>
+<summary><b>Module 24 : Décorateurs & Closures</b> - Métaprogrammation</summary>
+
+- Closures et portées
 - Décorateurs simples et paramétrés
 - Décorateurs de classe
 - Chaînage de décorateurs
-- Design Patterns (Observer, Factory)
-- Générateurs et yield
-- Pipeline de consommateurs
-- **TP** : Système d'événements avec décorateurs
-- **TP** : Pipeline de traitement de données
+- Design patterns (Observer, Factory)
+- Générateurs avec `yield`
+- Système d'événements
 
-### 25-poo-avancee
-**POO niveau expert**
+</details>
+
+<details>
+<summary><b>Module 25 : POO Avancée</b> - Patterns experts</summary>
+
 - Itérateurs personnalisés (`__iter__`, `__next__`)
-- Générateurs (yield, yield from)
+- Générateurs (`yield`, `yield from`)
 - Héritage multiple et MRO
 - Mixins
-- Context Managers (`__enter__`, `__exit__`)
+- Context managers (`__enter__`, `__exit__`)
 - Classes abstraites (ABC)
-- Métaclasses
+- **Métaclasses**
 - Descriptors
-- **TP** : Métaclasse Singleton
-- **TP** : ORM simplifié avec métaclasse
+- **TP** : Métaclasse Singleton, ORM simplifié
 
-### 26-packaging-deploiement
-**Distribution et environnements**
+</details>
+
+<details>
+<summary><b>Module 26 : Packaging & Déploiement</b> - Distribution</summary>
+
 - Structure de package Python
-- setup.py et setuptools
-- pyproject.toml (moderne)
-- virtualenv, venv, poetry, pipenv
+- `setup.py` et setuptools
+- `pyproject.toml` (approche moderne)
+- Environnements virtuels (venv, poetry, pipenv)
 - Tests avec pytest
-- PyPI et TestPyPI
-- Buildout
-- Entry points et CLI
-- **TP** : Publier un package sur PyPI
+- Publication sur PyPI
+- Entry points et outils CLI
 
-### 27-performance-profiling
-**Optimisation et mesure**
-- timeit pour micro-benchmarks
-- cProfile pour profiling complet
-- line_profiler (ligne par ligne)
-- memory_profiler (analyse mémoire)
-- Optimisation de code (comprehensions, générateurs)
+</details>
+
+<details>
+<summary><b>Module 27 : Performance & Profiling</b> - Optimisation</summary>
+
+- `timeit` pour micro-benchmarks
+- `cProfile` pour profiling complet
+- `line_profiler` (analyse ligne par ligne)
+- `memory_profiler` (usage mémoire)
+- Techniques d'optimisation du code
 - Structures de données optimales
-- Complexité algorithmique pratique
-- Memoization et caching
-- **TP** : Profiler et optimiser un algorithme
+- Mémoïsation et caching
+- Complexité algorithmique en pratique
 
-### 28-parallelisme-distribue
-**Calcul parallèle et distribué**
-- GIL (Global Interpreter Lock)
-- Threading pour I/O-bound
-- Multiprocessing pour CPU-bound
-- concurrent.futures (ThreadPoolExecutor, ProcessPoolExecutor)
-- Celery : installation et configuration
-- Tâches asynchrones et retry
+</details>
+
+<details>
+<summary><b>Module 28 : Parallélisme & Calcul Distribué</b> - Scalabilité</summary>
+
+- GIL (Global Interpreter Lock) expliqué
+- `threading` pour tâches I/O-bound
+- `multiprocessing` pour tâches CPU-bound
+- `concurrent.futures` (ThreadPoolExecutor, ProcessPoolExecutor)
+- **Celery** : tâches async, queues, workers
 - Chaînes et groupes de tâches
-- Flower pour monitoring
-- **TP** : Map-Reduce avec Celery
-- **TP** : Calcul distribué de nombres premiers
+- Implémentation Map-Reduce
+- Calcul distribué de nombres premiers
+
+</details>
+
+---
+
+## Projets
+
+Ce cours inclut **12 projets complets** :
+
+### Projets POO
+- Système de Gestion de Bibliothèque
+- Système de Gestion d'École
+- Plateforme E-commerce
+- Jeu de Combat RPG
+
+### Projets Django
+- Plateforme de Blog Avancée
+- Plateforme E-learning
+- Réseau Social
+- Gestionnaire de Tâches (type Trello)
+
+### Projets Avancés
+- ORM Personnalisé avec Métaclasses
+- Pipeline de Traitement de Données
+- Système Map-Reduce Distribué
+- Études de Cas d'Optimisation
+
+---
+
+## Contribuer
+
+Les contributions sont les bienvenues ! Pour contribuer :
+
+1. Forkez le dépôt
+2. Créez votre branche (`git checkout -b feature/NouvelleFonctionnalite`)
+3. Committez vos changements (`git commit -m 'Ajout d'une nouvelle fonctionnalité'`)
+4. Pushez vers la branche (`git push origin feature/NouvelleFonctionnalite`)
+5. Ouvrez une Pull Request
+
+---
+
+<div align="center">
+
+**Bon apprentissage !**
+
+
+[⬆ Retour en haut](#formation-python---programme-complet)
+
+</div>
