@@ -3,96 +3,91 @@
 
 """
 Module 04 - Listes
-Exercices sur les listes, list comprehensions et manipulation de données
+Exercices sur les listes et list comprehensions
 """
 
-# ============= EXERCICE 1 : CRÉER ET MANIPULER DES LISTES =============
+# ============= EXERCICES DE BASE =============
 
-def exercice1_creer_listes():
-    """Exercice 1 : Créer différentes listes"""
-    # À compléter
+def exercice1_a_7():
+    """Exercices 1 à 7 : Créer et manipuler une liste de langages"""
+    # 1. Créez une liste nommée `langages` contenant ["Python", "JavaScript", "Java"]
+    
+    
+    # 2. Ajoutez "Ruby" à la liste `langages` (utilisez append)
+    
+    
+    # 3. Supprimez "Java" de la liste `langages` (utilisez remove)
+    
+    
+    # 4. Modifiez le premier élément de la liste `langages` en "C++"
+    
+    
+    # 5. Affichez la longueur de la liste `langages` avec len()
+    
+    
+    # 6. Triez la liste `langages` par ordre alphabétique (utilisez sort)
+    
+    
+    # 7. Affichez la liste complète
+    
     pass
 
 
-def exercice2_acceder_elements():
-    """Exercice 2 : Accéder aux éléments"""
-    # À compléter
+# ============= QUESTIONS SUPPLÉMENTAIRES =============
+
+def exercice8_a_11():
+    """Exercices 8 à 11 : Opérations avancées sur les listes"""
+    # Note: Reprenez la liste langages de l'exercice précédent
+    
+    # 8. Ajoutez "Go" au début de la liste (utilisez insert avec l'index 0)
+    
+    
+    # 9. Affichez le dernier élément de la liste (utilisez l'index -1)
+    
+    
+    # 10. Créez une nouvelle liste `langages_web` contenant ["HTML", "CSS"] 
+    #     et fusionnez-la avec `langages` (utilisez l'opérateur +). Affichez le résultat.
+    
+    
+    # 11. Vérifiez si "Python" est dans la liste (utilisez l'opérateur in) et affichez True ou False
+    
     pass
 
 
-# ============= EXERCICE 2 : MODIFIER DES LISTES =============
+# ============= QUESTION BONUS =============
 
-def exercice3_ajouter_elements():
-    """Exercice 3 : Ajouter des éléments"""
-    # À compléter
+def exercice12_bonus():
+    """Exercice 12 : Inverser une liste"""
+    # Note: Reprenez la liste langages
+    
+    # 12. Inversez l'ordre de la liste `langages` (utilisez reverse) et affichez la liste inversée
+    
     pass
 
 
-def exercice4_supprimer_elements():
-    """Exercice 4 : Supprimer des éléments"""
-    # À compléter
-    pass
+# ============= LIST COMPREHENSION =============
 
-
-# ============= EXERCICE 3 : MÉTHODES DE LISTES =============
-
-def exercice5_methodes_listes():
-    """Exercice 5 : Utiliser les méthodes de listes"""
-    # À compléter
-    pass
-
-
-def exercice6_concatenation_repetition():
-    """Exercice 6 : Concaténer et répéter des listes"""
-    # À compléter
-    pass
-
-
-# ============= EXERCICE 4 : LIST COMPREHENSIONS =============
-
-def exercice7_list_comprehension_base():
-    """Exercice 7 : List comprehension de base"""
-    # À compléter
-    pass
-
-
-def exercice8_list_comprehension_condition():
-    """Exercice 8 : List comprehension avec condition"""
-    # À compléter
-    pass
-
-
-def exercice9_list_comprehension_avancee():
-    """Exercice 9 : List comprehension avancée"""
-    # À compléter
-    pass
-
-
-# ============= EXERCICE 5 : PARCOURIR DES LISTES =============
-
-def exercice10_parcourir_listes():
-    """Exercice 10 : Différentes façons de parcourir"""
-    # À compléter
-    pass
-
-
-# ============= EXERCICES BONUS =============
-
-def bonus_statistiques():
-    """Bonus : Statistiques sur une liste"""
-    # À compléter
-    pass
-
-
-def bonus_filtrage_donnees():
-    """Bonus : Filtrer et transformer des données"""
-    # À compléter
-    pass
-
-
-def bonus_manipulation_complexe():
-    """Bonus : Manipulation complexe de listes"""
-    # À compléter
+def exercice13_a_17():
+    """Exercices 13 à 17 : List comprehensions"""
+    # 13. Créez une liste `nombres` contenant les nombres de 1 à 10 
+    #     (utilisez range(1, 11) et convertissez en liste)
+    
+    
+    # 14. Créez une liste `carres` contenant les carrés de chaque nombre en utilisant une list comprehension
+    #     Exemple : [1, 4, 9, 16, 25, 36, 49, 64, 81, 100]
+    
+    
+    # 15. Créez une liste `pairs` contenant uniquement les nombres pairs en utilisant une list comprehension avec condition
+    #     Exemple : [2, 4, 6, 8, 10]
+    
+    
+    # 16. Créez une liste `langages_majuscules` contenant tous les langages en majuscules 
+    #     en utilisant une list comprehension (utilisez .upper())
+    
+    
+    # 17. Créez une liste `labels` qui contient "pair" si le nombre est pair, "impair" sinon
+    #     Utilisez une list comprehension avec condition ternaire : ["pair" if n % 2 == 0 else "impair" for n in nombres]
+    
     pass
 
 
@@ -100,8 +95,9 @@ def bonus_manipulation_complexe():
 
 if __name__ == "__main__":
     print("=== Module 04 : Listes ===\n")
-    print("Testez vos fonctions ici !")
     
-    # Exemple :
-    # exercice1_creer_listes()
-    # exercice2_acceder_elements()
+    # Décommentez pour tester vos fonctions :
+    # exercice1_a_7()
+    # exercice8_a_11()
+    # exercice12_bonus()
+    # exercice13_a_17()

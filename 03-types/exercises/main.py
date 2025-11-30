@@ -3,97 +3,68 @@
 
 """
 Module 03 - Types de Données
-Exercices sur les strings, nombres, bool
-
-éens et conversions de types
+Exercices sur les types de données et la fonction type()
 """
 
-# ============= EXERCICE 1 : STRINGS (CHAÎNES) =============
+# ============= EXERCICES DE BASE =============
 
-def exercice1_manipulation_strings():
-    """Exercice 1 : Manipuler des chaînes de caractères"""
-    # À compléter
+def exercice1_a_6():
+    """Exercices 1 à 6 : Définir des variables et afficher leurs types"""
+    # 1. Définissez une variable `article` avec le nom d'un article (ex: "Clavier")
+    
+    
+    # 2. Définissez une variable `stock` avec la quantité en stock (ex: 42)
+    
+    
+    # 3. Définissez une variable `prix_unitaire` avec le prix de l'article (ex: 29.99)
+    
+    
+    # 4. Définissez une variable `disponible` avec une valeur booléenne (True ou False)
+    
+    
+    # 5. Affichez les valeurs des variables sous la forme:
+    #    "Article: valeur"
+    #    "Stock: valeur"
+    #    "Prix unitaire: valeur"
+    #    "Disponible: valeur"
+    
+    
+    # 6. Affichez les types des variables sous la forme:
+    #    "Type article: type"
+    #    "Type stock: type"
+    #    "Type prix unitaire: type"
+    #    "Type disponible: type"
+    
     pass
 
 
-def exercice2_concatenation():
-    """Exercice 2 : Concaténer des chaînes"""
-    # À compléter
+# ============= QUESTIONS SUPPLÉMENTAIRES =============
+
+def exercice7_a_9():
+    """Exercices 7 à 9 : Code produit, calculs et conversions"""
+    # Note: Reprenez les variables de l'exercice précédent
+    
+    # 7. Créez une variable `code_produit` avec la valeur "KB-2024" et affichez son type
+    
+    
+    # 8. Calculez la valeur totale du stock (stock × prix_unitaire) et stockez-la dans `valeur_stock`
+    #    Affichez la valeur et son type
+    
+    
+    # 9. Convertissez la variable `stock` en float et affichez son nouveau type
+    
     pass
 
 
-def exercice3_slicing():
-    """Exercice 3 : Découper des chaînes (slicing)"""
-    # À compléter
-    pass
+# ============= QUESTION BONUS =============
 
-
-# ============= EXERCICE 2 : NOMBRES =============
-
-def exercice4_operations_nombres():
-    """Exercice 4 : Opérations sur les nombres"""
-    # À compléter
-    pass
-
-
-def exercice5_fonctions_math():
-    """Exercice 5 : Fonctions mathématiques"""
-    # À compléter
-    pass
-
-
-# ============= EXERCICE 3 : BOOLÉENS =============
-
-def exercice6_booleens():
-    """Exercice 6 : Opérations booléennes"""
-    # À compléter
-    pass
-
-
-def exercice7_comparaisons():
-    """Exercice 7 : Comparaisons avancées"""
-    # À compléter
-    pass
-
-
-# ============= EXERCICE 4 : CONVERSIONS =============
-
-def exercice8_conversions_types():
-    """Exercice 8 : Convertir entre types"""
-    # À compléter
-    pass
-
-
-def exercice9_conversions_avancees():
-    """Exercice 9 : Conversions avancées"""
-    # À compléter
-    pass
-
-
-# ============= EXERCICE 5 : TYPE() ET ISINSTANCE() =============
-
-def exercice10_verifier_types():
-    """Exercice 10 : Vérifier les types de données"""
-    # À compléter
-    pass
-
-
-# ============= EXERCICES BONUS =============
-
-def bonus_manipulation_avancee_strings():
-    """Bonus : Manipulation avancée de strings"""
-    # À compléter
-    pass
-
-
-def bonus_formatage_nombres():
-    """Bonus : Formatage avancé de nombres"""
-    # À compléter
-    pass
-
-
-def bonus_validation_input():
-    """Bonus : Valider les entrées utilisateur"""
+def exercice10_bonus():
+    """Exercice 10 : Comparaison et type booléen"""
+    # Note: Reprenez la variable stock
+    
+    # 10. Créez une variable contenant le résultat de l'opération `stock > 50`
+    #     Affichez cette variable et son type. Que remarquez-vous ?
+    
     pass
 
 
@@ -101,8 +72,8 @@ def bonus_validation_input():
 
 if __name__ == "__main__":
     print("=== Module 03 : Types de Données ===\n")
-    print("Testez vos fonctions ici !")
     
-    # Exemple :
-    # exercice1_manipulation_strings()
-    # exercice2_concatenation()
+    # Décommentez pour tester vos fonctions :
+    # exercice1_a_6()
+    # exercice7_a_9()
+    # exercice10_bonus()

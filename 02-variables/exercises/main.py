@@ -6,99 +6,54 @@ Module 02 - Variables et Types de Données
 Exercices sur la déclaration, manipulation et affichage de variables
 """
 
-# ============= EXERCICE 1 : DÉCLARER DES VARIABLES =============
+# ============= EXERCICES DE BASE =============
 
-def exercice1_variables_simples():
-    """Exercice 1 : Déclarer et afficher des variables"""
-    # À compléter
+def exercice1_a_5():
+    """Exercices 1 à 5 : Variables produit et prix avec réduction"""
+    # 1. Créez une variable nommée `produit` et attribuez-y le nom d'un produit (ex: "Ordinateur")
+    
+    
+    # 2. Créez une variable nommée `prix` et attribuez-y un prix (ex: 899)
+    
+    
+    # 3. Affichez une phrase avec le produit et le prix en utilisant un f-string
+    #    Par exemple: "Le produit Ordinateur coûte 899 euros."
+    
+    
+    # 4. Modifiez la variable `prix` pour appliquer une réduction de 15% (multipliez par 0.85)
+    
+    
+    # 5. Affichez à nouveau la phrase avec le prix réduit
+    #    Par exemple: "Après réduction, le produit Ordinateur coûte 764.15 euros."
+    
     pass
 
 
-def exercice2_types_variables():
-    """Exercice 2 : Identifier les types de variables"""
-    # À compléter
+# ============= QUESTIONS SUPPLÉMENTAIRES =============
+
+def exercice6_a_8():
+    """Exercices 6 à 8 : Quantité et devise"""
+    # Note: Reprenez les variables produit et prix réduit de l'exercice précédent
+    
+    # 6. Créez une variable `quantite` avec la valeur 3 et calculez le prix total (prix réduit × quantité)
+    
+    
+    # 7. Affichez: "Pour 3 Ordinateur(s), le total est de X euros." en utilisant les variables
+    
+    
+    # 8. Créez une variable `devise` avec la valeur "USD" et modifiez votre affichage pour utiliser cette devise
+    
     pass
 
 
-# ============= EXERCICE 2 : MODIFIER DES VARIABLES =============
+# ============= QUESTION BONUS =============
 
-def exercice3_modification():
-    """Exercice 3 : Modifier la valeur d'une variable"""
-    # À compléter
-    pass
-
-
-def exercice4_operations_variables():
-    """Exercice 4 : Opérations avec variables"""
-    # À compléter
-    pass
-
-
-# ============= EXERCICE 3 : INPUT UTILISATEUR =============
-
-def exercice5_input_simple():
-    """Exercice 5 : Demander le nom de l'utilisateur"""
-    # À compléter (décommenter pour tester)
-    # nom = input("Quel est votre nom ? ")
-    # print(f"Bonjour, {nom} !")
-    pass
-
-
-def exercice6_input_age():
-    """Exercice 6 : Calculer l'année de naissance"""
-    # À compléter (décommenter pour tester)
-    # age = int(input("Quel est votre âge ? "))
-    # annee_actuelle = 2024
-    # annee_naissance = annee_actuelle - age
-    # print(f"Vous êtes né(e) en {annee_naissance}")
-    pass
-
-
-# ============= EXERCICE 4 : FORMATAGE DE CHAÎNES =============
-
-def exercice7_f_strings():
-    """Exercice 7 : Utiliser les f-strings"""
-    # À compléter
-    pass
-
-
-def exercice8_format_nombres():
-    """Exercice 8 : Formater des nombres"""
-    # À compléter
-    pass
-
-
-# ============= EXERCICE 5 : ÉCHANGE DE VARIABLES =============
-
-def exercice9_echange():
-    """Exercice 9 : Échanger deux variables"""
-    # À compléter
-    pass
-
-
-def exercice10_affectation_multiple():
-    """Exercice 10 : Affectation multiple"""
-    # À compléter
-    pass
-
-
-# ============= EXERCICES BONUS =============
-
-def bonus_calcul_imc():
-    """Bonus : Calculer l'IMC"""
-    # À compléter
-    pass
-
-
-def bonus_conversion_unites():
-    """Bonus : Convertir des unités"""
-    # À compléter
-    pass
-
-
-def bonus_calcul_interet():
-    """Bonus : Calculer les intérêts composés"""
-    # À compléter
+def exercice9_bonus():
+    """Exercice 9 : Calcul de la TVA"""
+    # Note: Reprenez les variables des exercices précédents
+    
+    # 9. Créez une variable `tva` avec la valeur 0.20 (20%) et calculez le prix TTC. Affichez le résultat formaté.
+    
     pass
 
 
@@ -106,8 +61,8 @@ def bonus_calcul_interet():
 
 if __name__ == "__main__":
     print("=== Module 02 : Variables ===\n")
-    print("Testez vos fonctions ici !")
     
-    # Exemple :
-    # exercice1_variables_simples()
-    # exercice2_types_variables()
+    # Décommentez pour tester vos fonctions :
+    # exercice1_a_5()
+    # exercice6_a_8()
+    # exercice9_bonus()
