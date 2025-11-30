@@ -475,7 +475,6 @@ Ce cours inclut **12 projets complets** :
 
 **Bon apprentissage !**
 
-Créé avec ❤️ par [htajmoua](https://github.com/htajmoua)
 
 [⬆ Retour en haut](#formation-python)
 
