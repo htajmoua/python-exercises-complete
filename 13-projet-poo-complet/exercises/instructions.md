@@ -2,7 +2,7 @@
 
 Ce module final vous propose plusieurs projets complets intégrant tous les concepts de POO : classes, encapsulation, héritage, polymorphisme, et méthodes spéciales.
 
-## Projet 1 - Système de gestion de bibliothèque 📚
+## Projet 1 - Système de gestion de bibliothèque 
 
 ### Objectif
 Créer un système complet de gestion de bibliothèque avec livres, membres, emprunts et pénalités.
@@ -236,14 +236,14 @@ Pour tous les projets, implémentez ces méthodes spéciales où pertinent :
 ## Critères d'évaluation
 
 Votre projet doit :
-- ✅ Utiliser au moins 8 classes différentes
-- ✅ Implémenter l'héritage (au moins 3 niveaux)
-- ✅ Utiliser des properties avec validation
-- ✅ Implémenter le polymorphisme
-- ✅ Utiliser des méthodes spéciales appropriées
-- ✅ Avoir une encapsulation correcte (attributs protégés/privés)
-- ✅ Inclure de la documentation (docstrings)
-- ✅ Créer un script de démonstration complet
+-  Utiliser au moins 8 classes différentes
+-  Implémenter l'héritage (au moins 3 niveaux)
+-  Utiliser des properties avec validation
+-  Implémenter le polymorphisme
+-  Utiliser des méthodes spéciales appropriées
+-  Avoir une encapsulation correcte (attributs protégés/privés)
+-  Inclure de la documentation (docstrings)
+-  Créer un script de démonstration complet
 
 ## Bonus
 

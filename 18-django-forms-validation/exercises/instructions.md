@@ -327,11 +327,11 @@ class CommentaireForm(forms.ModelForm):
 
 ## Checklist de validation
 
-- ✅ Forms et ModelForms créés
-- ✅ Validation personnalisée implémentée
-- ✅ Widgets personnalisés utilisés
-- ✅ Upload de fichiers fonctionnel
-- ✅ Formsets maîtrisés
-- ✅ Rendu manuel de formulaires
-- ✅ CSRF protection active
-- ✅ Messages d'erreur affichés
+-  Forms et ModelForms créés
+-  Validation personnalisée implémentée
+-  Widgets personnalisés utilisés
+-  Upload de fichiers fonctionnel
+-  Formsets maîtrisés
+-  Rendu manuel de formulaires
+-  CSRF protection active
+-  Messages d'erreur affichés

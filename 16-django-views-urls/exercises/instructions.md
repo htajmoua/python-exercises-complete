@@ -374,11 +374,11 @@ def article_list_paginated(request):
 
 ## Checklist de validation
 
-- ✅ FBV créées et fonctionnelles
-- ✅ URLs avec paramètres configurées
-- ✅ Redirections implémentées
-- ✅ Class-Based Views maîtrisées (ListView, DetailView, CreateView, UpdateView, DeleteView)
-- ✅ Mixins utilisés pour réutilisation
-- ✅ Namespaces et URLs nommées configurées
-- ✅ Pagination implémentée
-- ✅ Requêtes GET/POST gérées
+-  FBV créées et fonctionnelles
+-  URLs avec paramètres configurées
+-  Redirections implémentées
+-  Class-Based Views maîtrisées (ListView, DetailView, CreateView, UpdateView, DeleteView)
+-  Mixins utilisés pour réutilisation
+-  Namespaces et URLs nommées configurées
+-  Pagination implémentée
+-  Requêtes GET/POST gérées

@@ -404,13 +404,13 @@ def article_create(request):
 
 ## Checklist de validation
 
-- ✅ Template inheritance fonctionnel
-- ✅ Variables et filtres utilisés
-- ✅ Tags conditionnels et boucles maîtrisés
-- ✅ Filtres personnalisés créés
-- ✅ Template tags personnalisés implémentés
-- ✅ Static files configurés et utilisés
-- ✅ Pagination dans les templates
-- ✅ Inclusion de templates
-- ✅ Context processors configurés
-- ✅ Messages framework utilisé
+-  Template inheritance fonctionnel
+-  Variables et filtres utilisés
+-  Tags conditionnels et boucles maîtrisés
+-  Filtres personnalisés créés
+-  Template tags personnalisés implémentés
+-  Static files configurés et utilisés
+-  Pagination dans les templates
+-  Inclusion de templates
+-  Context processors configurés
+-  Messages framework utilisé

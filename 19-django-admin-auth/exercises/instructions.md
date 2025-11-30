@@ -328,11 +328,11 @@ urlpatterns = [
 
 ## Checklist de validation
 
-- ✅ Admin personnalisé pour tous les modèles
-- ✅ Inlines configurés
-- ✅ Actions personnalisées créées
-- ✅ Login/Logout/Register fonctionnels
-- ✅ Vues protégées avec @login_required
-- ✅ Permissions et groupes utilisés
-- ✅ Profil utilisateur créé
-- ✅ Reset de mot de passe implémenté
+-  Admin personnalisé pour tous les modèles
+-  Inlines configurés
+-  Actions personnalisées créées
+-  Login/Logout/Register fonctionnels
+-  Vues protégées avec @login_required
+-  Permissions et groupes utilisés
+-  Profil utilisateur créé
+-  Reset de mot de passe implémenté

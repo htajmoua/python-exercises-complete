@@ -448,12 +448,12 @@ for num in number_stream():
 
 ## Checklist de validation
 
-- ✅ Closures comprises et utilisées
-- ✅ Décorateurs simples créés
-- ✅ Décorateurs avec paramètres maîtrisés
-- ✅ Décorateurs de classe implémentés
-- ✅ Chaînage de décorateurs fonctionnel
-- ✅ Pattern Observer implémenté
-- ✅ TP pipeline de consommateurs réalisé
-- ✅ TP système d'événements complet
-- ✅ Générateurs dans pipeline utilisés
+-  Closures comprises et utilisées
+-  Décorateurs simples créés
+-  Décorateurs avec paramètres maîtrisés
+-  Décorateurs de classe implémentés
+-  Chaînage de décorateurs fonctionnel
+-  Pattern Observer implémenté
+-  TP pipeline de consommateurs réalisé
+-  TP système d'événements complet
+-  Générateurs dans pipeline utilisés

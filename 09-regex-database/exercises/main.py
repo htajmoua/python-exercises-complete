@@ -190,7 +190,7 @@ class BibliothequeDB:
         ''')
         
         self.conn.commit()
-        print("✅ Tables créées avec succès")
+        print(" Tables créées avec succès")
     
     def inserer_donnees_exemple(self):
         """Insère des données d'exemple"""
@@ -243,7 +243,7 @@ class BibliothequeDB:
         ''', emprunts)
         
         self.conn.commit()
-        print("✅ Données d'exemple insérées")
+        print(" Données d'exemple insérées")
     
     # Exercice 7 : Ajouter des données
     def ajouter_auteur(self, nom, prenom, date_naissance=None, nationalite=None):
@@ -470,7 +470,7 @@ def test_database():
         print(f"  {key}: {value}")
     
     db.deconnecter()
-    print("\n✅ Base de données créée: bibliotheque.db")
+    print("\n Base de données créée: bibliotheque.db")
 
 
 def menu_principal():
@@ -492,7 +492,7 @@ if __name__ == "__main__":
     test_database()
     
     print("\n" + "="*50)
-    print("✅ Tous les tests sont terminés !")
+    print(" Tous les tests sont terminés !")
     print("="*50)
     print("\nFichiers créés :")
     print("  - bibliotheque.db (base de données SQLite)")

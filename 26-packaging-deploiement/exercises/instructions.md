@@ -522,14 +522,14 @@ buildout
 
 ## Checklist de validation
 
-- ✅ Structure de package créée
-- ✅ setup.py configuré
-- ✅ pyproject.toml créé (moderne)
-- ✅ Tests écrits et exécutés
-- ✅ Virtualenv maîtrisé
-- ✅ Poetry ou Pipenv utilisé
-- ✅ Package construit (wheel + sdist)
-- ✅ Uploadé sur TestPyPI
-- ✅ **TP : Publié sur PyPI réel**
-- ✅ Entry points configurés
-- ✅ Documentation README complète
+-  Structure de package créée
+-  setup.py configuré
+-  pyproject.toml créé (moderne)
+-  Tests écrits et exécutés
+-  Virtualenv maîtrisé
+-  Poetry ou Pipenv utilisé
+-  Package construit (wheel + sdist)
+-  Uploadé sur TestPyPI
+-  **TP : Publié sur PyPI réel**
+-  Entry points configurés
+-  Documentation README complète

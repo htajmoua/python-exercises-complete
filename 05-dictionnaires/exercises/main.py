@@ -323,5 +323,5 @@ if __name__ == "__main__":
     print("\n--- Bonus : Manipulation complexe ---")
     bonus_manipulation_complexe()
     
-    print("\n✅ Tous les exercices sont terminés !")
+    print("\n Tous les exercices sont terminés !")
     print("Consultez instructions.md pour plus de détails.")

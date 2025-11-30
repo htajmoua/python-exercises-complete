@@ -274,12 +274,12 @@ Créez une petite API Flask qui expose les opérations de la base de données.
 ---
 
 ## Critères d'évaluation
-- ✅ Validation correcte avec regex
-- ✅ Structure de base de données cohérente
-- ✅ Gestion des erreurs (try/except)
-- ✅ Code propre et commenté
-- ✅ Utilisation de fonctions réutilisables
-- ✅ Tests des fonctionnalités principales
-- ✅ Documentation des regex complexes
+-  Validation correcte avec regex
+-  Structure de base de données cohérente
+-  Gestion des erreurs (try/except)
+-  Code propre et commenté
+-  Utilisation de fonctions réutilisables
+-  Tests des fonctionnalités principales
+-  Documentation des regex complexes
 
-**Bon courage !** 🚀📚
+**Bon courage !** 

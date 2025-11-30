@@ -507,12 +507,12 @@ print("Avec cache:", timeit.timeit(lambda: fibonacci_rapide(30), number=1))
 
 ## Checklist de validation
 
-- ✅ timeit maîtrisé pour micro-benchmarks
-- ✅ cProfile utilisé pour profiling complet
-- ✅ line_profiler utilisé pour analyse ligne par ligne
-- ✅ memory_profiler utilisé pour analyse mémoire
-- ✅ Optimisations appliquées (comprehensions, structures)
-- ✅ Générateurs vs listes compris
-- ✅ **TP : Algorithme profileé et optimisé**
-- ✅ Complexité algorithmique calculée
-- ✅ Memoization implémentée
+-  timeit maîtrisé pour micro-benchmarks
+-  cProfile utilisé pour profiling complet
+-  line_profiler utilisé pour analyse ligne par ligne
+-  memory_profiler utilisé pour analyse mémoire
+-  Optimisations appliquées (comprehensions, structures)
+-  Générateurs vs listes compris
+-  **TP : Algorithme profileé et optimisé**
+-  Complexité algorithmique calculée
+-  Memoization implémentée

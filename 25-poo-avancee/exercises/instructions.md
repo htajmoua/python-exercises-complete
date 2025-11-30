@@ -512,13 +512,13 @@ p = Person(30)
 
 ## Checklist de validation
 
-- ✅ Itérateurs personnalisés créés
-- ✅ Générateurs maîtrisés
-- ✅ Héritage multiple et MRO compris
-- ✅ Mixins utilisés
-- ✅ Context Managers implémentés
-- ✅ Classes abstraites (ABC) créées
-- ✅ Métaclasses comprises
-- ✅ TP Singleton avec métaclasse réalisé
-- ✅ TP ORM simplifié implémenté
-- ✅ Descriptors explorés (bonus)
+-  Itérateurs personnalisés créés
+-  Générateurs maîtrisés
+-  Héritage multiple et MRO compris
+-  Mixins utilisés
+-  Context Managers implémentés
+-  Classes abstraites (ABC) créées
+-  Métaclasses comprises
+-  TP Singleton avec métaclasse réalisé
+-  TP ORM simplifié implémenté
+-  Descriptors explorés (bonus)

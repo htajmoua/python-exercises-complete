@@ -248,5 +248,5 @@ if __name__ == "__main__":
     print("\n--- Bonus : Intérêts composés ---")
     bonus_calcul_interet()
     
-    print("\n✅ Tous les exercices sont terminés !")
+    print("\n Tous les exercices sont terminés !")
     print("Consultez instructions.md pour plus de détails.")

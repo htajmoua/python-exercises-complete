@@ -583,14 +583,14 @@ task_routes = {
 
 ## Checklist de validation
 
-- ✅ GIL compris (threading vs multiprocessing)
-- ✅ Threading utilisé pour I/O-bound
-- ✅ Multiprocessing utilisé pour CPU-bound
-- ✅ Pool et Queue maîtrisés
-- ✅ concurrent.futures utilisé
-- ✅ Celery installé et configuré
-- ✅ Tâches asynchrones créées
-- ✅ Retry et error handling implémentés
-- ✅ Chaînes et groupes de tâches utilisés
-- ✅ **TP : Map-Reduce avec Celery réalisé**
-- ✅ Flower pour monitoring configuré
+-  GIL compris (threading vs multiprocessing)
+-  Threading utilisé pour I/O-bound
+-  Multiprocessing utilisé pour CPU-bound
+-  Pool et Queue maîtrisés
+-  concurrent.futures utilisé
+-  Celery installé et configuré
+-  Tâches asynchrones créées
+-  Retry et error handling implémentés
+-  Chaînes et groupes de tâches utilisés
+-  **TP : Map-Reduce avec Celery réalisé**
+-  Flower pour monitoring configuré

@@ -359,11 +359,11 @@ Article.publies.all()
 
 ## Checklist de validation
 
-- ✅ Modèles créés avec différents types de champs
-- ✅ Relations ForeignKey et ManyToMany fonctionnelles
-- ✅ Migrations créées et appliquées
-- ✅ CRUD complet testé dans le shell
-- ✅ Requêtes avec filtres et lookups maîtrisées
-- ✅ Q objects utilisés pour requêtes complexes
-- ✅ Agrégation et annotation comprises
-- ✅ Managers personnalisés implémentés
+-  Modèles créés avec différents types de champs
+-  Relations ForeignKey et ManyToMany fonctionnelles
+-  Migrations créées et appliquées
+-  CRUD complet testé dans le shell
+-  Requêtes avec filtres et lookups maîtrisées
+-  Q objects utilisés pour requêtes complexes
+-  Agrégation et annotation comprises
+-  Managers personnalisés implémentés

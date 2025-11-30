@@ -398,13 +398,13 @@ REST_FRAMEWORK = {
 
 ## Checklist de validation
 
-- ✅ DRF installé et configuré
-- ✅ Serializers créés pour tous les modèles
-- ✅ ViewSets et Routers configurés
-- ✅ Authentification par token implémentée
-- ✅ Permissions personnalisées créées
-- ✅ Filtrage et recherche fonctionnels
-- ✅ Pagination configurée
-- ✅ Actions personnalisées ajoutées
-- ✅ Documentation automatique générée
-- ✅ Throttling configuré
+-  DRF installé et configuré
+-  Serializers créés pour tous les modèles
+-  ViewSets et Routers configurés
+-  Authentification par token implémentée
+-  Permissions personnalisées créées
+-  Filtrage et recherche fonctionnels
+-  Pagination configurée
+-  Actions personnalisées ajoutées
+-  Documentation automatique générée
+-  Throttling configuré

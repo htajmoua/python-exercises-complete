@@ -611,16 +611,16 @@ services:
 
 ## Checklist de validation
 
-- ✅ PostgreSQL installé et configuré
-- ✅ Base de données et utilisateur créés
-- ✅ Django connecté à PostgreSQL
-- ✅ Credentials dans variables d'environnement
-- ✅ Types PostgreSQL utilisés (ArrayField, JSONField)
-- ✅ Full-text search implémenté
-- ✅ Indexes créés et optimisés
-- ✅ Migrations depuis SQLite réussies
-- ✅ Backup/Restore testés
-- ✅ Docker configuré (optionnel)
+-  PostgreSQL installé et configuré
+-  Base de données et utilisateur créés
+-  Django connecté à PostgreSQL
+-  Credentials dans variables d'environnement
+-  Types PostgreSQL utilisés (ArrayField, JSONField)
+-  Full-text search implémenté
+-  Indexes créés et optimisés
+-  Migrations depuis SQLite réussies
+-  Backup/Restore testés
+-  Docker configuré (optionnel)
 
 ## Ressources
 

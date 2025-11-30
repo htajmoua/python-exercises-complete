@@ -410,12 +410,12 @@ def merge(left, right):
 
 ## Checklist de validation
 
-- ✅ Différence référence/copie maîtrisée
-- ✅ Types mutables vs immutables compris
-- ✅ Arguments avancés (*args, **kwargs) utilisés
-- ✅ Variables classe vs instance distinguées
-- ✅ Slices avancés maîtrisés
-- ✅ Introspection comprise
-- ✅ Clause else utilisée correctement
-- ✅ TP intersection optimisé et analysé
-- ✅ Complexité algorithmique calculée
+-  Différence référence/copie maîtrisée
+-  Types mutables vs immutables compris
+-  Arguments avancés (*args, **kwargs) utilisés
+-  Variables classe vs instance distinguées
+-  Slices avancés maîtrisés
+-  Introspection comprise
+-  Clause else utilisée correctement
+-  TP intersection optimisé et analysé
+-  Complexité algorithmique calculée

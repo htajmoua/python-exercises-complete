@@ -154,5 +154,5 @@ if __name__ == "__main__":
     print("\n--- Bonus : Conversion température ---")
     bonus_conversion_temperature()
     
-    print("\n✅ Tous les exercices sont terminés !")
+    print("\n Tous les exercices sont terminés !")
     print("Consultez instructions.md pour plus de détails.")

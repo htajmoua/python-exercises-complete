@@ -56,7 +56,7 @@ python manage.py runserver
 ```
 
 **Accédez** à `http://127.0.0.1:8000/` dans votre navigateur.  
-Vous devriez voir la page d'accueil par défaut de Django 🚀
+Vous devriez voir la page d'accueil par défaut de Django 
 
 ## Exercice 4 - Créer une application
 
@@ -251,12 +251,12 @@ env/
 
 ## Checklist de validation
 
-- ✅ Django installé dans un environnement virtuel
-- ✅ Projet Django créé avec succès
-- ✅ Application `blog` créée et enregistrée
-- ✅ Base de données migrée
-- ✅ Superutilisateur créé
-- ✅ Interface admin accessible et en français
-- ✅ Page d'accueil personnalisée fonctionnelle
-- ✅ Variables d'environnement configurées
-- ✅ `requirements.txt` et `.gitignore` créés
+-  Django installé dans un environnement virtuel
+-  Projet Django créé avec succès
+-  Application `blog` créée et enregistrée
+-  Base de données migrée
+-  Superutilisateur créé
+-  Interface admin accessible et en français
+-  Page d'accueil personnalisée fonctionnelle
+-  Variables d'environnement configurées
+-  `requirements.txt` et `.gitignore` créés
