@@ -1,14 +1,6 @@
 <div align="center">
 
-# Formation Python - Programme Complet
-### Du Débutant à l'Expert
-
-![Python](https://img.shields.io/badge/Python-3.8%2B-blue?logo=python&logoColor=white)
-![Modules](https://img.shields.io/badge/Modules-28-green)
-![License](https://img.shields.io/badge/License-MIT-yellow)
-![Statut](https://img.shields.io/badge/Statut-Actif-success)
-
-**Un parcours d'apprentissage Python complet et professionnel**
+# Formation Python
 
 [Démarrage](#-démarrage-rapide) • [Modules](#-programme) • [Projets](#-projets)
 
@@ -19,7 +11,6 @@
 ## Table des Matières
 
 - [Aperçu](#-aperçu)
-- [Points Forts](#-points-forts)
 - [Démarrage Rapide](#-démarrage-rapide)
 - [Programme](#-programme)
   - [Fondamentaux](#-fondamentaux-01-08)
@@ -28,35 +19,12 @@
   - [Framework Django](#-framework-django-14-22)
   - [Python Avancé](#-python-avancé-23-28)
 - [Projets](#-projets)
-- [Contribuer](#-contribuer)
 
 ---
 
 ## Aperçu
 
 Ce dépôt contient **28 modules complets** couvrant Python des fondamentaux aux concepts experts, incluant le développement web avec Django et des sujets avancés comme la métaprogrammation et le calcul distribué.
-
-### Ce que vous allez maîtriser
-
-| Niveau | Modules | Durée | Sujets |
-|--------|---------|-------|--------|
-| **Débutant** | 01-08 | 2-3 semaines | Variables, Types, Listes, Boucles, Fonctions, Fichiers |
-| **Intermédiaire** | 09-13 | 2-3 semaines | Regex, SQL, POO, Design Patterns |
-| **Avancé** | 14-22 | 4-5 semaines | Django, PostgreSQL, API REST, MVC/MTV |
-| **Expert** | 23-28 | 3-4 semaines | Métaprogrammation, Performance, Parallélisme |
-
----
-
-## Points Forts
-
-- **200+ Exercices Pratiques** - Entraînement avec des scénarios réels
-- **12 Projets Complets** - Applications prêtes pour votre portfolio
-- **11 000+ Lignes de Code** - Exemples et solutions détaillés
-- **Apprentissage Progressif** - Curriculum structuré avec soin
-- **Production-Ready** - Bonnes pratiques de l'industrie
-- **À Votre Rythme** - Apprenez à votre vitesse
-
----
 
 ## Démarrage Rapide
 
@@ -80,8 +48,7 @@ cd python-exercises-complete
 # Naviguer vers un module
 cd 01-introduction/exercises
 
-# Lire les instructions
-cat instructions.md
+# Lire les instructions: instructions.md
 
 # Exécuter les exercices
 python main.py
@@ -504,22 +471,9 @@ Ce cours inclut **12 projets complets** :
 
 ---
 
-## Contribuer
-
-Les contributions sont les bienvenues ! Pour contribuer :
-
-1. Forkez le dépôt
-2. Créez votre branche (`git checkout -b feature/NouvelleFonctionnalite`)
-3. Committez vos changements (`git commit -m 'Ajout d'une nouvelle fonctionnalité'`)
-4. Pushez vers la branche (`git push origin feature/NouvelleFonctionnalite`)
-5. Ouvrez une Pull Request
-
----
-
 <div align="center">
 
 **Bon apprentissage !**
-
 
 [⬆ Retour en haut](#formation-python---programme-complet)
 
