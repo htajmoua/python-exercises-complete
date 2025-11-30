@@ -2,11 +2,152 @@
 
 Bienvenue dans le monde de Django ! Ce module vous guidera à travers l'installation et la création de votre premier projet Django.
 
+## Partie 0 - Rappels et Concepts Fondamentaux
+
+### Rappel des Principes de la POO
+
+Django s'appuie fortement sur la Programmation Orientée Objet. Voici les concepts clés utilisés :
+
+**1. Classes et Objets**
+```python
+# Exemple : Modèle Django (classe)
+class Article(models.Model):
+    titre = models.CharField(max_length=200)
+    contenu = models.TextField()
+
+# Instance (objet)
+mon_article = Article(titre="Django POO", contenu="...")
+```
+
+**2. Héritage**
+```python
+# Les modèles Django héritent de models.Model
+class Article(models.Model):  # Héritage
+    pass
+
+# Les vues Django héritent de classes génériques
+class ArticleListView(ListView):  # Héritage
+    model = Article
+```
+
+**3. Encapsulation**
+- Django encapsule la logique de base de données dans l'ORM
+- Les propriétés et méthodes privées protègent les données
+
+**4. Polymorphisme**
+- Différentes vues peuvent hériter de la même classe de base
+- Les modèles peuvent avoir des comportements différents via l'override
+
+### Le Design Pattern MVC et MTV de Django
+
+**MVC (Model-View-Controller)** est un pattern classique de séparation des responsabilités.
+
+**MTV (Model-Template-View)** est l'adaptation Django du pattern MVC :
+
+```
+┌─────────────────────────────────────────────────┐
+│           ARCHITECTURE MTV DJANGO               │
+├─────────────────────────────────────────────────┤
+│                                                 │
+│  CLIENT (Navigateur)                            │
+│       │                                         │
+│       ↓                                         │
+│  ┌─────────────┐         ┌──────────────┐     │
+│  │   URLS.PY   │ ------> │    VIEW      │     │
+│  │  (Routeur)  │         │  (Contrôleur)│     │
+│  └─────────────┘         └──────────────┘     │
+│                                 │               │
+│                    ┌────────────┼────────────┐ │
+│                    ↓                          ↓ │
+│              ┌──────────┐            ┌──────────┐│
+│              │  MODEL   │            │ TEMPLATE ││
+│              │ (Données)│            │   (Vue)  ││
+│              └──────────┘            └──────────┘│
+│                    │                          │  │
+│                    ↓                          ↓  │
+│              ┌──────────┐            ┌──────────┐│
+│              │   BDD    │            │   HTML   ││
+│              └──────────┘            └──────────┘│
+└─────────────────────────────────────────────────┘
+```
+
+**Correspondance MVC ↔ MTV** :
+
+| MVC | MTV Django | Rôle |
+|-----|------------|------|
+| **Model** | **Model** | Gestion des données (ORM, DB) |
+| **View** | **Template** | Présentation (HTML, CSS) |
+| **Controller** | **View** | Logique métier |
+| *Router* | **urls.py** | Routage des requêtes |
+
+**Exemple de flux MTV** :
+
+1. **URLs** : `/articles/` → Route vers la vue
+2. **View** : Récupère les données du Model
+3. **Model** : Interroge la base de données
+4. **Template** : Reçoit les données et génère le HTML
+5. **Réponse** : HTML renvoyé au client
+
+```python
+# urls.py (Routeur)
+urlpatterns = [
+    path('articles/', views.article_list, name='article-list'),
+]
+
+# views.py (Contrôleur/Logique)
+def article_list(request):
+    articles = Article.objects.all()  # MODEL
+    return render(request, 'articles.html', {'articles': articles})  # TEMPLATE
+
+# models.py (Données)
+class Article(models.Model):
+    titre = models.CharField(max_length=200)
+    contenu = models.TextField()
+
+# articles.html (Présentation)
+# {% for article in articles %}
+#   <h2>{{ article.titre }}</h2>
+# {% endfor %}
+```
+
+### Présentation du Framework Django
+
+**Origine et Historique**
+- Créé en 2003 par Adrian Holovaty et Simon Willison
+- Développé pour le journal Lawrence Journal-World
+- Open source depuis 2005
+- Nom inspiré par le guitariste Django Reinhardt
+
+**Objectifs et Avantages**
+- **Rapidité de développement** : "The web framework for perfectionists with deadlines"
+- **Sécurité** : Protection contre CSRF, XSS, SQL Injection
+- **Scalabilité** : Utilisé par Instagram, Pinterest, Mozilla
+- **Batteries included** : ORM, Admin, Forms, Auth intégrés
+- **DRY** (Don't Repeat Yourself) : Code réutilisable
+
+**Les Composants du Framework Django**
+
+| Composant | Description |
+|-----------|-------------|
+| **ORM** | Abstraction de base de données (PostgreSQL, MySQL, SQLite) |
+| **Admin** | Interface d'administration automatique |
+| **Forms** | Gestion et validation de formulaires |
+| **Templates** | Moteur de templates (syntaxe {% %}) |
+| **Auth** | Système d'authentification complet |
+| **Middleware** | Traitement des requêtes/réponses |
+| **Migrations** | Versioning de schéma de base de données |
+| **URLconf** | Routage URL élégant |
+| **Cache** | Framework de cache intégré |
+| **Signals** | Système d'événements |
+
+---
+
 ## Prérequis
 
 - Python 3.8+ installé
 - pip (gestionnaire de paquets Python)
 - Environnement virtuel (venv)
+- Connaissances en POO (voir rappels ci-dessus)
 
 ## Exercice 1 - Installation de Django
 

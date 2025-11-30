@@ -89,6 +89,251 @@ class Article(models.Model):
     tags = models.ManyToManyField(Tag, blank=True, related_name='articles')
 ```
 
+## Exercice 4bis - Relation OneToOne
+
+**Créez** un modèle `ProfilAuteur` lié 1-à-1 avec `Auteur` :
+
+```python
+class ProfilAuteur(models.Model):
+    auteur = models.OneToOneField(
+        Auteur,
+        on_delete=models.CASCADE,
+        related_name='profil'
+    )
+    photo = models.ImageField(upload_to='auteurs/', blank=True)
+    biographie_longue = models.TextField(blank=True)
+    twitter = models.CharField(max_length=100, blank=True)
+    linkedin = models.URLField(blank=True)
+    date_inscription = models.DateField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"Profil de {self.auteur}"
+```
+
+**Utilisez** la relation OneToOne :
+
+```python
+# Créer un profil pour un auteur
+auteur = Auteur.objects.get(id=1)
+profil = ProfilAuteur.objects.create(
+    auteur=auteur,
+    biographie_longue="Expert Django...",
+    twitter="@jean_dupont"
+)
+
+# Accéder au profil depuis l'auteur
+auteur.profil.twitter  # "@jean_dupont"
+
+# Accéder à l'auteur depuis le profil
+profil.auteur.nom  # "Dupont"
+```
+
+**Différence OneToOne vs ForeignKey** :
+- **ForeignKey** : Un auteur peut avoir PLUSIEURS articles (1-N)
+- **OneToOne** : Un auteur a UN SEUL profil (1-1)
+
+---
+
+## Exercice 4ter - Stratégies d'Héritage de Modèles
+
+Django propose 3 stratégies d'héritage pour les modèles :
+
+### Stratégie 1 : Abstract Base Classes (Meta Class)
+
+**Cas d'usage** : Partager des champs communs sans créer de table pour la classe de base.
+
+```python
+class BaseArticle(models.Model):
+    """Classe abstraite avec champs communs"""
+    titre = models.CharField(max_length=200)
+    contenu = models.TextField()
+    date_creation = models.DateTimeField(auto_now_add=True)
+    date_modification = models.DateTimeField(auto_now=True)
+    actif = models.BooleanField(default=True)
+    
+    class Meta:
+        abstract = True  # IMPORTANT : pas de table créée
+        ordering = ['-date_creation']
+    
+    def __str__(self):
+        return self.titre
+
+class Article(BaseArticle):
+    """Article de blog"""
+    auteur = models.ForeignKey(Auteur, on_delete=models.CASCADE)
+    categorie = models.CharField(max_length=50)
+    # Hérite de : titre, contenu, date_creation, date_modification, actif
+
+class Tutoriel(BaseArticle):
+    """Tutoriel technique"""
+    niveau = models.CharField(max_length=20)  # débutant, intermédiaire, avancé
+    duree_minutes = models.IntegerField()
+    # Hérite de : titre, contenu, date_creation, date_modification, actif
+```
+
+**Résultat en base de données** :
+- Table `blog_article` : avec tous les champs (titre, contenu, auteur, categorie, etc.)
+- Table `blog_tutoriel` : avec tous les champs (titre, contenu, niveau, duree_minutes, etc.)
+- PAS de table `base_article`
+
+### Stratégie 2 : Multi-table Inheritance (OneToOneField automatique)
+
+**Cas d'usage** : Créer une hiérarchie de modèles avec tables séparées.
+
+```python
+class Publication(models.Model):
+    """Classe de base CONCRÈTE (non abstraite)"""
+    titre = models.CharField(max_length=200)
+    date_publication = models.DateField()
+    
+    def __str__(self):
+        return self.titre
+
+class Livre(Publication):
+    """Hérite de Publication - Table séparée"""
+    isbn = models.CharField(max_length=13)
+    editeur = models.CharField(max_length=100)
+    nombre_pages = models.IntegerField()
+    # Django crée automatiquement un OneToOneField vers Publication
+
+class Magazine(Publication):
+    """Hérite de Publication - Table séparée"""
+    numero = models.IntegerField()
+    periodicite = models.CharField(max_length=50)
+```
+
+**Résultat en base de données** :
+- Table `blog_publication` : id, titre, date_publication
+- Table `blog_livre` : id, publication_ptr_id (FK→Publication), isbn, editeur, nombre_pages
+- Table `blog_magazine` : id, publication_ptr_id (FK→Publication), numero, periodicite
+
+**Utilisation** :
+
+```python
+# Créer un livre
+livre = Livre.objects.create(
+    titre="Django pour tous",
+    date_publication="2024-01-15",
+    isbn="978-1234567890",
+    editeur="TechBooks",
+    nombre_pages=450
+)
+
+# Accéder aux champs de Publication
+livre.titre  # "Django pour tous"
+livre.publication_ptr  # Objet Publication
+
+# Requêtes polymorphes
+publications = Publication.objects.all()  # Tous (livres + magazines)
+livres = Livre.objects.all()  # Seulement les livres
+```
+
+### Stratégie 3 : Proxy Models
+
+**Cas d'usage** : Modifier le comportement sans créer de nouvelle table.
+
+```python
+class Article(models.Model):
+    titre = models.CharField(max_length=200)
+    contenu = models.TextField()
+    date_publication = models.DateField()
+    publie = models.BooleanField(default=False)
+    
+    class Meta:
+        ordering = ['titre']
+
+class ArticlePublie(Article):
+    """Proxy : même table, comportement différent"""
+    class Meta:
+        proxy = True  # IMPORTANT : pas de nouvelle table
+        ordering = ['-date_publication']  # Tri différent
+    
+    def publier(self):
+        self.publie = True
+        self.save()
+    
+    @classmethod
+    def get_recents(cls, nombre=5):
+        return cls.objects.filter(publie=True)[:nombre]
+```
+
+**Résultat** :
+- UNE SEULE table `blog_article`
+- `Article` et `ArticlePublie` pointent vers la même table
+- Différence : méthodes et comportement (Meta)
+
+**Utilisation** :
+
+```python
+# Utiliser le proxy
+articles_publies = ArticlePublie.objects.all()  # Filtre automatiquement ?
+recents = ArticlePublie.get_recents(10)
+```
+
+### Comparaison des 3 Stratégies
+
+| Stratégie | Tables créées | Cas d'usage | Avantages | Inconvénients |
+|-----------|---------------|-------------|-----------|---------------|
+| **Abstract** | Une par enfant | Partager des champs communs | Simple, performant | Pas de requêtes polymorphes |
+| **Multi-table** | Une par classe | Hiérarchie de types | Requêtes polymorphes | Jointures (moins performant) |
+| **Proxy** | Une seule | Comportement différent | Très performant | Pas de nouveaux champs |
+
+### Exercice Pratique : Créer une Hiérarchie de Contenus
+
+**Créez** un système de gestion de contenu avec les 3 stratégies :
+
+```python
+# 1. Abstract Base (champs communs)
+class BaseContenu(models.Model):
+    titre = models.CharField(max_length=200)
+    slug = models.SlugField(unique=True)
+    date_creation = models.DateTimeField(auto_now_add=True)
+    actif = models.BooleanField(default=True)
+    
+    class Meta:
+        abstract = True
+
+# 2. Multi-table (types de contenu)
+class Contenu(BaseContenu):
+    """Classe de base concrète"""
+    auteur = models.ForeignKey(Auteur, on_delete=models.CASCADE)
+
+class ArticleBlog(Contenu):
+    """Article de blog"""
+    contenu = models.TextField()
+    tags = models.ManyToManyField(Tag)
+
+class Video(Contenu):
+    """Vidéo"""
+    url_video = models.URLField()
+    duree_secondes = models.IntegerField()
+
+# 3. Proxy (comportement spécialisé)
+class ContenuPublie(Contenu):
+    """Proxy pour contenus publiés"""
+    class Meta:
+        proxy = True
+    
+    def get_recents(self):
+        return self.objects.filter(actif=True).order_by('-date_creation')[:10]
+```
+
+**Testez** dans le shell :
+
+```python
+# Multi-table : requêtes polymorphes
+tous_contenus = Contenu.objects.all()  # Articles + Videos
+
+# Filtrer par type
+articles = ArticleBlog.objects.all()
+videos = Video.objects.all()
+
+# Proxy : même données, méthodes différentes
+contenus_publies = ContenuPublie.objects.filter(actif=True)
+```
+
+---
+
 ## Exercice 5 - Méthodes personnalisées du modèle
 
 **Ajoutez** des méthodes personnalisées au modèle `Article` :
