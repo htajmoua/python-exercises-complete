@@ -2,7 +2,7 @@
 
 # Formation Python
 
-[Démarrage](#-démarrage-rapide) • [Modules](#-programme) • [Projets](#-projets)
+[Démarrage](#démarrage-rapide) • [Modules](#programme) • [Projets](#projets)
 
 </div>
 
@@ -10,15 +10,15 @@
 
 ## Table des Matières
 
-- [Aperçu](#-aperçu)
-- [Démarrage Rapide](#-démarrage-rapide)
-- [Programme](#-programme)
-  - [Fondamentaux](#-fondamentaux-01-08)
-  - [Regex & Base de Données](#-regex--base-de-données-09)
-  - [Programmation Orientée Objet](#-programmation-orientée-objet-10-13)
-  - [Framework Django](#-framework-django-14-22)
-  - [Python Avancé](#-python-avancé-23-28)
-- [Projets](#-projets)
+- [Aperçu](#aperçu)
+- [Démarrage Rapide](#démarrage-rapide)
+- [Programme](#programme)
+  - [Fondamentaux](#fondamentaux-01-08)
+  - [Regex & Base de Données](#regex--base-de-données-09)
+  - [Programmation Orientée Objet](#programmation-orientée-objet-10-13)
+  - [Framework Django](#framework-django-14-22)
+  - [Python Avancé](#python-avancé-23-28)
+- [Projets](#projets)
 
 ---
 
@@ -475,6 +475,8 @@ Ce cours inclut **12 projets complets** :
 
 **Bon apprentissage !**
 
-[⬆ Retour en haut](#formation-python---programme-complet)
+Créé avec ❤️ par [htajmoua](https://github.com/htajmoua)
+
+[⬆ Retour en haut](#formation-python)
 
 </div>
