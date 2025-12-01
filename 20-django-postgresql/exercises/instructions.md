@@ -1,6 +1,31 @@
-# Instructions - Django avec PostgreSQL
+# Instructions - Django avec PostgreSQL (Production Backend)
 
-PostgreSQL est une base de données relationnelle avancée, recommandée pour la production Django. Ce module vous guidera dans l'installation, la configuration et l'utilisation de PostgreSQL avec Django.
+**🎯 Objectif du module** : Maîtriser PostgreSQL pour des applications Django Backend en production.
+
+PostgreSQL est la base de données **recommandée pour la production** avec Django. Ce module couvre :
+- Installation et configuration PostgreSQL
+- Types de données spécifiques PostgreSQL (ArrayField, JSONField)
+- Full-text search pour APIs de recherche performantes
+- Optimisation des performances (indexes, EXPLAIN)
+- Fonctionnalités avancées (triggers, vues matérialisées)
+- Docker pour environnement isolé
+- Backup et restore pour sécurité des données
+
+**📚 Format du module** :
+- **Partie 1 (Exercices 1-7)** : Exemples guidés - Installation, configuration, types spécifiques
+- **Partie 2 (Exercices 8-10)** : Exercices pratiques - Optimisation et production
+
+**📌 Note** : PostgreSQL est essentiel pour des APIs Backend professionnelles. SQLite convient seulement pour le développement.
+
+**Prérequis** : Avoir complété les modules 14-19 (ORM, optimisation, admin)
+
+---
+
+# 📖 PARTIE 1 : EXEMPLES GUIDÉS
+
+Les exercices 1 à 7 vous guident dans l'installation et la configuration de PostgreSQL.
+
+---
 
 ## Partie 1 - Installation et Configuration
 
@@ -297,7 +322,15 @@ class Article(models.Model):
         ]
 ```
 
-## Partie 3 - Indexes et Performance
+---
+
+# 🔨 PARTIE 2 : EXERCICES PRATIQUES
+
+**À partir d'ici, testez les optimisations PostgreSQL sur votre projet !**
+
+---
+
+## Exercice 8 - Optimisation avec indexes (PRATIQUE)
 
 ### Exercice 12 - Créer des indexes
 

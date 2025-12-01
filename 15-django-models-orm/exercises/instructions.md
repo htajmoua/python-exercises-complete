@@ -1,8 +1,24 @@
-# Instructions - Django Models et ORM
+# Instructions - Django Models : Fondamentaux
 
-Les modèles Django définissent la structure de votre base de données. L'ORM (Object-Relational Mapping) permet d'interagir avec la base de données en Python.
+**🎯 Objectif du module** : Maîtriser les bases des modèles Django - champs, relations et héritage.
 
-## Exercice 1 - Premier modèle simple
+Les modèles Django définissent la structure de votre base de données. L'ORM (Object-Relational Mapping) permet d'interagir avec la base de données en Python sans écrire de SQL.
+
+**📚 Format du module** :
+- **Partie 1 (Exercices 1-3)** : Exemples guidés - Création de modèles et relations de base
+- **Partie 2 (Exercices 4-8)** : Exercices pratiques - À compléter par vos soins
+
+**Prérequis** : Avoir complété le module 14 (Django installé et configuré)
+
+---
+
+# 📖 PARTIE 1 : EXEMPLES GUIDÉS
+
+Les exercices 1 à 3 sont des exemples complets pour comprendre les concepts de base.
+
+---
+
+## Exercice 1 - Premier modèle simple (EXEMPLE)
 
 **Créez** un modèle `Article` dans `blog/models.py` :
 
@@ -26,589 +42,799 @@ python manage.py makemigrations
 python manage.py migrate
 ```
 
-## Exercice 2 - Champs de modèle variés
+**Analysez** le SQL généré :
 
-**Créez** un modèle `Auteur` avec différents types de champs :
+```bash
+python manage.py sqlmigrate blog 0001
+```
+
+## Exercice 2 - Tous les types de champs (EXEMPLE)
+
+**Créez** un modèle exhaustif avec tous les types de champs :
 
 ```python
+from django.core.validators import MinValueValidator, MaxValueValidator
+from django.utils import timezone
+
 class Auteur(models.Model):
-    nom = models.CharField(max_length=100)
+    # Champs texte
+    nom = models.CharField(max_length=100, db_index=True)
     prenom = models.CharField(max_length=100)
-    email = models.EmailField(unique=True)
+    pseudo = models.SlugField(unique=True)
     bio = models.TextField(blank=True)
-    date_naissance = models.DateField(null=True, blank=True)
+    
+    # Champs email et URL
+    email = models.EmailField(unique=True)
     site_web = models.URLField(blank=True)
+    
+    # Champs numériques
+    age = models.IntegerField(
+        validators=[MinValueValidator(18), MaxValueValidator(120)],
+        null=True, blank=True
+    )
+    note_moyenne = models.DecimalField(
+        max_digits=3, decimal_places=2,
+        default=0.00
+    )
+    salaire = models.FloatField(null=True, blank=True)
+    
+    # Champs date/temps
+    date_naissance = models.DateField(null=True, blank=True)
+    heure_contact = models.TimeField(null=True, blank=True)
+    derniere_connexion = models.DateTimeField(default=timezone.now)
+    
+    # Champs booléens
     est_actif = models.BooleanField(default=True)
+    newsletter = models.BooleanField(default=False)
+    
+    # Champs binaires
+    avatar = models.ImageField(upload_to='avatars/', blank=True)
+    cv = models.FileField(upload_to='cv/', blank=True)
+    
+    # Champs JSON (PostgreSQL)
+    metadata = models.JSONField(default=dict, blank=True)
+    
+    # Champs de choix
+    GENRE_CHOICES = [
+        ('M', 'Masculin'),
+        ('F', 'Féminin'),
+        ('A', 'Autre'),
+    ]
+    genre = models.CharField(max_length=1, choices=GENRE_CHOICES, blank=True)
     
     class Meta:
+        verbose_name = "Auteur"
         verbose_name_plural = "Auteurs"
+        ordering = ['nom', 'prenom']
+        indexes = [
+            models.Index(fields=['nom', 'prenom']),
+        ]
     
     def __str__(self):
         return f"{self.prenom} {self.nom}"
 ```
 
-**Migrez** le nouveau modèle.
+**Migrez** et testez dans le shell.
 
-## Exercice 3 - Relations ForeignKey (One-to-Many)
+---
+
+## Exercice 3 - Relations ForeignKey (EXEMPLE)
 
 **Modifiez** le modèle `Article` pour ajouter une relation avec `Auteur` :
 
 ```python
 class Article(models.Model):
     titre = models.CharField(max_length=200)
+    slug = models.SlugField(unique=True)
     contenu = models.TextField()
-    auteur = models.ForeignKey(Auteur, on_delete=models.CASCADE, related_name='articles')
+    
+    # Relation ManyToOne (plusieurs articles par auteur)
+    auteur = models.ForeignKey(
+        Auteur,
+        on_delete=models.CASCADE,  # Supprime les articles si l'auteur est supprimé
+        related_name='articles'     # Accès inverse: auteur.articles.all()
+    )
+    
     date_creation = models.DateTimeField(auto_now_add=True)
     date_modification = models.DateTimeField(auto_now=True)
     publie = models.BooleanField(default=False)
+    nombre_vues = models.PositiveIntegerField(default=0)
+    
+    class Meta:
+        ordering = ['-date_creation']
     
     def __str__(self):
         return self.titre
 ```
 
-**Créez** et appliquez les migrations.
+**Options on_delete** :
 
-## Exercice 4 - Relation ManyToMany
+```python
+# CASCADE : Supprime les objets liés
+auteur = models.ForeignKey(Auteur, on_delete=models.CASCADE)
 
-**Créez** un modèle `Tag` :
+# PROTECT : Empêche la suppression si des objets liés existent
+categorie = models.ForeignKey(Categorie, on_delete=models.PROTECT)
+
+# SET_NULL : Met le champ à NULL
+editeur = models.ForeignKey(Editeur, on_delete=models.SET_NULL, null=True)
+
+# SET_DEFAULT : Met une valeur par défaut
+statut = models.ForeignKey(Statut, on_delete=models.SET_DEFAULT, default=1)
+
+# SET() : Utilise une fonction personnalisée
+def get_deleted_user():
+    return Auteur.objects.get_or_create(email='deleted@example.com')[0]
+
+createur = models.ForeignKey(Auteur, on_delete=models.SET(get_deleted_user))
+
+# DO_NOTHING : Ne fait rien (DANGEREUX - peut violer l'intégrité)
+responsable = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+```
+
+**Testez** les relations :
+
+```python
+# Créer un auteur et ses articles
+auteur = Auteur.objects.create(nom="Dupont", prenom="Jean", email="jean@example.com")
+article1 = Article.objects.create(titre="Article 1", contenu="...", auteur=auteur)
+article2 = Article.objects.create(titre="Article 2", contenu="...", auteur=auteur)
+
+# Accès inverse (related_name)
+auteur.articles.all()  # QuerySet[<Article 1>, <Article 2>]
+auteur.articles.count()  # 2
+auteur.articles.filter(publie=True)
+
+# Accès direct
+article1.auteur  # <Auteur: Jean Dupont>
+article1.auteur.nom  # "Dupont"
+```
+
+---
+
+# 🔨 PARTIE 2 : EXERCICES PRATIQUES
+
+**À partir d'ici, c'est à vous de coder !** Les exercices suivants contiennent des squelettes avec des `TODO` à compléter.
+
+---
+
+## Exercice 4 - Relation ManyToMany (PRATIQUE)
+
+**Objectif** : Créer un modèle Tag avec une relation plusieurs-à-plusieurs vers Article.
+
+**Consignes** :
+1. Créez un modèle `Tag` avec les champs : nom, slug, description, couleur
+2. Ajoutez une relation ManyToMany dans le modèle Article vers Tag
+3. Testez la relation dans le shell Django
+
+**Squelette - `blog/models.py`** (à compléter) :
 
 ```python
 class Tag(models.Model):
-    nom = models.CharField(max_length=50, unique=True)
+    # TODO : Ajoutez le champ 'nom' (CharField, max_length=50, unique=True)
+    nom = # VOTRE CODE ICI
+    
+    # TODO : Ajoutez le champ 'slug' (SlugField, unique=True)
+    slug = # VOTRE CODE ICI
+    
+    # TODO : Ajoutez le champ 'description' (TextField, blank=True)
+    description = # VOTRE CODE ICI
+    
+    # TODO : Ajoutez le champ 'couleur' (CharField, max_length=7, default='#000000')
+    couleur = # VOTRE CODE ICI
+    
+    def __str__(self):
+        # TODO : Retournez le nom du tag
+        return # VOTRE CODE ICI
+    
+    class Meta:
+        # TODO : Définissez l'ordre alphabétique par nom
+        ordering = # VOTRE CODE ICI
+
+class Article(models.Model):
+    # ... champs existants (titre, contenu, auteur, etc.) ...
+    
+    # TODO : Ajoutez la relation ManyToMany vers Tag
+    # Le champ doit s'appeler 'tags'
+    # Il doit être optionnel (blank=True)
+    # Le related_name doit être 'articles'
+    tags = # VOTRE CODE ICI
+```
+
+**Indice** :
+- Pour ManyToMany : `models.ManyToManyField(ModeleCible, blank=True, related_name='...')`
+- Regardez l'exemple de ForeignKey dans l'exercice 3
+
+**Validation** :
+
+```bash
+# TODO : Créez les migrations
+python manage.py makemigrations
+python manage.py migrate
+
+# TODO : Testez dans le shell
+python manage.py shell
+```
+
+```python
+from blog.models import Article, Tag
+
+# TODO : Créez des tags
+tag_python = Tag.objects.create(nom="Python", slug="python", couleur="#3776ab")
+tag_django = Tag.objects.create(nom="Django", slug="django", couleur="#092e20")
+
+# TODO : Récupérez un article et ajoutez-lui des tags
+article = Article.objects.first()
+# Utilisez : article.tags.add(tag_python, tag_django)
+# VOTRE CODE ICI
+
+# TODO : Affichez tous les tags de l'article
+# Utilisez : article.tags.all()
+# VOTRE CODE ICI
+
+# TODO : Trouvez tous les articles avec le tag "Python"
+# Utilisez : Article.objects.filter(tags__nom="Python")
+# VOTRE CODE ICI
+```
+
+---
+
+**ManyToMany avec table intermédiaire personnalisée** (BONUS - optionnel) :
+
+```python
+class Categorie(models.Model):
+    nom = models.CharField(max_length=100)
     slug = models.SlugField(unique=True)
     
     def __str__(self):
         return self.nom
-```
 
-**Ajoutez** une relation ManyToMany dans `Article` :
+class ArticleCategorie(models.Model):
+    """Table intermédiaire personnalisée pour la relation Article-Categorie"""
+    article = models.ForeignKey(Article, on_delete=models.CASCADE)
+    categorie = models.ForeignKey(Categorie, on_delete=models.CASCADE)
+    
+    # Champs supplémentaires
+    ordre = models.PositiveIntegerField(default=0)
+    principale = models.BooleanField(default=False)
+    date_ajout = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        unique_together = ['article', 'categorie']
+        ordering = ['ordre']
+    
+    def __str__(self):
+        return f"{self.article.titre} → {self.categorie.nom}"
 
-```python
 class Article(models.Model):
     # ... champs existants ...
-    tags = models.ManyToManyField(Tag, blank=True, related_name='articles')
+    
+    categories = models.ManyToManyField(
+        Categorie,
+        through='ArticleCategorie',
+        related_name='articles'
+    )
 ```
 
-## Exercice 4bis - Relation OneToOne
+**Utilisation des relations ManyToMany** :
 
-**Créez** un modèle `ProfilAuteur` lié 1-à-1 avec `Auteur` :
+```python
+# Créer des tags
+tag_python = Tag.objects.create(nom="Python", slug="python")
+tag_django = Tag.objects.create(nom="Django", slug="django")
+
+# Ajouter des tags à un article
+article = Article.objects.first()
+article.tags.add(tag_python, tag_django)
+
+# Retirer un tag
+article.tags.remove(tag_python)
+
+# Remplacer tous les tags
+article.tags.set([tag_python, tag_django])
+
+# Effacer tous les tags
+article.tags.clear()
+
+# Vérifier l'existence
+article.tags.filter(nom="Python").exists()
+
+# Accès inverse
+tag_python.articles.all()
+```
+
+**Avec table intermédiaire personnalisée** :
+
+```python
+# Créer la relation avec des données supplémentaires
+ArticleCategorie.objects.create(
+    article=article,
+    categorie=categorie,
+    ordre=1,
+    principale=True
+)
+
+# Accéder aux données intermédiaires
+for ac in article.articlecategorie_set.all():
+    print(f"{ac.categorie.nom} - Ordre: {ac.ordre} - Principale: {ac.principale}")
+```
+
+## Exercice 5 - Relation OneToOne (PRATIQUE)
+
+**Objectif** : Créer un modèle ProfilAuteur avec une relation un-à-un vers Auteur.
+
+**Consignes** :
+1. Créez un modèle `ProfilAuteur` avec une relation OneToOne vers `Auteur`
+2. Ajoutez les champs : biographie_longue, twitter, linkedin, github, notifications_email, profil_public
+3. Testez la relation dans le shell Django
+
+**Squelette - `blog/models.py`** (à compléter) :
 
 ```python
 class ProfilAuteur(models.Model):
-    auteur = models.OneToOneField(
-        Auteur,
-        on_delete=models.CASCADE,
-        related_name='profil'
-    )
-    photo = models.ImageField(upload_to='auteurs/', blank=True)
-    biographie_longue = models.TextField(blank=True)
-    twitter = models.CharField(max_length=100, blank=True)
-    linkedin = models.URLField(blank=True)
-    date_inscription = models.DateField(auto_now_add=True)
+    # TODO : Ajoutez la relation OneToOne vers Auteur
+    # Utilisez : models.OneToOneField()
+    # Arguments : on_delete=models.CASCADE, related_name='profil', primary_key=True
+    auteur = # VOTRE CODE ICI
+    
+    # TODO : Ajoutez le champ 'biographie_longue' (TextField, blank=True)
+    biographie_longue = # VOTRE CODE ICI
+    
+    # TODO : Ajoutez le champ 'twitter' (CharField, max_length=100, blank=True)
+    twitter = # VOTRE CODE ICI
+    
+    # TODO : Ajoutez le champ 'linkedin' (URLField, blank=True)
+    linkedin = # VOTRE CODE ICI
+    
+    # TODO : Ajoutez le champ 'github' (CharField, max_length=100, blank=True)
+    github = # VOTRE CODE ICI
+    
+    # TODO : Ajoutez le champ 'nombre_followers' (PositiveIntegerField, default=0)
+    nombre_followers = # VOTRE CODE ICI
+    
+    # TODO : Ajoutez le champ 'notifications_email' (BooleanField, default=True)
+    notifications_email = # VOTRE CODE ICI
+    
+    # TODO : Ajoutez le champ 'profil_public' (BooleanField, default=True)
+    profil_public = # VOTRE CODE ICI
     
     def __str__(self):
-        return f"Profil de {self.auteur}"
+        # TODO : Retournez f"Profil de {self.auteur}"
+        return # VOTRE CODE ICI
 ```
 
-**Utilisez** la relation OneToOne :
+**Indice** :
+- OneToOneField est similaire à ForeignKey mais garantit l'unicité
+- `primary_key=True` signifie que le profil utilise l'ID de l'auteur
 
-```python
-# Créer un profil pour un auteur
-auteur = Auteur.objects.get(id=1)
-profil = ProfilAuteur.objects.create(
-    auteur=auteur,
-    biographie_longue="Expert Django...",
-    twitter="@jean_dupont"
-)
-
-# Accéder au profil depuis l'auteur
-auteur.profil.twitter  # "@jean_dupont"
-
-# Accéder à l'auteur depuis le profil
-profil.auteur.nom  # "Dupont"
-```
-
-**Différence OneToOne vs ForeignKey** :
-- **ForeignKey** : Un auteur peut avoir PLUSIEURS articles (1-N)
-- **OneToOne** : Un auteur a UN SEUL profil (1-1)
-
----
-
-## Exercice 4ter - Stratégies d'Héritage de Modèles
-
-Django propose 3 stratégies d'héritage pour les modèles :
-
-### Stratégie 1 : Abstract Base Classes (Meta Class)
-
-**Cas d'usage** : Partager des champs communs sans créer de table pour la classe de base.
-
-```python
-class BaseArticle(models.Model):
-    """Classe abstraite avec champs communs"""
-    titre = models.CharField(max_length=200)
-    contenu = models.TextField()
-    date_creation = models.DateTimeField(auto_now_add=True)
-    date_modification = models.DateTimeField(auto_now=True)
-    actif = models.BooleanField(default=True)
-    
-    class Meta:
-        abstract = True  # IMPORTANT : pas de table créée
-        ordering = ['-date_creation']
-    
-    def __str__(self):
-        return self.titre
-
-class Article(BaseArticle):
-    """Article de blog"""
-    auteur = models.ForeignKey(Auteur, on_delete=models.CASCADE)
-    categorie = models.CharField(max_length=50)
-    # Hérite de : titre, contenu, date_creation, date_modification, actif
-
-class Tutoriel(BaseArticle):
-    """Tutoriel technique"""
-    niveau = models.CharField(max_length=20)  # débutant, intermédiaire, avancé
-    duree_minutes = models.IntegerField()
-    # Hérite de : titre, contenu, date_creation, date_modification, actif
-```
-
-**Résultat en base de données** :
-- Table `blog_article` : avec tous les champs (titre, contenu, auteur, categorie, etc.)
-- Table `blog_tutoriel` : avec tous les champs (titre, contenu, niveau, duree_minutes, etc.)
-- PAS de table `base_article`
-
-### Stratégie 2 : Multi-table Inheritance (OneToOneField automatique)
-
-**Cas d'usage** : Créer une hiérarchie de modèles avec tables séparées.
-
-```python
-class Publication(models.Model):
-    """Classe de base CONCRÈTE (non abstraite)"""
-    titre = models.CharField(max_length=200)
-    date_publication = models.DateField()
-    
-    def __str__(self):
-        return self.titre
-
-class Livre(Publication):
-    """Hérite de Publication - Table séparée"""
-    isbn = models.CharField(max_length=13)
-    editeur = models.CharField(max_length=100)
-    nombre_pages = models.IntegerField()
-    # Django crée automatiquement un OneToOneField vers Publication
-
-class Magazine(Publication):
-    """Hérite de Publication - Table séparée"""
-    numero = models.IntegerField()
-    periodicite = models.CharField(max_length=50)
-```
-
-**Résultat en base de données** :
-- Table `blog_publication` : id, titre, date_publication
-- Table `blog_livre` : id, publication_ptr_id (FK→Publication), isbn, editeur, nombre_pages
-- Table `blog_magazine` : id, publication_ptr_id (FK→Publication), numero, periodicite
-
-**Utilisation** :
-
-```python
-# Créer un livre
-livre = Livre.objects.create(
-    titre="Django pour tous",
-    date_publication="2024-01-15",
-    isbn="978-1234567890",
-    editeur="TechBooks",
-    nombre_pages=450
-)
-
-# Accéder aux champs de Publication
-livre.titre  # "Django pour tous"
-livre.publication_ptr  # Objet Publication
-
-# Requêtes polymorphes
-publications = Publication.objects.all()  # Tous (livres + magazines)
-livres = Livre.objects.all()  # Seulement les livres
-```
-
-### Stratégie 3 : Proxy Models
-
-**Cas d'usage** : Modifier le comportement sans créer de nouvelle table.
-
-```python
-class Article(models.Model):
-    titre = models.CharField(max_length=200)
-    contenu = models.TextField()
-    date_publication = models.DateField()
-    publie = models.BooleanField(default=False)
-    
-    class Meta:
-        ordering = ['titre']
-
-class ArticlePublie(Article):
-    """Proxy : même table, comportement différent"""
-    class Meta:
-        proxy = True  # IMPORTANT : pas de nouvelle table
-        ordering = ['-date_publication']  # Tri différent
-    
-    def publier(self):
-        self.publie = True
-        self.save()
-    
-    @classmethod
-    def get_recents(cls, nombre=5):
-        return cls.objects.filter(publie=True)[:nombre]
-```
-
-**Résultat** :
-- UNE SEULE table `blog_article`
-- `Article` et `ArticlePublie` pointent vers la même table
-- Différence : méthodes et comportement (Meta)
-
-**Utilisation** :
-
-```python
-# Utiliser le proxy
-articles_publies = ArticlePublie.objects.all()  # Filtre automatiquement ?
-recents = ArticlePublie.get_recents(10)
-```
-
-### Comparaison des 3 Stratégies
-
-| Stratégie | Tables créées | Cas d'usage | Avantages | Inconvénients |
-|-----------|---------------|-------------|-----------|---------------|
-| **Abstract** | Une par enfant | Partager des champs communs | Simple, performant | Pas de requêtes polymorphes |
-| **Multi-table** | Une par classe | Hiérarchie de types | Requêtes polymorphes | Jointures (moins performant) |
-| **Proxy** | Une seule | Comportement différent | Très performant | Pas de nouveaux champs |
-
-### Exercice Pratique : Créer une Hiérarchie de Contenus
-
-**Créez** un système de gestion de contenu avec les 3 stratégies :
-
-```python
-# 1. Abstract Base (champs communs)
-class BaseContenu(models.Model):
-    titre = models.CharField(max_length=200)
-    slug = models.SlugField(unique=True)
-    date_creation = models.DateTimeField(auto_now_add=True)
-    actif = models.BooleanField(default=True)
-    
-    class Meta:
-        abstract = True
-
-# 2. Multi-table (types de contenu)
-class Contenu(BaseContenu):
-    """Classe de base concrète"""
-    auteur = models.ForeignKey(Auteur, on_delete=models.CASCADE)
-
-class ArticleBlog(Contenu):
-    """Article de blog"""
-    contenu = models.TextField()
-    tags = models.ManyToManyField(Tag)
-
-class Video(Contenu):
-    """Vidéo"""
-    url_video = models.URLField()
-    duree_secondes = models.IntegerField()
-
-# 3. Proxy (comportement spécialisé)
-class ContenuPublie(Contenu):
-    """Proxy pour contenus publiés"""
-    class Meta:
-        proxy = True
-    
-    def get_recents(self):
-        return self.objects.filter(actif=True).order_by('-date_creation')[:10]
-```
-
-**Testez** dans le shell :
-
-```python
-# Multi-table : requêtes polymorphes
-tous_contenus = Contenu.objects.all()  # Articles + Videos
-
-# Filtrer par type
-articles = ArticleBlog.objects.all()
-videos = Video.objects.all()
-
-# Proxy : même données, méthodes différentes
-contenus_publies = ContenuPublie.objects.filter(actif=True)
-```
-
----
-
-## Exercice 5 - Méthodes personnalisées du modèle
-
-**Ajoutez** des méthodes personnalisées au modèle `Article` :
-
-```python
-class Article(models.Model):
-    # ... champs existants ...
-    
-    def get_preview(self, longueur=100):
-        """Retourne un aperçu du contenu"""
-        if len(self.contenu) > longueur:
-            return self.contenu[:longueur] + '...'
-        return self.contenu
-    
-    def nombre_mots(self):
-        """Compte le nombre de mots dans le contenu"""
-        return len(self.contenu.split())
-    
-    class Meta:
-        ordering = ['-date_creation']  # Tri par défaut
-        verbose_name = "Article de blog"
-        verbose_name_plural = "Articles de blog"
-```
-
-## Exercice 6 - QuerySets basiques (Django Shell)
-
-**Ouvrez** le shell Django :
+**Validation** :
 
 ```bash
+# TODO : Créez les migrations
+python manage.py makemigrations
+python manage.py migrate
+
+# TODO : Testez dans le shell
 python manage.py shell
 ```
 
-**Créez** des objets :
-
 ```python
-from blog.models import Auteur, Article, Tag
+from blog.models import Auteur, ProfilAuteur
 
-# Créer un auteur
-auteur = Auteur.objects.create(
-    nom="Dupont",
-    prenom="Jean",
-    email="jean.dupont@example.com"
-)
+# TODO : Récupérez un auteur
+auteur = Auteur.objects.first()
 
-# Créer des tags
-tag1 = Tag.objects.create(nom="Python", slug="python")
-tag2 = Tag.objects.create(nom="Django", slug="django")
+# TODO : Créez un profil pour cet auteur
+# profil = ProfilAuteur.objects.create(auteur=..., twitter="@...", ...)
+# VOTRE CODE ICI
 
-# Créer un article
-article = Article.objects.create(
-    titre="Introduction à Django",
-    contenu="Django est un framework web Python...",
-    auteur=auteur,
-    publie=True
-)
+# TODO : Accédez au profil depuis l'auteur
+# Utilisez : auteur.profil
+print(auteur.profil.twitter)
 
-# Ajouter des tags
-article.tags.add(tag1, tag2)
+# TODO : Accédez à l'auteur depuis le profil
+# Utilisez : profil.auteur
+# VOTRE CODE ICI
+
+# TODO : Gérez le cas où un auteur n'a pas de profil
+if hasattr(auteur, 'profil'):
+    print("A un profil")
+else:
+    print("Pas de profil")
 ```
 
-## Exercice 7 - Requêtes de lecture (Read)
+**Différences entre relations** (à retenir) :
 
-Dans le shell Django, **exécutez** ces requêtes :
+| Relation | Usage | Exemple |
+|----------|-------|---------|
+| **ForeignKey** | Un objet A peut avoir plusieurs objets B | Un auteur a plusieurs articles |
+| **ManyToMany** | Plusieurs objets A ont plusieurs objets B | Un article a plusieurs tags |
+| **OneToOne** | Un objet A a exactement un objet B | Un auteur a un profil |
 
-```python
-# Récupérer tous les articles
-Article.objects.all()
+---
 
-# Récupérer un article spécifique
-Article.objects.get(id=1)
+## Exercice 6 - Abstract Base Classes (PRATIQUE)
 
-# Filtrer les articles publiés
-Article.objects.filter(publie=True)
+**Objectif** : Créer des classes abstraites réutilisables pour partager des champs communs.
 
-# Exclure des articles
-Article.objects.exclude(publie=False)
+**Cas d'usage** : Partager des champs communs sans créer de table pour la classe de base.
 
-# Compter les articles
-Article.objects.count()
+**Consignes** :
+1. Créez une classe abstraite `TimestampedModel` avec date_creation et date_modification
+2. Créez une classe abstraite `BaseContenu` qui hérite de `TimestampedModel`
+3. Créez un modèle concret `Tutoriel` qui hérite de `BaseContenu`
 
-# Premier et dernier article
-Article.objects.first()
-Article.objects.last()
-
-# Vérifier l'existence
-Article.objects.filter(titre="Introduction à Django").exists()
-```
-
-## Exercice 8 - Requêtes de mise à jour (Update)
-
-**Modifiez** des objets existants :
+**Squelette - `blog/models.py`** (à compléter) :
 
 ```python
-# Récupérer et modifier un article
-article = Article.objects.get(id=1)
-article.titre = "Nouveau titre"
-article.save()
+from django.utils import timezone
 
-# Mise à jour en masse
-Article.objects.filter(auteur=auteur).update(publie=True)
-
-# Incrémentation (si vous aviez un champ vues)
-# Article.objects.filter(id=1).update(vues=F('vues') + 1)
-```
-
-## Exercice 9 - Requêtes de suppression (Delete)
-
-**Supprimez** des objets :
-
-```python
-# Supprimer un article spécifique
-article = Article.objects.get(id=5)
-article.delete()
-
-# Suppression en masse
-Article.objects.filter(publie=False).delete()
-
-# Supprimer tous les articles (ATTENTION !)
-# Article.objects.all().delete()
-```
-
-## Exercice 10 - Requêtes avec relations
-
-**Explorez** les relations :
-
-```python
-# Accéder aux articles d'un auteur
-auteur = Auteur.objects.get(id=1)
-auteur.articles.all()
-
-# Filtrer par relation
-Article.objects.filter(auteur__nom="Dupont")
-Article.objects.filter(tags__nom="Python")
-
-# Préchargement pour optimisation
-Article.objects.select_related('auteur').all()
-Article.objects.prefetch_related('tags').all()
-```
-
-## Exercice 11 - Lookups avancés
-
-**Utilisez** des lookups complexes :
-
-```python
-# Contient (case-insensitive)
-Article.objects.filter(titre__icontains="django")
-
-# Commence par
-Article.objects.filter(titre__startswith="Introduction")
-
-# Date
-from datetime import datetime, timedelta
-date_limite = datetime.now() - timedelta(days=7)
-Article.objects.filter(date_creation__gte=date_limite)
-
-# In (liste)
-Article.objects.filter(id__in=[1, 2, 3])
-
-# Range
-Article.objects.filter(id__range=(1, 10))
-```
-
-## Exercice 12 - Q objects (requêtes complexes)
-
-**Créez** des requêtes avec OR et AND :
-
-```python
-from django.db.models import Q
-
-# OR - Articles de Dupont OU publiés
-Article.objects.filter(
-    Q(auteur__nom="Dupont") | Q(publie=True)
-)
-
-# AND complexe
-Article.objects.filter(
-    Q(publie=True) & Q(tags__nom="Python")
-)
-
-# NOT
-Article.objects.filter(~Q(auteur__nom="Dupont"))
-```
-
-## Exercice 13 - Agrégation et annotation
-
-**Utilisez** les fonctions d'agrégation :
-
-```python
-from django.db.models import Count, Avg, Max, Min
-
-# Compter les articles par auteur
-Auteur.objects.annotate(nombre_articles=Count('articles'))
-
-# Nombre de tags par article
-Article.objects.annotate(nombre_tags=Count('tags'))
-
-# Statistiques
-Article.objects.aggregate(
-    total=Count('id'),
-    plus_recent=Max('date_creation')
-)
-```
-
-## Exercice 14 - Modèle avec validation personnalisée
-
-**Créez** un modèle `Commentaire` avec validation :
-
-```python
-from django.core.exceptions import ValidationError
-
-class Commentaire(models.Model):
-    article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='commentaires')
-    auteur_nom = models.CharField(max_length=100)
-    email = models.EmailField()
-    contenu = models.TextField()
-    date_creation = models.DateTimeField(auto_now_add=True)
-    approuve = models.BooleanField(default=False)
+class TimestampedModel(models.Model):
+    """Classe abstraite pour ajouter des timestamps automatiques"""
+    # TODO : Ajoutez le champ 'date_creation' (DateTimeField, auto_now_add=True)
+    date_creation = # VOTRE CODE ICI
     
-    def clean(self):
-        # Validation personnalisée
-        if len(self.contenu) < 10:
-            raise ValidationError("Le commentaire doit contenir au moins 10 caractères")
-    
-    def save(self, *args, **kwargs):
-        self.full_clean()  # Appelle clean()
-        super().save(*args, **kwargs)
+    # TODO : Ajoutez le champ 'date_modification' (DateTimeField, auto_now=True)
+    date_modification = # VOTRE CODE ICI
     
     class Meta:
-        ordering = ['-date_creation']
-```
+        # TODO : Définissez abstract = True (IMPORTANT !)
+        abstract = # VOTRE CODE ICI
 
-## Exercice 15 - Managers personnalisés
-
-**Créez** un manager personnalisé pour `Article` :
-
-```python
-class ArticlePublieManager(models.Manager):
-    def get_queryset(self):
-        return super().get_queryset().filter(publie=True)
-
-class Article(models.Model):
-    # ... champs existants ...
+class BaseContenu(TimestampedModel):
+    """Classe abstraite pour tout contenu"""
+    # TODO : Ajoutez le champ 'titre' (CharField, max_length=200)
+    titre = # VOTRE CODE ICI
     
-    objects = models.Manager()  # Manager par défaut
-    publies = ArticlePublieManager()  # Manager personnalisé
+    # TODO : Ajoutez le champ 'slug' (SlugField, unique=True)
+    slug = # VOTRE CODE ICI
+    
+    # TODO : Ajoutez le champ 'actif' (BooleanField, default=True)
+    actif = # VOTRE CODE ICI
+    
+    class Meta:
+        # TODO : Définissez abstract = True
+        abstract = # VOTRE CODE ICI
+        # TODO : Définissez l'ordre par date_creation décroissante
+        ordering = # VOTRE CODE ICI
+    
+    def __str__(self):
+        # TODO : Retournez le titre
+        return # VOTRE CODE ICI
+
+# TODO : Créez un modèle concret 'Tutoriel' qui hérite de BaseContenu
+class Tutoriel(BaseContenu):
+    """Tutoriel technique"""
+    # TODO : Ajoutez le champ 'description' (TextField)
+    description = # VOTRE CODE ICI
+    
+    # TODO : Ajoutez le champ 'niveau' (CharField, max_length=20) avec choix
+    # Choix : ('debutant', 'Débutant'), ('intermediaire', 'Intermédiaire'), ('avance', 'Avancé')
+    NIVEAU_CHOICES = [
+        # VOTRE CODE ICI
+    ]
+    niveau = # VOTRE CODE ICI
+    
+    # TODO : Ajoutez le champ 'duree_minutes' (PositiveIntegerField)
+    duree_minutes = # VOTRE CODE ICI
+    
+    # Le modèle hérite automatiquement de : titre, slug, actif, date_creation, date_modification
 ```
 
-**Utilisez-le** :
+**Indice** :
+- `abstract = True` dans `class Meta` empêche la création d'une table
+- Les champs de la classe abstraite sont copiés dans les modèles concrets
+- L'héritage multiple est possible (hériter de plusieurs classes abstraites)
+
+**Validation** :
+
+```bash
+# TODO : Créez les migrations
+python manage.py makemigrations
+python manage.py migrate
+
+# TODO : Vérifiez qu'il n'y a PAS de table pour TimestampedModel ni BaseContenu
+# Il doit y avoir une table blog_tutoriel avec TOUS les champs
+python manage.py dbshell
+.tables  # (SQLite) ou \dt (PostgreSQL)
+```
 
 ```python
-# Tous les articles
-Article.objects.all()
+# TODO : Testez dans le shell
+from blog.models import Tutoriel
 
-# Seulement les articles publiés
-Article.publies.all()
+# TODO : Créez un tutoriel
+tuto = Tutoriel.objects.create(
+    titre="Introduction Django",
+    slug="intro-django",
+    description="Apprenez Django...",
+    niveau="debutant",
+    duree_minutes=30
+)
+
+# TODO : Vérifiez que les champs hérités fonctionnent
+print(tuto.date_creation)  # Doit afficher la date
+print(tuto.titre)          # "Introduction Django"
 ```
 
-## Exercices bonus
+**Résultat en base de données** :
+- Table `blog_tutoriel` : id, titre, slug, actif, date_creation, date_modification, description, niveau, duree_minutes
+- **PAS** de table pour `TimestampedModel` ni `BaseContenu` (classes abstraites)
 
-### Exercice 16 - Signals
-**Créez** un signal pour envoyer un email quand un article est publié.
+**Avantages** :
+- DRY (Don't Repeat Yourself)
+- Performances optimales (pas de JOIN)
+- Code réutilisable
 
-### Exercice 17 - Abstract Base Class
-**Créez** une classe abstraite `ModeleAvecTimestamp` avec `date_creation` et `date_modification`.
+**Inconvénients** :
+- Impossible de faire des requêtes polymorphes sur la classe de base
+- Changements dans la classe abstraite nécessitent des migrations pour tous les enfants
 
-### Exercice 18 - Proxy Models
-**Créez** un modèle proxy `ArticlePublie` basé sur `Article`.
+## Exercice 7 - Multi-table Inheritance (PRATIQUE)
 
-## Checklist de validation
+**Objectif** : Créer une hiérarchie de modèles avec tables séparées permettant des requêtes polymorphes.
 
--  Modèles créés avec différents types de champs
--  Relations ForeignKey et ManyToMany fonctionnelles
--  Migrations créées et appliquées
--  CRUD complet testé dans le shell
--  Requêtes avec filtres et lookups maîtrisées
--  Q objects utilisés pour requêtes complexes
--  Agrégation et annotation comprises
--  Managers personnalisés implémentés
+**Cas d'usage** : Quand vous avez besoin de requêtes sur la classe parente ET les classes enfants.
+
+**Consignes** :
+1. Créez une classe de base **CONCRÈTE** `Publication` (pas abstraite !)
+2. Créez une classe enfant `Livre` qui hérite de `Publication`
+3. Testez les requêtes polymorphes
+
+**Squelette - `blog/models.py`** (à compléter) :
+
+```python
+class Publication(models.Model):
+    """Classe de base CONCRÈTE (crée une table)"""
+    # TODO : Ajoutez le champ 'titre' (CharField, max_length=200)
+    titre = # VOTRE CODE ICI
+    
+    # TODO : Ajoutez le champ 'date_publication' (DateField)
+    date_publication = # VOTRE CODE ICI
+    
+    # TODO : Ajoutez le champ 'editeur' (CharField, max_length=100)
+    editeur = # VOTRE CODE ICI
+    
+    def __str__(self):
+        return self.titre
+    
+    class Meta:
+        # TODO : Définissez l'ordre par date_publication décroissante
+        ordering = # VOTRE CODE ICI
+
+# TODO : Créez une classe 'Livre' qui hérite de Publication
+class Livre(Publication):
+    """Hérite de Publication - Table séparée avec OneToOne automatique"""
+    # TODO : Ajoutez le champ 'isbn' (CharField, max_length=13, unique=True)
+    isbn = # VOTRE CODE ICI
+    
+    # TODO : Ajoutez le champ 'nombre_pages' (PositiveIntegerField)
+    nombre_pages = # VOTRE CODE ICI
+    
+    # TODO : Ajoutez le champ 'format' avec choices
+    # Choix : ('broche', 'Broché'), ('ebook', 'E-book')
+    FORMAT_CHOICES = [
+        # VOTRE CODE ICI
+    ]
+    format = # VOTRE CODE ICI
+    
+    # Django crée automatiquement un lien OneToOne vers Publication :
+    # publication_ptr = models.OneToOneField(Publication, parent_link=True)
+```
+
+**Indice** :
+- **N'ajoutez PAS** `abstract = True` dans `class Meta` de Publication
+- L'héritage se fait comme en Python : `class Livre(Publication):`
+- Django crée automatiquement la relation OneToOne
+
+**Validation** :
+
+```bash
+# TODO : Créez les migrations
+python manage.py makemigrations
+python manage.py migrate
+
+# TODO : Vérifiez qu'il y a DEUX tables : blog_publication ET blog_livre
+python manage.py dbshell
+.tables
+```
+
+```python
+# TODO : Testez dans le shell
+from blog.models import Publication, Livre
+
+# TODO : Créez un livre (crée 2 lignes : 1 dans Publication + 1 dans Livre)
+livre = Livre.objects.create(
+    titre="Django avancé",
+    date_publication="2024-01-15",
+    editeur="TechBooks",
+    isbn="978-1234567890",
+    nombre_pages=450,
+    format='broche'
+)
+
+# TODO : Accédez aux champs de Publication (pas de requête supplémentaire)
+print(livre.titre)  # "Django avancé"
+print(livre.editeur)  # "TechBooks"
+
+# TODO : ⭐ REQUÊTE POLYMORPHE (très puissant)
+# Récupérez TOUTES les publications (livres + autres types)
+toutes_publications = Publication.objects.all()
+for pub in toutes_publications:
+    print(pub.titre)
+    # Détectez le type réel
+    if hasattr(pub, 'livre'):
+        print(f"  → Livre ISBN: {pub.livre.isbn}")
+```
+
+**Résultat en base de données** :
+- Table `blog_publication` : id, titre, date_publication, editeur
+- Table `blog_livre` : id, **publication_ptr_id** (FK→Publication), isbn, nombre_pages, format
+
+**Avantages** :
+- Requêtes polymorphes possibles sur la classe parente
+- Chaque table contient uniquement ses champs spécifiques
+
+**Inconvénients** :
+- Nécessite des JOIN (moins performant que l'héritage abstrait)
+- Crée 2 lignes par objet enfant
+
+# Compter par type
+from django.db.models import Count, Q
+stats = Publication.objects.aggregate(
+    total=Count('id'),
+    livres=Count('livre'),
+    magazines=Count('magazine'),
+    journaux=Count('journalscientifique')
+)
+```
+
+**Avantages** :
+- Requêtes polymorphes possibles
+- Relations peuvent pointer vers la classe de base
+- Héritage "naturel" en POO
+
+**Inconvénients** :
+- Requiert des JOINs (moins performant)
+- Suppression en cascade complexe
+- Migrations plus complexes
+
+## Exercice 8 - Proxy Models (PRATIQUE)
+
+**Objectif** : Créer un modèle proxy pour modifier le comportement sans créer de nouvelle table.
+
+**Cas d'usage** : Ajouter des méthodes ou changer l'ordre par défaut sans dupliquer les données.
+
+**Consignes** :
+1. Utilisez le modèle `Article` existant (vérifiez qu'il a les champs: titre, contenu, publie, date_publication)
+2. Créez un modèle proxy `ArticlePublie` pour filtrer les articles publiés
+3. Ajoutez une méthode personnalisée
+
+**Squelette - `blog/models.py`** (à compléter) :
+
+```python
+# Modèle Article existant (vérifiez qu'il contient ces champs)
+class Article(models.Model):
+    titre = models.CharField(max_length=200)
+    contenu = models.TextField()
+    auteur = models.ForeignKey(Auteur, on_delete=models.CASCADE)
+    date_publication = models.DateField(null=True, blank=True)
+    publie = models.BooleanField(default=False)
+    nombre_vues = models.PositiveIntegerField(default=0)
+    
+    class Meta:
+        ordering = ['titre']
+    
+    def __str__(self):
+        return self.titre
+
+# TODO : Créez un modèle proxy ArticlePublie qui hérite d'Article
+class ArticlePublie(Article):
+    """Proxy : même table, comportement différent"""
+    
+    class Meta:
+        # TODO : Définissez proxy = True (IMPORTANT !)
+        proxy = # VOTRE CODE ICI
+        
+        # TODO : Définissez l'ordre par date_publication décroissante
+        ordering = # VOTRE CODE ICI
+        
+        # TODO : Définissez verbose_name = "Article publié"
+        verbose_name = # VOTRE CODE ICI
+    
+    # TODO : Ajoutez une méthode de classe get_recents(nombre=5)
+    # qui retourne les articles publiés les plus récents
+    @classmethod
+    def get_recents(cls, nombre=5):
+        # Utilisez : cls.objects.filter(publie=True).order_by(...).[:nombre]
+        # VOTRE CODE ICI
+        pass
+```
+
+**Indice** :
+- `proxy = True` dans `class Meta` signifie "même table, comportement différent"
+- Les Proxy Models ne nécessitent PAS de migration
+- Utile pour l'admin Django (afficher le même modèle différemment)
+
+**Validation** :
+
+```bash
+# TODO : Vérifiez qu'aucune migration n'est nécessaire
+python manage.py makemigrations
+# Devrait afficher "No changes detected"
+```
+
+```python
+# TODO : Testez dans le shell
+from blog.models import Article, ArticlePublie
+from datetime import date
+
+# TODO : Créez un article via le modèle de base
+article = Article.objects.create(
+    titre="Test Proxy",
+    contenu="...",
+    auteur=auteur,
+    publie=True,
+    date_publication=date.today()
+)
+
+# TODO : Récupérez le même article via le proxy
+article_proxy = ArticlePublie.objects.get(id=article.id)
+print(article_proxy.titre)  # "Test Proxy"
+
+# TODO : Utilisez la méthode personnalisée
+recents = ArticlePublie.get_recents(5)
+for a in recents:
+    print(a.titre)
+
+# TODO : Vérifiez qu'ils pointent vers la même table
+print(Article.objects.count() == ArticlePublie.objects.count())  # True
+```
+
+**Résultat** :
+- **UNE SEULE** table `blog_article`
+- `Article` et `ArticlePublie` pointent vers la même table
+- Différences : Meta, méthodes, comportement
+
+**Avantages** :
+- Pas de duplication de données
+- Pas de migration nécessaire
+- Comportements spécialisés
+- Utile pour l'admin Django
+
+**Inconvénients** :
+- Ne peut pas ajouter de nouveaux champs
+- Peut prêter à confusion si mal utilisé
+anciens_brouillons = ArticleBrouillon.get_anciens(jours=60)
+
+# Même objet, différentes vues
+article = Article.objects.get(id=1)
+article_publie = ArticlePublie.objects.get(id=1)
+# article == article_publie (même ligne en BDD)
+# mais comportement/méthodes différents
+```
+
+**Avantages** :
+- Aucun coût en performance (même table)
+- Organisation du code admin différente
+- Méthodes et comportements spécialisés
+- Pas de migrations nécessaires
+
+**Inconvénients** :
+- Pas de nouveaux champs possibles
+- Peut être confusant pour les débutants
+- Même PK pour tous les proxies
+
+### Comparaison des 3 stratégies
+
+| Critère | Abstract | Multi-table | Proxy |
+|---------|----------|-------------|-------|
+| **Tables créées** | Une par enfant | Une par classe | Une seule |
+| **Champs de base hérités** | ✅ Oui | ✅ Oui | ✅ Oui (même table) |
+| **Nouveaux champs** | ✅ Oui | ✅ Oui | ❌ Non |
+| **Requêtes polymorphes** | ❌ Non | ✅ Oui | ❌ Non (même modèle) |
+| **Performances** | ⭐⭐⭐ Excellent | ⭐⭐ Moyen (JOINs) | ⭐⭐⭐ Excellent |
+| **Cas d'usage** | Partager champs | Hiérarchie de types | Comportement différent |
+
+---
+

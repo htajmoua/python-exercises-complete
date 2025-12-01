@@ -1,224 +1,121 @@
-# Instructions - Django Introduction
+# Instructions - Django Introduction (Backend/API)
 
-Bienvenue dans le monde de Django ! Ce module vous guidera à travers l'installation et la création de votre premier projet Django.
+**🎯 Objectif** : Installer Django et créer votre premier projet Backend avec un endpoint API.
 
-## Partie 0 - Rappels et Concepts Fondamentaux
+**📌 Note** : Formation **Backend/API** - Pas de templates ni formulaires web.
 
-### Rappel des Principes de la POO
+**📚 Format du module** :
+- **Partie 1 (Exercices 1-9)** : Installation et configuration
+- **Partie 2 (Exercices 10-12)** : Premier endpoint API (pratique)
 
-Django s'appuie fortement sur la Programmation Orientée Objet. Voici les concepts clés utilisés :
-
-**1. Classes et Objets**
-```python
-# Exemple : Modèle Django (classe)
-class Article(models.Model):
-    titre = models.CharField(max_length=200)
-    contenu = models.TextField()
-
-# Instance (objet)
-mon_article = Article(titre="Django POO", contenu="...")
-```
-
-**2. Héritage**
-```python
-# Les modèles Django héritent de models.Model
-class Article(models.Model):  # Héritage
-    pass
-
-# Les vues Django héritent de classes génériques
-class ArticleListView(ListView):  # Héritage
-    model = Article
-```
-
-**3. Encapsulation**
-- Django encapsule la logique de base de données dans l'ORM
-- Les propriétés et méthodes privées protègent les données
-
-**4. Polymorphisme**
-- Différentes vues peuvent hériter de la même classe de base
-- Les modèles peuvent avoir des comportements différents via l'override
-
-### Le Design Pattern MVC et MTV de Django
-
-**MVC (Model-View-Controller)** est un pattern classique de séparation des responsabilités.
-
-**MTV (Model-Template-View)** est l'adaptation Django du pattern MVC :
-
-```
-┌─────────────────────────────────────────────────┐
-│           ARCHITECTURE MTV DJANGO               │
-├─────────────────────────────────────────────────┤
-│                                                 │
-│  CLIENT (Navigateur)                            │
-│       │                                         │
-│       ↓                                         │
-│  ┌─────────────┐         ┌──────────────┐     │
-│  │   URLS.PY   │ ------> │    VIEW      │     │
-│  │  (Routeur)  │         │  (Contrôleur)│     │
-│  └─────────────┘         └──────────────┘     │
-│                                 │               │
-│                    ┌────────────┼────────────┐ │
-│                    ↓                          ↓ │
-│              ┌──────────┐            ┌──────────┐│
-│              │  MODEL   │            │ TEMPLATE ││
-│              │ (Données)│            │   (Vue)  ││
-│              └──────────┘            └──────────┘│
-│                    │                          │  │
-│                    ↓                          ↓  │
-│              ┌──────────┐            ┌──────────┐│
-│              │   BDD    │            │   HTML   ││
-│              └──────────┘            └──────────┘│
-└─────────────────────────────────────────────────┘
-```
-
-**Correspondance MVC ↔ MTV** :
-
-| MVC | MTV Django | Rôle |
-|-----|------------|------|
-| **Model** | **Model** | Gestion des données (ORM, DB) |
-| **View** | **Template** | Présentation (HTML, CSS) |
-| **Controller** | **View** | Logique métier |
-| *Router* | **urls.py** | Routage des requêtes |
-
-**Exemple de flux MTV** :
-
-1. **URLs** : `/articles/` → Route vers la vue
-2. **View** : Récupère les données du Model
-3. **Model** : Interroge la base de données
-4. **Template** : Reçoit les données et génère le HTML
-5. **Réponse** : HTML renvoyé au client
-
-```python
-# urls.py (Routeur)
-urlpatterns = [
-    path('articles/', views.article_list, name='article-list'),
-]
-
-# views.py (Contrôleur/Logique)
-def article_list(request):
-    articles = Article.objects.all()  # MODEL
-    return render(request, 'articles.html', {'articles': articles})  # TEMPLATE
-
-# models.py (Données)
-class Article(models.Model):
-    titre = models.CharField(max_length=200)
-    contenu = models.TextField()
-
-# articles.html (Présentation)
-# {% for article in articles %}
-#   <h2>{{ article.titre }}</h2>
-# {% endfor %}
-```
-
-### Présentation du Framework Django
-
-**Origine et Historique**
-- Créé en 2003 par Adrian Holovaty et Simon Willison
-- Développé pour le journal Lawrence Journal-World
-- Open source depuis 2005
-- Nom inspiré par le guitariste Django Reinhardt
-
-**Objectifs et Avantages**
-- **Rapidité de développement** : "The web framework for perfectionists with deadlines"
-- **Sécurité** : Protection contre CSRF, XSS, SQL Injection
-- **Scalabilité** : Utilisé par Instagram, Pinterest, Mozilla
-- **Batteries included** : ORM, Admin, Forms, Auth intégrés
-- **DRY** (Don't Repeat Yourself) : Code réutilisable
-
-**Les Composants du Framework Django**
-
-| Composant | Description |
-|-----------|-------------|
-| **ORM** | Abstraction de base de données (PostgreSQL, MySQL, SQLite) |
-| **Admin** | Interface d'administration automatique |
-| **Forms** | Gestion et validation de formulaires |
-| **Templates** | Moteur de templates (syntaxe {% %}) |
-| **Auth** | Système d'authentification complet |
-| **Middleware** | Traitement des requêtes/réponses |
-| **Migrations** | Versioning de schéma de base de données |
-| **URLconf** | Routage URL élégant |
-| **Cache** | Framework de cache intégré |
-| **Signals** | Système d'événements |
+**Durée** : 2-3 heures
 
 ---
 
-## Prérequis
+# 📖 PARTIE 1 : EXEMPLES GUIDÉS
 
-- Python 3.8+ installé
-- pip (gestionnaire de paquets Python)
-- Environnement virtuel (venv)
-- Connaissances en POO (voir rappels ci-dessus)
+Suivez ces étapes pour installer et configurer Django.
 
-## Exercice 1 - Installation de Django
+---
 
-**Créez** un environnement virtuel et installez Django :
+## Exercice 1 - Installation de Django (EXEMPLE)
+
+**Créez** un environnement virtuel :
 
 ```bash
-# Créer un environnement virtuel
+# Créer l'environnement virtuel
 python -m venv venv
 
-# Activer l'environnement virtuel
-# Sur Mac/Linux :
+# Activer l'environnement (macOS/Linux)
 source venv/bin/activate
-# Sur Windows :
+
+# Activer l'environnement (Windows)
 venv\Scripts\activate
+```
 
-# Installer Django
+**Installez** Django et les outils Backend :
+
+```bash
 pip install django
+pip install python-decouple  # Pour les variables d'environnement
+pip install djangorestframework  # Pour les APIs (module 20)
+pip install psycopg2-binary  # Pour PostgreSQL (optionnel)
+```
 
-# Vérifier l'installation
+**Vérifiez** l'installation :
+
+```bash
 python -m django --version
 ```
 
-## Exercice 2 - Créer un projet Django
+---
 
-**Créez** votre premier projet Django nommé `monprojet` :
+## Exercice 2 - Créer un projet Django (EXEMPLE)
+
+**Créez** un nouveau projet :
 
 ```bash
 django-admin startproject monprojet
 cd monprojet
 ```
 
-**Explorez** la structure créée :
-- `manage.py` : Script pour interagir avec le projet
-- `monprojet/` : Package Python du projet
-  - `__init__.py` : Fichier Python vide
-  - `settings.py` : Configuration du projet
-  - `urls.py` : Routes URL du projet
-  - `asgi.py` : Point d'entrée ASGI
-  - `wsgi.py` : Point d'entrée WSGI
+**Structure du projet** :
 
-## Exercice 3 - Lancer le serveur de développement
+```
+monprojet/
+├── manage.py          # Commandes Django
+└── monprojet/
+    ├── __init__.py
+    ├── settings.py    # Configuration
+    ├── urls.py        # Routage principal
+    ├── asgi.py        # Déploiement ASGI
+    └── wsgi.py        # Déploiement WSGI
+```
 
-**Lancez** le serveur de développement :
+---
+
+## Exercice 3 - Lancer le serveur de développement (EXEMPLE)
+
+**Lancez** le serveur :
 
 ```bash
 python manage.py runserver
 ```
 
-**Accédez** à `http://127.0.0.1:8000/` dans votre navigateur.  
-Vous devriez voir la page d'accueil par défaut de Django 
+**Accédez** à `http://127.0.0.1:8000/` dans votre navigateur.
 
-## Exercice 4 - Créer une application
+Vous devriez voir la page de bienvenue Django !
 
-**Créez** une application Django nommée `blog` :
+---
+
+## Exercice 4 - Créer une application (EXEMPLE)
+
+Une **application** Django est un module réutilisable (ex: blog, api, users).
+
+**Créez** une application `blog` :
 
 ```bash
 python manage.py startapp blog
 ```
 
-**Explorez** la structure de l'application :
-- `migrations/` : Dossier pour les migrations de base de données
-- `__init__.py` : Fichier Python vide
-- `admin.py` : Configuration de l'admin Django
-- `apps.py` : Configuration de l'application
-- `models.py` : Modèles de données
-- `tests.py` : Tests unitaires
-- `views.py` : Vues de l'application
+**Structure de l'application** :
 
-## Exercice 5 - Enregistrer l'application
+```
+blog/
+├── migrations/     # Migrations de base de données
+├── __init__.py
+├── admin.py        # Configuration admin
+├── apps.py         # Configuration app
+├── models.py       # Modèles de données
+├── tests.py        # Tests unitaires
+└── views.py        # Vues/API endpoints
+```
 
-**Modifiez** `monprojet/settings.py` pour enregistrer l'application :
+---
+
+## Exercice 5 - Enregistrer l'application (EXEMPLE)
+
+**Modifiez** `monprojet/settings.py` :
 
 ```python
 INSTALLED_APPS = [
@@ -228,72 +125,91 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'blog',  # Ajoutez votre application
+    
+    # Vos applications
+    'blog',
 ]
 ```
 
-## Exercice 6 - Configuration de la base de données
+---
 
-**Explorez** la configuration par défaut dans `settings.py` :
+## Exercice 6 - Configuration de la base de données (EXEMPLE)
+
+**Par défaut**, Django utilise SQLite. Pour PostgreSQL (production) :
+
+**Modifiez** `settings.py` :
 
 ```python
+# SQLite (développement)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# PostgreSQL (production)
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'monprojet_db',
+#         'USER': 'postgres',
+#         'PASSWORD': 'password',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     }
+# }
 ```
 
-**Créez** la base de données avec les migrations initiales :
+**Appliquez** les migrations initiales :
 
 ```bash
 python manage.py migrate
 ```
 
-Observez le fichier `db.sqlite3` créé à la racine du projet.
+---
 
-## Exercice 7 - Créer un superutilisateur
+## Exercice 7 - Créer un superutilisateur (EXEMPLE)
 
-**Créez** un compte administrateur :
+**Créez** un compte admin :
 
 ```bash
 python manage.py createsuperuser
 ```
 
-Suivez les instructions pour définir :
-- Username (nom d'utilisateur)
+Entrez :
+- Username
 - Email
-- Password (mot de passe)
+- Password
 
-**Accédez** à l'interface d'administration : `http://127.0.0.1:8000/admin/`
+**Accédez** à l'admin : `http://127.0.0.1:8000/admin/`
 
-## Exercice 8 - Configurer le fuseau horaire et la langue
+---
+
+## Exercice 8 - Configurer le fuseau horaire et la langue (EXEMPLE)
 
 **Modifiez** `settings.py` :
 
 ```python
-LANGUAGE_CODE = 'fr-fr'  # Français
-TIME_ZONE = 'Europe/Paris'  # Fuseau horaire Paris
-USE_I18N = True  # Internationalisation
-USE_TZ = True  # Timezone aware
+LANGUAGE_CODE = 'fr-fr'
+TIME_ZONE = 'Europe/Paris'
+USE_I18N = True
+USE_TZ = True
 ```
 
-**Redémarrez** le serveur et vérifiez que l'admin est en français.
+**Redémarrez** le serveur et l'admin sera en français !
 
-## Exercice 9 - Premier fichier de configuration personnalisé
+---
 
-**Créez** un fichier `.env` pour les variables d'environnement (à la racine) :
+## Exercice 9 - Configuration avec variables d'environnement (EXEMPLE)
 
-```
-SECRET_KEY=votre-cle-secrete-ultra-longue-et-aleatoire
+**Créez** un fichier `.env` :
+
+```env
+SECRET_KEY=votre-cle-secrete-django
 DEBUG=True
-```
-
-**Installez** python-decouple :
-
-```bash
-pip install python-decouple
+DATABASE_URL=sqlite:///db.sqlite3
+ALLOWED_HOSTS=localhost,127.0.0.1
 ```
 
 **Modifiez** `settings.py` :
@@ -303,31 +219,63 @@ from decouple import config
 
 SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='').split(',')
 ```
 
-## Exercice 10 - Créer une page d'accueil simple
+**Sécurité** : Ajoutez `.env` dans `.gitignore` !
 
-**Créez** une vue simple dans `blog/views.py` :
+---
+
+# 🔨 PARTIE 2 : EXERCICES PRATIQUES
+
+**À partir d'ici, c'est à vous de coder !** Les exercices suivants contiennent des squelettes avec des `TODO` à compléter.
+
+---
+
+## Exercice 10 - Créer un endpoint API simple (PRATIQUE)
+
+**Objectif** : Créer votre premier endpoint API qui retourne du JSON.
+
+**Consignes** :
+1. Créez une vue `api_home` dans `blog/views.py` qui retourne un `JsonResponse`
+2. Le JSON doit contenir 3 clés : `message`, `version`, `status`
+3. Créez le fichier `blog/urls.py` avec le routage
+4. Incluez les URLs de blog dans le fichier principal `urls.py`
+
+**Squelette - `blog/views.py`** (à compléter) :
 
 ```python
-from django.http import HttpResponse
+from django.http import JsonResponse
 
-def home(request):
-    return HttpResponse("<h1>Bienvenue sur mon site Django !</h1>")
+def api_home(request):
+    """Endpoint API simple qui retourne du JSON"""
+    # TODO : Créez un dictionnaire avec :
+    #   - message : "Bienvenue sur mon API Django !"
+    #   - version : "1.0"
+    #   - status : "active"
+    
+    data = {
+        # VOTRE CODE ICI
+    }
+    
+    # TODO : Retournez un JsonResponse avec le dictionnaire
+    return # VOTRE CODE ICI
 ```
 
-**Créez** un fichier `blog/urls.py` :
+**Squelette - `blog/urls.py`** (fichier à créer) :
 
 ```python
 from django.urls import path
 from . import views
 
+# TODO : Créez le urlpatterns avec une route vide ('') 
+# qui pointe vers views.api_home avec le nom 'api-home'
 urlpatterns = [
-    path('', views.home, name='home'),
+    # VOTRE CODE ICI
 ]
 ```
 
-**Modifiez** `monprojet/urls.py` :
+**Squelette - `monprojet/urls.py`** (à modifier) :
 
 ```python
 from django.contrib import admin
@@ -335,69 +283,272 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('blog.urls')),
+    # TODO : Ajoutez une route 'api/' qui inclut 'blog.urls'
+    # VOTRE CODE ICI
 ]
 ```
 
-**Accédez** à `http://127.0.0.1:8000/` et voyez votre message !
+**Indice** :
+- `JsonResponse` prend un dictionnaire en paramètre
+- `include('app.urls')` permet d'inclure les URLs d'une app
 
-## Exercice 11 - Requirements.txt
+**Validation** :
+1. Lancez le serveur : `python manage.py runserver`
+2. Accédez à `http://127.0.0.1:8000/api/`
+3. Vous devriez voir le JSON :
+```json
+{
+  "message": "Bienvenue sur mon API Django !",
+  "version": "1.0",
+  "status": "active"
+}
+```
 
-**Créez** un fichier `requirements.txt` pour sauvegarder les dépendances :
+---
+
+## Exercice 11 - Requirements.txt (PRATIQUE)
+
+**Objectif** : Créer un fichier de dépendances pour votre projet.
+
+**Consignes** :
+1. Générez le fichier `requirements.txt` avec toutes les dépendances installées
+2. Vérifiez que Django, python-decouple et djangorestframework sont présents
+3. Testez l'installation des dépendances dans un nouvel environnement virtuel
+
+**TODO** :
+```bash
+# TODO : Générez le fichier requirements.txt
+# Commande à utiliser : pip freeze > requirements.txt
+# VOTRE COMMANDE ICI
+```
+
+**Validation** :
+1. Le fichier `requirements.txt` doit contenir au minimum :
+   - `Django==...`
+   - `python-decouple==...`
+2. Pour tester (optionnel) :
+```bash
+# Créez un nouvel environnement virtuel
+python -m venv test_env
+source test_env/bin/activate  # ou test_env\Scripts\activate sur Windows
+
+# TODO : Installez les dépendances depuis requirements.txt
+# Utilisez : pip install -r requirements.txt
+# VOTRE COMMANDE ICI
+```
+
+**Indice** :
+- `pip freeze` liste toutes les dépendances installées
+- `>` redirige la sortie vers un fichier
+
+---
+
+## Exercice 12 - Gitignore (PRATIQUE)
+
+**Objectif** : Créer un fichier `.gitignore` pour éviter de versionner des fichiers inutiles.
+
+**Consignes** :
+1. Créez un fichier `.gitignore` à la racine du projet
+2. Ajoutez les patterns pour ignorer :
+   - Les fichiers Python compilés (`.pyc`, `__pycache__`)
+   - La base de données SQLite
+   - L'environnement virtuel
+   - Le fichier `.env`
+   - Les fichiers IDE
+
+**Squelette - `.gitignore`** (fichier à créer) :
+
+```
+# TODO : Ajoutez les patterns pour Python
+# Exemples : *.pyc, __pycache__/, *.py[cod]
+# VOTRE CODE ICI
+
+# TODO : Ajoutez les patterns pour Django
+# Exemples : *.log, db.sqlite3, media/
+# VOTRE CODE ICI
+
+# TODO : Ajoutez le pattern pour l'environnement virtuel
+# Exemples : venv/, env/, ENV/
+# VOTRE CODE ICI
+
+# TODO : Ajoutez les patterns pour IDE
+# Exemples : .vscode/, .idea/
+# VOTRE CODE ICI
+
+# TODO : Ajoutez le pattern pour les variables d'environnement
+# Exemple : .env
+# VOTRE CODE ICI
+
+# TODO : Ajoutez les patterns pour les fichiers OS
+# Exemples : .DS_Store, Thumbs.db
+# VOTRE CODE ICI
+```
+
+**Indice** :
+- Consultez https://www.toptal.com/developers/gitignore/api/django,python
+- Le fichier doit être nommé exactement `.gitignore` (avec le point au début)
+
+**Validation** :
+1. Créez le fichier `.gitignore`
+2. Vérifiez que Git ignore bien les fichiers :
+```bash
+git status
+# Les fichiers .pyc, db.sqlite3, .env ne doivent PAS apparaître
+```
+
+---
+
+## Exercices bonus (PRATIQUE)
+
+### Exercice 13 - Multiple applications (PRATIQUE)
+
+**Objectif** : Organiser le code en créant une app dédiée aux API.
+
+**Consignes** :
+1. Créez une nouvelle application Django nommée `api`
+2. Ajoutez-la à `INSTALLED_APPS` dans `settings.py`
+3. Créez une vue `api_info` qui retourne les informations de l'API
+
+**TODO** :
+```bash
+# TODO : Créez l'application api
+# Commande : python manage.py startapp ...
+# VOTRE COMMANDE ICI
+```
+
+**Validation** :
+- L'application `api` apparaît dans le dossier du projet
+- `api` est dans `INSTALLED_APPS`
+
+---
+
+### Exercice 14 - Custom management command (PRATIQUE)
+
+**Objectif** : Créer une commande Django personnalisée.
+
+**Consignes** :
+1. Créez la structure de dossiers `blog/management/commands/`
+2. Créez un fichier `seed_data.py` dans ce dossier
+3. La commande doit afficher "Génération de données..." quand on l'exécute
+
+**Structure à créer** :
+```
+blog/
+├── management/
+│   ├── __init__.py        # TODO : Créez ce fichier vide
+│   └── commands/
+│       ├── __init__.py    # TODO : Créez ce fichier vide
+│       └── seed_data.py   # TODO : Créez ce fichier
+```
+
+**Squelette - `blog/management/commands/seed_data.py`** :
+
+```python
+from django.core.management.base import BaseCommand
+
+class Command(BaseCommand):
+    # TODO : Ajoutez l'attribut 'help' avec une description
+    help = # VOTRE CODE ICI
+    
+    def handle(self, *args, **kwargs):
+        # TODO : Utilisez self.stdout.write() pour afficher un message
+        # VOTRE CODE ICI
+        pass
+```
+
+**Validation** :
+```bash
+# TODO : Exécutez la commande
+python manage.py seed_data
+# Doit afficher : "Génération de données..."
+```
+
+**Indice** :
+- Les fichiers `__init__.py` doivent être vides (pour que Python reconnaisse les dossiers comme des packages)
+- `self.stdout.write()` affiche un message dans la console
+
+---
+
+### Exercice 15 - Configuration CORS pour frontend (PRATIQUE)
+
+**Objectif** : Permettre à un frontend (React, Vue, etc.) d'accéder à votre API.
+
+**Consignes** :
+1. Installez le package `django-cors-headers`
+2. Ajoutez `'corsheaders'` à `INSTALLED_APPS`
+3. Ajoutez le middleware CORS
+4. Configurez `CORS_ALLOW_ALL_ORIGINS = True` pour le développement
+
+**TODO** :
 
 ```bash
-pip freeze > requirements.txt
+# TODO : Installez django-cors-headers
+# Commande : pip install ...
+# VOTRE COMMANDE ICI
 ```
 
-**Vérifiez** le contenu du fichier. Il devrait contenir Django et python-decouple.
+**Squelette - `settings.py`** (à modifier) :
 
-## Exercice 12 - Gitignore
+```python
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    
+    # TODO : Ajoutez 'corsheaders'
+    # VOTRE CODE ICI
+    
+    'blog',
+]
 
-**Créez** un fichier `.gitignore` :
+MIDDLEWARE = [
+    # TODO : Ajoutez 'corsheaders.middleware.CorsMiddleware' EN PREMIER
+    # VOTRE CODE ICI
+    
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    # ... reste du middleware
+]
 
+# TODO : Ajoutez la configuration CORS pour le développement
+# Créez la variable CORS_ALLOW_ALL_ORIGINS = True
+# VOTRE CODE ICI
 ```
-# Python
-*.pyc
-__pycache__/
-*.py[cod]
-*$py.class
 
-# Django
-*.log
-db.sqlite3
-media/
+**Validation** :
+1. Testez avec curl depuis un autre domaine
+2. L'API doit répondre sans erreur CORS
 
-# Environnement virtuel
-venv/
-env/
+**Indice** :
+- CORS (Cross-Origin Resource Sharing) permet les requêtes depuis d'autres domaines
+- En production, utilisez `CORS_ALLOWED_ORIGINS` avec la liste des domaines autorisés
 
-# IDE
-.vscode/
-.idea/
-
-# Environnement
-.env
-```
-
-## Exercices bonus
-
-### Exercice 13 - Multiple applications
-**Créez** une deuxième application `portfolio` et configurez-la.
-
-### Exercice 14 - Custom management command
-**Créez** une commande personnalisée dans `blog/management/commands/hello.py` qui affiche "Hello Django!".
-
-### Exercice 15 - Serveur sur un port personnalisé
-**Lancez** le serveur sur le port 8080 au lieu de 8000.
+---
 
 ## Checklist de validation
 
--  Django installé dans un environnement virtuel
--  Projet Django créé avec succès
--  Application `blog` créée et enregistrée
--  Base de données migrée
--  Superutilisateur créé
--  Interface admin accessible et en français
--  Page d'accueil personnalisée fonctionnelle
--  Variables d'environnement configurées
--  `requirements.txt` et `.gitignore` créés
+- ✅ Django installé dans un environnement virtuel
+- ✅ Projet Django créé avec succès
+- ✅ Application `blog` créée et enregistrée
+- ✅ Base de données migrée (tables créées)
+- ✅ Superutilisateur créé et accès admin OK
+- ✅ Interface admin accessible et en français
+- ✅ Endpoint API `/api/` retourne du JSON
+- ✅ Variables d'environnement configurées (`.env`)
+- ✅ `requirements.txt` et `.gitignore` créés
+- ✅ Serveur de développement fonctionne
+
+---
+
+## 🚀 Prochaines étapes
+
+Vous êtes maintenant prêt pour :
+- **Module 15** : Créer vos premiers modèles Django
+- **Module 16** : Maîtriser les QuerySets et l'optimisation
+- **Module 17** : Techniques avancées de l'ORM
+- **Module 18** : Projet ORM complet
+
+🎉 **Félicitations !** Vous avez configuré votre environnement Backend Django !
