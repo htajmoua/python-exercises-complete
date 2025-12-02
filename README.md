@@ -15,16 +15,17 @@
 - [Programme](#programme)
   - [Fondamentaux](#fondamentaux-01-08)
   - [Regex & Base de Données](#regex--base-de-données-09)
-  - [Programmation Orientée Objet](#programmation-orientée-objet-10-13)
-  - [Framework Django](#framework-django-14-22)
-  - [Python Avancé](#python-avancé-23-28)
+  - [Outils de Qualité de Code](#outils-de-qualité-de-code-10)
+  - [Programmation Orientée Objet](#programmation-orientée-objet-11-14)
+  - [Framework Django](#framework-django-15-23)
+  - [Python Avancé](#python-avancé-24-27)
 - [Projets](#projets)
 
 ---
 
 ## Aperçu
 
-Ce dépôt contient **28 modules complets** couvrant Python des fondamentaux aux concepts experts, incluant le développement web avec Django et des sujets avancés comme la métaprogrammation et le calcul distribué.
+Ce dépôt contient **27 modules complets** couvrant Python des fondamentaux aux concepts experts, incluant le développement web avec Django et des sujets avancés comme la métaprogrammation et le calcul distribué.
 
 ## Démarrage Rapide
 
@@ -177,12 +178,44 @@ Maîtrisez les expressions régulières et la persistance des données.
 
 ---
 
-### Programmation Orientée Objet (10-13)
+### Outils de Qualité de Code (10)
+
+Apprenez à écrire du code Python professionnel et maintenable.
+
+<details>
+<summary><b>Module 10 : Outils de Qualité de Code</b> - Black, Ruff, Mypy, Pytest</summary>
+
+**Outils essentiels** :
+- **Black** : Formatage automatique de code
+- **Ruff** : Linting ultra-rapide (erreurs, mauvaises pratiques)
+- **Mypy** : Vérification de types statique
+- **Pytest** : Framework de tests automatisés
+
+**Configuration** :
+- Fichier `pyproject.toml` centralisé
+- Script d'automatisation
+- Pre-commit hooks (bonus)
+- Intégration CI/CD
+
+**Compétences acquises** :
+- Code formaté selon PEP 8
+- Détection automatique des bugs
+- Type hints Python
+- Tests avec couverture de code
+- Workflow professionnel
+
+⏱️ **Durée** : 45 min - 1h
+
+</details>
+
+---
+
+### Programmation Orientée Objet (11-14)
 
 Maîtrisez les principes de la POO et les design patterns.
 
 <details>
-<summary><b>Module 10 : Classes & Objets</b> - Introduction à la POO</summary>
+<summary><b>Module 11 : Classes & Objets</b> - Introduction à la POO</summary>
 
 - Création de classes et d'objets
 - Attributs d'instance et de classe
@@ -193,7 +226,7 @@ Maîtrisez les principes de la POO et les design patterns.
 </details>
 
 <details>
-<summary><b>Module 11 : Encapsulation & Propriétés</b> - Protection des données</summary>
+<summary><b>Module 12 : Encapsulation & Propriétés</b> - Protection des données</summary>
 
 - Attributs protégés et privés (`_`, `__`)
 - Getters et setters
@@ -204,7 +237,7 @@ Maîtrisez les principes de la POO et les design patterns.
 </details>
 
 <details>
-<summary><b>Module 12 : Héritage & Polymorphisme</b> - Réutilisation du code</summary>
+<summary><b>Module 13 : Héritage & Polymorphisme</b> - Réutilisation du code</summary>
 
 - Héritage simple et multiple
 - Override de méthodes
@@ -215,7 +248,7 @@ Maîtrisez les principes de la POO et les design patterns.
 </details>
 
 <details>
-<summary><b>Module 13 : Projets POO Complets</b> - Intégration</summary>
+<summary><b>Module 14 : Projets POO Complets</b> - Intégration</summary>
 
 **4 Projets Complets** :
 1. **Système de Gestion de Bibliothèque** - Livres, auteurs, emprunts
@@ -229,12 +262,12 @@ Intégration de tous les concepts POO dans des applications réelles.
 
 ---
 
-### Framework Django (14-22)
+### Framework Django (15-23)
 
 Construisez des applications web modernes avec Django.
 
 <details>
-<summary><b>Module 14 : Introduction à Django</b> - Premiers pas</summary>
+<summary><b>Module 29 : Introduction à Django</b> - Premiers pas</summary>
 
 **Théorie** :
 - Rappel des principes POO
@@ -251,7 +284,7 @@ Construisez des applications web modernes avec Django.
 </details>
 
 <details>
-<summary><b>Module 15 : Modèles & ORM</b> - Couche base de données</summary>
+<summary><b>Module 29 : Modèles & ORM</b> - Couche base de données</summary>
 
 - Création de modèles et types de champs
 - Relations : **ForeignKey** (1-N), **ManyToMany** (N-N), **OneToOne** (1-1)
@@ -266,7 +299,7 @@ Construisez des applications web modernes avec Django.
 </details>
 
 <details>
-<summary><b>Module 16 : Vues & URLs</b> - Gestion des requêtes</summary>
+<summary><b>Module 29 : Vues & URLs</b> - Gestion des requêtes</summary>
 
 - Function-Based Views (FBV)
 - Class-Based Views (CBV)
@@ -278,7 +311,7 @@ Construisez des applications web modernes avec Django.
 </details>
 
 <details>
-<summary><b>Module 17 : Templates</b> - Couche de présentation</summary>
+<summary><b>Module 29 : Templates</b> - Couche de présentation</summary>
 
 - Héritage de templates
 - Variables, filtres et tags
@@ -290,7 +323,7 @@ Construisez des applications web modernes avec Django.
 </details>
 
 <details>
-<summary><b>Module 18 : Formulaires & Validation</b> - Entrées utilisateur</summary>
+<summary><b>Module 29 : Formulaires & Validation</b> - Entrées utilisateur</summary>
 
 - Django Forms
 - ModelForms
@@ -303,7 +336,7 @@ Construisez des applications web modernes avec Django.
 </details>
 
 <details>
-<summary><b>Module 19 : Admin & Authentification</b> - Gestion des utilisateurs</summary>
+<summary><b>Module 29 : Admin & Authentification</b> - Gestion des utilisateurs</summary>
 
 - Personnalisation de l'admin
 - Configuration ModelAdmin
@@ -317,7 +350,7 @@ Construisez des applications web modernes avec Django.
 </details>
 
 <details>
-<summary><b>Module 20 : API REST</b> - Django REST Framework</summary>
+<summary><b>Module 29 : API REST</b> - Django REST Framework</summary>
 
 - Serializers et ModelSerializers
 - API Views et ViewSets
@@ -331,7 +364,7 @@ Construisez des applications web modernes avec Django.
 </details>
 
 <details>
-<summary><b>Module 21 : Projets Django Complets</b> - Applications full-stack</summary>
+<summary><b>Module 29 : Projets Django Complets</b> - Applications full-stack</summary>
 
 **4 Projets Production-Ready** :
 1. **Plateforme de Blog Avancée** - Multi-utilisateurs, commentaires, tags
@@ -344,7 +377,7 @@ Applications complètes avec toutes les fonctionnalités Django intégrées.
 </details>
 
 <details>
-<summary><b>Module 22 : Django & PostgreSQL</b> - Base de données de production</summary>
+<summary><b>Module 29 : Django & PostgreSQL</b> - Base de données de production</summary>
 
 - Installation et configuration de PostgreSQL
 - Migration de SQLite vers PostgreSQL
@@ -359,12 +392,12 @@ Applications complètes avec toutes les fonctionnalités Django intégrées.
 
 ---
 
-### Python Avancé (23-28)
+### Python Avancé (24-27)
 
 Concepts experts et optimisation des performances.
 
 <details>
-<summary><b>Module 23 : Fondamentaux Python Avancés</b> - Approfondissement</summary>
+<summary><b>Module 29 : Fondamentaux Python Avancés</b> - Approfondissement</summary>
 
 - Références vs copies (mutable/immutable)
 - Arguments avancés (`*args`, `**kwargs`)
@@ -377,7 +410,7 @@ Concepts experts et optimisation des performances.
 </details>
 
 <details>
-<summary><b>Module 24 : Décorateurs & Closures</b> - Métaprogrammation</summary>
+<summary><b>Module 29 : Décorateurs & Closures</b> - Métaprogrammation</summary>
 
 - Closures et portées
 - Décorateurs simples et paramétrés
@@ -390,7 +423,7 @@ Concepts experts et optimisation des performances.
 </details>
 
 <details>
-<summary><b>Module 25 : POO Avancée</b> - Patterns experts</summary>
+<summary><b>Module 29 : POO Avancée</b> - Patterns experts</summary>
 
 - Itérateurs personnalisés (`__iter__`, `__next__`)
 - Générateurs (`yield`, `yield from`)
@@ -405,7 +438,7 @@ Concepts experts et optimisation des performances.
 </details>
 
 <details>
-<summary><b>Module 26 : Packaging & Déploiement</b> - Distribution</summary>
+<summary><b>Module 29 : Packaging & Déploiement</b> - Distribution</summary>
 
 - Structure de package Python
 - `setup.py` et setuptools
@@ -418,7 +451,7 @@ Concepts experts et optimisation des performances.
 </details>
 
 <details>
-<summary><b>Module 27 : Performance & Profiling</b> - Optimisation</summary>
+<summary><b>Module 29 : Performance & Profiling</b> - Optimisation</summary>
 
 - `timeit` pour micro-benchmarks
 - `cProfile` pour profiling complet
@@ -432,7 +465,7 @@ Concepts experts et optimisation des performances.
 </details>
 
 <details>
-<summary><b>Module 28 : Parallélisme & Calcul Distribué</b> - Scalabilité</summary>
+<summary><b>Module 29 : Parallélisme & Calcul Distribué</b> - Scalabilité</summary>
 
 - GIL (Global Interpreter Lock) expliqué
 - `threading` pour tâches I/O-bound
