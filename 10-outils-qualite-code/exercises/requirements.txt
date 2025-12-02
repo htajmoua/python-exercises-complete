@@ -1,0 +1,18 @@
+# Outils de qualité de code Python
+# Installation: pip install -r requirements.txt
+
+# Formatage de code
+black==23.12.1
+
+# Linting ultra-rapide
+ruff==0.1.9
+
+# Vérification de types
+mypy==1.8.0
+
+# Framework de tests
+pytest==7.4.3
+pytest-cov==4.1.0
+
+# Bonus: Pre-commit hooks (optionnel)
+pre-commit==3.6.0
