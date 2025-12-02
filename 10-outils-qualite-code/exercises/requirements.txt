@@ -14,5 +14,8 @@ mypy==1.8.0
 pytest==7.4.3
 pytest-cov==4.1.0
 
+# Débogueur interactif
+ipdb==0.13.13
+
 # Bonus: Pre-commit hooks (optionnel)
 pre-commit==3.6.0

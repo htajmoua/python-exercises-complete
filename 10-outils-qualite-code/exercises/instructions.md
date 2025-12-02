@@ -7,8 +7,9 @@ Apprendre à utiliser les outils essentiels pour maintenir un code Python de qua
 - **Ruff** : Linter ultra-rapide (remplace Flake8, isort, etc.)
 - **Mypy** : Vérification de types statique
 - **Pytest** : Framework de tests
+- **ipdb** : Débogueur interactif
 
-**Temps estimé :** 30-40 minutes
+**Temps estimé :** 40-50 minutes
 
 ---
 
@@ -16,7 +17,7 @@ Apprendre à utiliser les outils essentiels pour maintenir un code Python de qua
 
 ```bash
 # Installer tous les outils en une fois
-pip install black ruff mypy pytest
+pip install black ruff mypy pytest ipdb
 ```
 
 **Vérification de l'installation :**
@@ -171,6 +172,75 @@ pytest --cov=calculatrice
 
 ---
 
+## Partie 5 : ipdb - Débogage interactif
+
+### Exercice 5 : Déboguer avec ipdb
+
+**1. Installation :**
+```bash
+pip install ipdb
+```
+
+**2. Points d'arrêt dans le code**
+
+Utilisez `breakpoint()` pour définir un point d'arrêt :
+```python
+def test_operations():
+    a = 10
+    b = 5
+    breakpoint()  # Le débogueur s'arrête ici
+    resultat = addition(a, b)
+    return resultat
+```
+
+**Exécutez le fichier de test avec ipdb :**
+```bash
+# Configurer ipdb comme débogueur par défaut
+export PYTHONBREAKPOINT=ipdb.set_trace
+
+# Lancer le test
+python test_debug.py
+```
+
+Le débogueur s'arrête au `breakpoint()`. Vous pouvez alors :
+- Inspecter les variables : `p a`, `p b`
+- Avancer ligne par ligne : `n`
+- Continuer l'exécution : `c`
+
+**Commandes de base :**
+- `n` (next) : Ligne suivante
+- `s` (step) : Entrer dans une fonction
+- `c` (continue) : Continuer jusqu'au prochain point d'arrêt
+- `l` (list) : Voir le code autour
+- `p variable` : Afficher la valeur d'une variable
+- `q` (quit) : Quitter
+
+**3. Analyse post-mortem**
+
+Quand une erreur se produit, analysez-la :
+```python
+python -c "from calculatrice import division; division(10, 0)"
+# Une erreur se produit
+
+# Puis lancez :
+python -m ipdb -c continue -c "from calculatrice import division; division(10, 0)"
+```
+
+Ou dans un script Python :
+```python
+import ipdb
+
+try:
+    from calculatrice import division
+    result = division(10, 0)
+except Exception:
+    ipdb.post_mortem()  # Analyse post-mortem
+```
+
+💡 **Conseil :** Utilisez ipdb pour comprendre le flux d'exécution et identifier rapidement les bugs.
+
+---
+
 ## Comparaison des outils
 
 | Outil | Fonction | Temps | Corrige auto |
@@ -179,6 +249,7 @@ pytest --cov=calculatrice
 | **Ruff** | Linting | Ultra-rapide | Partiel |
 | **Mypy** | Types | Rapide | Non |
 | **Pytest** | Tests | Variable | Non |
+| **ipdb** | Débogage | Interactif | Non |
 
 ---
 
@@ -214,6 +285,7 @@ pytest --cov=calculatrice
 - [ ] Pytest installé
 - [ ] Tests écrits et qui passent
 - [ ] Couverture de code mesurée
+- [ ] ipdb maîtrisé pour le débogage
 
 ---
 
@@ -224,6 +296,7 @@ pytest --cov=calculatrice
 - [Ruff](https://docs.astral.sh/ruff/)
 - [Mypy](https://mypy.readthedocs.io/)
 - [Pytest](https://docs.pytest.org/)
+- [ipdb](https://github.com/gotcha/ipdb)
 
 ### Guides et tutoriels
 - [PEP 8 - Style Guide](https://peps.python.org/pep-0008/)
@@ -241,6 +314,7 @@ Après ce module, vous savez :
 - Ajouter et vérifier des types avec Mypy  
 - Écrire et exécuter des tests avec Pytest  
 - Mesurer la couverture de code  
+- Déboguer interactivement avec ipdb  
 - Utiliser un workflow de développement professionnel  
 
 **Ces outils sont indispensables pour tout projet Python professionnel ! 🚀**
