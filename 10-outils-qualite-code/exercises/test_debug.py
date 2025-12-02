@@ -16,17 +16,21 @@ def test_operations():
     resultat_add = addition(a, b)
     print(f"Addition: {a} + {b} = {resultat_add}")
     
+    breakpoint()
     # Test 2 : Division
     x = 20
     y = 4
     resultat_div = division(x, y)
     print(f"Division: {x} / {y} = {resultat_div}")
+
+    breakpoint()
     
     # Test 3 : Puissance
     base = 2
     exp = 3
     resultat_pow = puissance(base, exp)
     print(f"Puissance: {base}^{exp} = {resultat_pow}")
+    breakpoint()
     
     return resultat_add, resultat_div, resultat_pow
 

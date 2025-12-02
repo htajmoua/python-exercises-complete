@@ -217,25 +217,28 @@ Le débogueur s'arrête au `breakpoint()`. Vous pouvez alors :
 
 **3. Analyse post-mortem**
 
-Quand une erreur se produit, analysez-la :
-```python
-python -c "from calculatrice import division; division(10, 0)"
-# Une erreur se produit
+L'analyse post-mortem permet d'inspecter l'état du programme au moment d'une erreur.
 
-# Puis lancez :
-python -m ipdb -c continue -c "from calculatrice import division; division(10, 0)"
+Dans `test_debug.py`, décommentez la fonction `test_erreur()` :
+```python
+def test_erreur():
+    try:
+        resultat = division(10, 0)  # Division par zéro
+    except Exception as e:
+        print(f"Erreur capturée: {e}")
+        import ipdb; ipdb.post_mortem()  # Analyse post-mortem
+        raise
 ```
 
-Ou dans un script Python :
-```python
-import ipdb
-
-try:
-    from calculatrice import division
-    result = division(10, 0)
-except Exception:
-    ipdb.post_mortem()  # Analyse post-mortem
+Puis exécutez :
+```bash
+python test_debug.py
 ```
+
+Quand l'erreur survient, ipdb vous place dans le contexte exact où elle s'est produite. Vous pouvez :
+- Examiner les variables locales
+- Remonter la pile d'appels avec `u` (up) et `d` (down)
+- Comprendre la cause de l'erreur
 
 💡 **Conseil :** Utilisez ipdb pour comprendre le flux d'exécution et identifier rapidement les bugs.
 
