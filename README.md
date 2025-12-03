@@ -17,15 +17,15 @@
   - [Regex & Base de Données](#regex--base-de-données-09)
   - [Outils de Qualité de Code](#outils-de-qualité-de-code-10)
   - [Programmation Orientée Objet](#programmation-orientée-objet-11-14)
-  - [Framework Django](#framework-django-15-23)
-  - [Python Avancé](#python-avancé-24-27)
+  - [Framework Django](#framework-django-15-19)
+  - [Python Avancé](#python-avancé-20-25)
 - [Projets](#projets)
 
 ---
 
 ## Aperçu
 
-Ce dépôt contient **27 modules complets** couvrant Python des fondamentaux aux concepts experts, incluant le développement web avec Django et des sujets avancés comme la métaprogrammation et le calcul distribué.
+Ce dépôt contient **25 modules complets** couvrant Python des fondamentaux aux concepts experts, incluant le développement web avec Django et des sujets avancés comme la métaprogrammation et le calcul distribué.
 
 ## Démarrage Rapide
 
@@ -262,142 +262,130 @@ Intégration de tous les concepts POO dans des applications réelles.
 
 ---
 
-### Framework Django (15-23)
+### Framework Django (15-19)
 
-Construisez des applications web modernes avec Django.
+Construisez des applications Backend professionnelles avec Django et PostgreSQL.
 
 <details>
-<summary><b>Module 29 : Introduction à Django</b> - Premiers pas</summary>
+<summary><b>Module 15 : Introduction à Django</b> - Premiers pas</summary>
 
 **Théorie** :
 - Rappel des principes POO
 - **Pattern MVC/MTV**
 - Architecture et composants Django
+- Virtualenv et gestion de dépendances
 
 **Pratique** :
 - Installation et configuration
-- Structure du projet
+- Création de projet et application
 - Serveur de développement
 - Interface d'administration
 - Migrations de base de données
+- Variables d'environnement
+- Premier endpoint API (JSON)
 
 </details>
 
 <details>
-<summary><b>Module 29 : Modèles & ORM</b> - Couche base de données</summary>
+<summary><b>Module 16 : Modèles & ORM Django</b> - Architecture de données</summary>
 
-- Création de modèles et types de champs
-- Relations : **ForeignKey** (1-N), **ManyToMany** (N-N), **OneToOne** (1-1)
-- Migrations de base de données
-- QuerySets et requêtes ORM
-- **Héritage de Modèles** :
-  - Classes de base abstraites
-  - Héritage multi-table
-  - Modèles Proxy
-- Managers personnalisés et signaux
+**Tutoriels guidés** (Exercices 1-8) :
+- Types de champs Django
+- Relations **ForeignKey** (1-N)
+- Relations **ManyToMany** (N-N) - Tutoriel complet
+- Relations **OneToOne** (1-1) - Tutoriel complet
+- **Héritage Abstract** - Tutoriel complet
+- **Héritage Multi-table** - Tutoriel complet
+- **Modèles Proxy** - Tutoriel complet
 
-</details>
+**Exercices pratiques** (Exercices 9+) :
+- Validation personnalisée
+- Méthodes de modèles
+- Meta options
 
-<details>
-<summary><b>Module 29 : Vues & URLs</b> - Gestion des requêtes</summary>
-
-- Function-Based Views (FBV)
-- Class-Based Views (CBV)
-- Vues génériques : ListView, DetailView, CreateView, UpdateView, DeleteView
-- Configuration des URLs et routage
-- Paramètres d'URL (int, slug, str)
-- Redirections et `reverse()`
+**Format** : 5 tutoriels guidés + exercices autonomes
 
 </details>
 
 <details>
-<summary><b>Module 29 : Templates</b> - Couche de présentation</summary>
+<summary><b>Module 17 : QuerySets & Optimisation ORM</b> - Performance</summary>
 
-- Héritage de templates
-- Variables, filtres et tags
-- Structures de contrôle (if, for)
-- Tags et filtres personnalisés
-- Fichiers statiques (CSS, JS, images)
-- Context processors
+**Théorie** :
+- Lazy evaluation
+- QuerySet API complète
+- Problème N+1
 
-</details>
+**Exercices pratiques** :
+- **Q objects** pour requêtes complexes (avec hints)
+- **select_related** pour ForeignKey/OneToOne (avec hints)
+- **prefetch_related** pour ManyToMany (avec hints)
+- Annotations et agrégations
+- **only()** / **defer()** pour optimisation
+- Transactions
+- Raw SQL
 
-<details>
-<summary><b>Module 29 : Formulaires & Validation</b> - Entrées utilisateur</summary>
-
-- Django Forms
-- ModelForms
-- Validation et nettoyage des données
-- Widgets personnalisés
-- Formsets et inline formsets
-- Upload de fichiers
-- Protection CSRF
+**Fichier SOLUTIONS.md** fourni avec code complet et exemples
 
 </details>
 
 <details>
-<summary><b>Module 29 : Admin & Authentification</b> - Gestion des utilisateurs</summary>
+<summary><b>Module 18 : Projet ORM Complet avec PostgreSQL</b> - Production ⭐</summary>
 
-- Personnalisation de l'admin
-- Configuration ModelAdmin
-- Inline admin
-- Actions personnalisées
-- Système d'authentification
+**Format** : **100% Tutoriel guidé** - Projet fil rouge complet
+
+**Projet** : BlogPro - Plateforme de blog professionnelle
+
+**6 Parties progressives** :
+1. **Setup PostgreSQL** - Docker, configuration Django
+2. **Architecture** - Classes abstraites, managers, relations
+3. **PostgreSQL Features** - Full-text search, statistiques, indexes
+4. **Signals & Cache** - Automatisation
+5. **Tests** - Tests unitaires complets (>80% coverage)
+6. **Admin & Production** - Interface personnalisée, backup
+
+**Stack** : Django 5.0 + PostgreSQL 15 + Docker
+
+**Fonctionnalités** :
+- 4 classes abstraites réutilisables (Timestamped, UUID, SoftDelete, Publishable)
+- Managers et QuerySets personnalisés avec méthodes chaînables
+- ArrayField et SearchVectorField (PostgreSQL)
+- Full-text search performant
+- Analytics et statistiques complexes
+- Signals pour cache automatique
+- Indexes optimisés
+- Admin Django personnalisé
+- Commande de gestion pour données de test
+
+**Dossier SOLUTION/** : Code complet fonctionnel (16 fichiers)
+
+⏱️ **Durée** : 8-10 heures
+
+</details>
+
+<details>
+<summary><b>Module 19 : Admin & Authentification Django</b> - Gestion</summary>
+
+- Personnalisation complète de l'admin
+- Configuration ModelAdmin avancée
+- Inlines et relations
+- Actions personnalisées bulk
+- Filtres et recherche
+- Système d'authentification Django
 - Login, logout, inscription
 - Permissions et groupes
-- Profils utilisateur
-
-</details>
-
-<details>
-<summary><b>Module 29 : API REST</b> - Django REST Framework</summary>
-
-- Serializers et ModelSerializers
-- API Views et ViewSets
-- Routers
-- Authentification (Token, Session)
-- Permissions personnalisées
-- Filtrage, recherche et pagination
-- Throttling
-- Documentation Swagger
-
-</details>
-
-<details>
-<summary><b>Module 29 : Projets Django Complets</b> - Applications full-stack</summary>
-
-**4 Projets Production-Ready** :
-1. **Plateforme de Blog Avancée** - Multi-utilisateurs, commentaires, tags
-2. **Plateforme E-learning** - Cours, leçons, quiz
-3. **Réseau Social** - Posts, amis, messagerie
-4. **Gestionnaire de Tâches** (type Trello) - Tableaux, listes, cartes
-
-Applications complètes avec toutes les fonctionnalités Django intégrées.
-
-</details>
-
-<details>
-<summary><b>Module 29 : Django & PostgreSQL</b> - Base de données de production</summary>
-
-- Installation et configuration de PostgreSQL
-- Migration de SQLite vers PostgreSQL
-- Types spécifiques PostgreSQL (ArrayField, JSONField)
-- Recherche full-text
-- Optimisation des performances (indexes)
-- Contraintes et triggers
-- Intégration Docker
-- Configuration PgAdmin
+- Profils utilisateur étendus
+- Décorateurs de permissions
 
 </details>
 
 ---
 
-### Python Avancé (24-27)
+### Python Avancé (20-25)
 
 Concepts experts et optimisation des performances.
 
 <details>
-<summary><b>Module 29 : Fondamentaux Python Avancés</b> - Approfondissement</summary>
+<summary><b>Module 20 : Fondamentaux Python Avancés</b> - Approfondissement</summary>
 
 - Références vs copies (mutable/immutable)
 - Arguments avancés (`*args`, `**kwargs`)
@@ -410,7 +398,7 @@ Concepts experts et optimisation des performances.
 </details>
 
 <details>
-<summary><b>Module 29 : Décorateurs & Closures</b> - Métaprogrammation</summary>
+<summary><b>Module 21 : Décorateurs & Closures</b> - Métaprogrammation</summary>
 
 - Closures et portées
 - Décorateurs simples et paramétrés
@@ -423,7 +411,7 @@ Concepts experts et optimisation des performances.
 </details>
 
 <details>
-<summary><b>Module 29 : POO Avancée</b> - Patterns experts</summary>
+<summary><b>Module 22 : POO Avancée</b> - Patterns experts</summary>
 
 - Itérateurs personnalisés (`__iter__`, `__next__`)
 - Générateurs (`yield`, `yield from`)
@@ -438,7 +426,7 @@ Concepts experts et optimisation des performances.
 </details>
 
 <details>
-<summary><b>Module 29 : Packaging & Déploiement</b> - Distribution</summary>
+<summary><b>Module 23 : Packaging & Déploiement</b> - Distribution</summary>
 
 - Structure de package Python
 - `setup.py` et setuptools
@@ -451,7 +439,7 @@ Concepts experts et optimisation des performances.
 </details>
 
 <details>
-<summary><b>Module 29 : Performance & Profiling</b> - Optimisation</summary>
+<summary><b>Module 24 : Performance & Profiling</b> - Optimisation</summary>
 
 - `timeit` pour micro-benchmarks
 - `cProfile` pour profiling complet
@@ -465,7 +453,7 @@ Concepts experts et optimisation des performances.
 </details>
 
 <details>
-<summary><b>Module 29 : Parallélisme & Calcul Distribué</b> - Scalabilité</summary>
+<summary><b>Module 25 : Parallélisme & Calcul Distribué</b> - Scalabilité</summary>
 
 - GIL (Global Interpreter Lock) expliqué
 - `threading` pour tâches I/O-bound
@@ -482,25 +470,27 @@ Concepts experts et optimisation des performances.
 
 ## Projets
 
-Ce cours inclut **12 projets complets** :
+Ce cours inclut **6 projets complets** :
 
-### Projets POO
-- Système de Gestion de Bibliothèque
-- Système de Gestion d'École
-- Plateforme E-commerce
-- Jeu de Combat RPG
+### Projets POO (Module 14)
+- 🏛️ **Système de Gestion de Bibliothèque** - Livres, auteurs, emprunts
+- 🎓 **Système de Gestion d'École** - Étudiants, cours, notes
+- 🛒 **Plateforme E-commerce** - Produits, panier, commandes
+- ⚔️ **Jeu de Combat RPG** - Personnages, combats, inventaire
 
-### Projets Django
-- Plateforme de Blog Avancée
-- Plateforme E-learning
-- Réseau Social
-- Gestionnaire de Tâches (type Trello)
+### Projet Django ORM avec PostgreSQL (Module 18)
+- 📝 **BlogPro** - Plateforme de blog professionnelle
+  - Architecture complète (classes abstraites, managers, relations)
+  - PostgreSQL avec Docker
+  - Full-text search performant
+  - Analytics et statistiques
+  - Tests unitaires (>80% coverage)
+  - Interface admin personnalisée
+  - **Dossier SOLUTION/** avec code complet
 
-### Projets Avancés
-- ORM Personnalisé avec Métaclasses
-- Pipeline de Traitement de Données
-- Système Map-Reduce Distribué
-- Études de Cas d'Optimisation
+### Projets Python Avancé
+- 🔧 **ORM Personnalisé** avec Métaclasses (Module 22)
+- 🚀 **Système Map-Reduce Distribué** (Module 25)
 
 ---
 
