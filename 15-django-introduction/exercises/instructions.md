@@ -228,7 +228,7 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='').split(',')
 
 # 🔨 PARTIE 2 : EXERCICES PRATIQUES
 
-**À partir d'ici, c'est à vous de coder !** Les exercices suivants contiennent des squelettes avec des `TODO` à compléter.
+**À partir d'ici, vous allez mettre en pratique !** L'exercice 10 vous guide pas à pas, puis les exercices suivants contiennent des squelettes avec des `TODO` à compléter.
 
 ---
 
@@ -236,66 +236,85 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='').split(',')
 
 **Objectif** : Créer votre premier endpoint API qui retourne du JSON.
 
-**Consignes** :
-1. Créez une vue `api_home` dans `blog/views.py` qui retourne un `JsonResponse`
-2. Le JSON doit contenir 3 clés : `message`, `version`, `status`
-3. Créez le fichier `blog/urls.py` avec le routage
-4. Incluez les URLs de blog dans le fichier principal `urls.py`
+Nous allons procéder en 3 étapes simples.
 
-**Squelette - `blog/views.py`** (à compléter) :
+---
+
+### Étape 1 : Créer la vue API
+
+**Ouvrez** le fichier `blog/views.py` et ajoutez ce code :
 
 ```python
 from django.http import JsonResponse
 
 def api_home(request):
     """Endpoint API simple qui retourne du JSON"""
-    # TODO : Créez un dictionnaire avec :
-    #   - message : "Bienvenue sur mon API Django !"
-    #   - version : "1.0"
-    #   - status : "active"
-    
     data = {
-        # VOTRE CODE ICI
+        "message": "Bienvenue sur mon API Django !",
+        "version": "1.0",
+        "status": "active"
     }
-    
-    # TODO : Retournez un JsonResponse avec le dictionnaire
-    return # VOTRE CODE ICI
+    return JsonResponse(data)
 ```
 
-**Squelette - `blog/urls.py`** (fichier à créer) :
+💡 **Explication** : 
+- `JsonResponse` convertit automatiquement un dictionnaire Python en JSON
+- Toute vue Django prend `request` en paramètre
+
+---
+
+### Étape 2 : Créer le routage de l'application
+
+**Créez** un nouveau fichier `blog/urls.py` avec ce contenu :
 
 ```python
 from django.urls import path
 from . import views
 
-# TODO : Créez le urlpatterns avec une route vide ('') 
-# qui pointe vers views.api_home avec le nom 'api-home'
 urlpatterns = [
-    # VOTRE CODE ICI
+    path('', views.api_home, name='api-home'),
 ]
 ```
 
-**Squelette - `monprojet/urls.py`** (à modifier) :
+💡 **Explication** :
+- `path('')` : route vide (sera préfixée par `/api/` plus tard)
+- `views.api_home` : référence à la fonction créée à l'étape 1
+- `name='api-home'` : nom unique pour cette route
+
+---
+
+### Étape 3 : Inclure les URLs dans le projet principal
+
+**Ouvrez** le fichier `monprojet/urls.py` et **ajoutez** une ligne :
 
 ```python
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include  # Vérifiez que 'include' est importé
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # TODO : Ajoutez une route 'api/' qui inclut 'blog.urls'
-    # VOTRE CODE ICI
+    path('api/', include('blog.urls')),  # ← Ajoutez cette ligne
 ]
 ```
 
-**Indice** :
-- `JsonResponse` prend un dictionnaire en paramètre
-- `include('app.urls')` permet d'inclure les URLs d'une app
+💡 **Explication** :
+- `include('blog.urls')` : inclut toutes les routes de `blog/urls.py`
+- `path('api/', ...)` : préfixe `/api/` pour toutes les routes de blog
+- Résultat : votre endpoint sera accessible à `/api/`
 
-**Validation** :
-1. Lancez le serveur : `python manage.py runserver`
-2. Accédez à `http://127.0.0.1:8000/api/`
-3. Vous devriez voir le JSON :
+---
+
+### Validation
+
+**1. Lancez le serveur** :
+```bash
+python manage.py runserver
+```
+
+**2. Testez dans votre navigateur** :
+Accédez à `http://127.0.0.1:8000/api/`
+
+**3. Résultat attendu** :
 ```json
 {
   "message": "Bienvenue sur mon API Django !",
@@ -303,6 +322,8 @@ urlpatterns = [
   "status": "active"
 }
 ```
+
+✅ **Félicitations !** Vous avez créé votre premier endpoint API Django !
 
 ---
 

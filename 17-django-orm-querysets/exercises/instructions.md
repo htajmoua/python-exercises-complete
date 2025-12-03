@@ -8,17 +8,11 @@ Ce module est le **CŒUR** de votre maîtrise de l'ORM Django. Vous apprendrez �
 - Éviter les pièges classiques (problème N+1)
 - Utiliser les transactions efficacement
 
-**📚 Format du module** :
-- **Partie 1 (Exercices 1-2)** : Exemples guidés - QuerySets de base et lookups
-- **Partie 2 (Exercices 3-6)** : Exercices pratiques - Q/F, Optimisation, Agrégation
+**📚 Format du module** : **100% EXEMPLES GUIDÉS**
+
+Tous les exercices contiennent du code complet et fonctionnel. Suivez les exemples, testez-les dans le shell Django, et adaptez-les à vos besoins.
 
 **Prérequis** : Avoir complété le module 15 (Fondamentaux des modèles)
-
----
-
-# 📖 PARTIE 1 : EXEMPLES GUIDÉS
-
-Les exercices 1 à 2 sont des exemples complets pour comprendre les QuerySets.
 
 ---
 
@@ -116,7 +110,7 @@ Article.objects.filter(titre__regex=r'^[A-Z]')  # Titre commence par majuscule
 Article.objects.filter(titre__iregex=r'python|django')  # Case-insensitive
 ```
 
-### Exercice 11 - Relations et lookups
+### Exercice 2bis - Relations et lookups (EXEMPLE)
 
 ```python
 # Filtrer par champ de relation (double underscore)
@@ -146,88 +140,105 @@ Auteur.objects.annotate(nb_articles=Count('articles')).filter(nb_articles__gt=5)
 
 ---
 
-# 🔨 PARTIE 2 : EXERCICES PRATIQUES
+## Exercice 3 - Q objects / Requêtes complexes (EXEMPLE)
 
-**À partir d'ici, c'est à vous de coder !** Les exercices suivants contiennent des squelettes avec des `TODO` à compléter.
-
----
-
-## Exercice 3 - Q objects / Requêtes complexes (PRATIQUE)
-
-**Objectif** : Maîtriser les Q objects pour créer des requêtes OR, AND, NOT complexes.
-
-**Consignes** :
-1. Créez une requête avec un OR : articles publiés OU avec plus de 1000 vues
-2. Créez une requête avec un NOT : articles NON écrits par "Dupont"
-3. Créez une fonction de recherche dynamique
-
-**Squelette - `blog/views.py` ou shell** (à compléter) :
+**Les Q objects** permettent de créer des requêtes complexes avec OR, AND, NOT.
 
 ```python
 from django.db.models import Q
 from blog.models import Article
 
-def exercice_q_objects():
-    # TODO : Récupérez les articles publiés OU avec plus de 1000 vues
-    # Utilisez : Q(publie=True) | Q(nombre_vues__gt=1000)
-    articles_or = # VOTRE CODE ICI
-    
-    # TODO : Récupérez les articles NON écrits par "Dupont"
-    # Utilisez : ~Q(auteur__nom="Dupont")
-    articles_not = # VOTRE CODE ICI
-    
-    # TODO : Requête complexe
-    # (publie=True AND featured=True) OR (nombre_vues > 1000)
-    # Utilisez des parenthèses : (Q(...) & Q(...)) | Q(...)
-    articles_complexe = # VOTRE CODE ICI
-    
-    return articles_or, articles_not, articles_complexe
+# OR : Articles publiés OU avec plus de 1000 vues
+articles_or = Article.objects.filter(
+    Q(publie=True) | Q(nombre_vues__gt=1000)
+)
+print(f"Articles (OR) : {articles_or.count()}")
 
-# TODO : Créez une fonction de recherche dynamique
-def rechercher_articles(titre=None, auteur=None, publie=None):
-    """Recherche multi-critères avec Q objects"""
-    # TODO : Initialisez un Q object vide
-    q = # VOTRE CODE ICI
-    
-    # TODO : Si titre fourni, ajoutez la condition avec &=
-    # Recherchez dans titre OU contenu : Q(titre__icontains=...) | Q(contenu__icontains=...)
-    if titre:
-        q &= # VOTRE CODE ICI
-    
-    # TODO : Si auteur fourni, ajoutez la condition
-    # Utilisez : Q(auteur__nom__icontains=auteur)
-    if auteur:
-        q &= # VOTRE CODE ICI
-    
-    # TODO : Si publie fourni (peut être True ou False), ajoutez la condition
-    if publie is not None:
-        q &= # VOTRE CODE ICI
-    
-    # TODO : Retournez le QuerySet filtré avec .distinct()
-    return # VOTRE CODE ICI
+# AND : Articles publiés ET featured
+articles_and = Article.objects.filter(
+    Q(publie=True) & Q(featured=True)
+)
+# Équivalent à :
+articles_and = Article.objects.filter(publie=True, featured=True)
+
+# NOT : Articles NON écrits par "Dupont"
+articles_not = Article.objects.filter(
+    ~Q(auteur__nom="Dupont")
+)
+print(f"Articles NOT Dupont : {articles_not.count()}")
+
+# Requête complexe avec parenthèses
+# (publie=True AND featured=True) OR (nombre_vues > 1000)
+articles_complexe = Article.objects.filter(
+    (Q(publie=True) & Q(featured=True)) | Q(nombre_vues__gt=1000)
+)
+
+# Plusieurs conditions OR
+articles = Article.objects.filter(
+    Q(auteur__nom="Dupont") | Q(auteur__nom="Martin") | Q(auteur__nom="Bernard")
+)
+
+# Combiner plusieurs Q objects
+q1 = Q(publie=True)
+q2 = Q(featured=True)
+q3 = Q(nombre_vues__gt=500)
+articles = Article.objects.filter(q1 & (q2 | q3))
 ```
 
-**Indice** :
-- `|` = OR
-- `&` = AND
-- `~` = NOT
-- Utilisez des parenthèses pour la priorité
-
-**Validation** :
+**Fonction de recherche dynamique** :
 
 ```python
-# TODO : Testez dans le shell
-python manage.py shell
+def rechercher_articles(titre=None, auteur=None, publie=None, tags=None):
+    """Recherche multi-critères avec Q objects"""
+    # Initialiser un Q object vide
+    q = Q()
+    
+    # Si titre fourni, rechercher dans titre OU contenu
+    if titre:
+        q &= Q(titre__icontains=titre) | Q(contenu__icontains=titre)
+    
+    # Si auteur fourni, filtrer par nom d'auteur
+    if auteur:
+        q &= Q(auteur__nom__icontains=auteur)
+    
+    # Si publie fourni (peut être True ou False)
+    if publie is not None:
+        q &= Q(publie=publie)
+    
+    # Si tags fourni
+    if tags:
+        q &= Q(tags__nom__in=tags)
+    
+    # Retourner le QuerySet filtré avec distinct
+    return Article.objects.filter(q).distinct()
 
-from blog.models import Article
-
-# TODO : Testez la fonction de recherche
+# Utilisation
 resultats = rechercher_articles(titre="Django", publie=True)
 print(f"Trouvés : {resultats.count()} articles")
 
-# TODO : Testez la requête complexe
-articles = exercice_q_objects()
-print(articles)
+resultats = rechercher_articles(auteur="Dupont", tags=["Python", "Django"])
+for article in resultats:
+    print(f"- {article.titre}")
+```
+
+**Q objects avec relations** :
+
+```python
+# Recherche dans les relations
+articles = Article.objects.filter(
+    Q(auteur__nom__icontains="Dupont") | Q(auteur__email__endswith="@example.com")
+)
+
+# Avec ManyToMany
+articles = Article.objects.filter(
+    Q(tags__nom="Python") | Q(tags__nom="Django")
+).distinct()
+
+# Relations profondes
+articles = Article.objects.filter(
+    Q(auteur__profil__twitter__isnull=False) | 
+    Q(categorie__parent__nom="Technologie")
+)
 ```
 
 ---
@@ -271,7 +282,7 @@ Article.objects.annotate(
 ).filter(ratio__gt=5)
 ```
 
-### Exercice 14 - Agrégation
+### Exercice 4bis - Agrégation (EXEMPLE)
 
 ```python
 from django.db.models import Count, Sum, Avg, Max, Min, StdDev, Variance
@@ -324,7 +335,7 @@ articles_par_mois = Article.objects.annotate(
 ).order_by('mois')
 ```
 
-### Exercice 15 - Fonctions de base de données
+### Exercice 7 - Fonctions de base de données (EXEMPLE)
 
 ```python
 from django.db.models.functions import (
@@ -367,7 +378,7 @@ Article.objects.annotate(
 )
 ```
 
-### Exercice 16 - Case/When (Conditions)
+### Exercice 8 - Case/When (Conditions) (EXEMPLE)
 
 ```python
 from django.db.models import Case, When, Value, IntegerField
@@ -415,247 +426,233 @@ Auteur.objects.annotate(
 
 ---
 
-## Exercice 5 - Optimisation : select_related (PRATIQUE) ⭐⭐⭐
+## Exercice 5 - Optimisation : select_related (EXEMPLE) ⭐⭐⭐
 
-**Objectif** : Optimiser les requêtes ForeignKey/OneToOne avec select_related (le problème N+1).
+**Le problème N+1** : Sans optimisation, chaque accès à une relation ForeignKey génère une requête SQL supplémentaire !
 
-**Le problème N+1** :
-Sans optimisation, chaque accès à une relation ForeignKey génère une requête SQL supplémentaire !
-
-**Consignes** :
-1. Identifiez un problème N+1 dans votre code
-2. Optimisez avec `select_related()`
-3. Comparez le nombre de requêtes
-
-**Squelette - `blog/views.py` ou shell** (à compléter) :
+**Démonstration du problème** :
 
 ```python
 from django.db import connection, reset_queries
 from blog.models import Article
-import time
 
-def demonstrer_probleme_n1():
-    """Démontre le problème N+1"""
-    # TODO : Réinitialisez les requêtes
-    reset_queries()
-    
-    # TODO : Récupérez tous les articles (sans optimisation)
-    articles = # VOTRE CODE ICI
-    
-    # TODO : Parcourez les articles et affichez le nom de l'auteur
-    for article in articles:
-        print(article.auteur.nom)  # Chaque accès = 1 requête !
-    
-    # TODO : Affichez le nombre total de requêtes
-    print(f"Nombre de requêtes : {len(connection.queries)}")
-    # Devrait afficher : 1 + N requêtes (N = nombre d'articles)
+# ❌ PROBLÈME N+1
+reset_queries()
 
-def optimiser_avec_select_related():
-    """Optimise avec select_related"""
-    # TODO : Réinitialisez les requêtes
-    reset_queries()
-    
-    # TODO : Récupérez tous les articles AVEC select_related('auteur')
-    articles = # VOTRE CODE ICI
-    
-    # TODO : Parcourez les articles et affichez le nom de l'auteur
-    for article in articles:
-        print(article.auteur.nom)  # Pas de requête supplémentaire !
-    
-    # TODO : Affichez le nombre total de requêtes
-    print(f"Nombre de requêtes : {len(connection.queries)}")
-    # Devrait afficher : 1 seule requête avec JOIN !
+articles = Article.objects.all()[:10]  # 1 requête
 
-def comparer_performances():
-    """Compare les performances"""
-    # TODO : Test sans optimisation
-    start = time.time()
-    reset_queries()
-    articles = Article.objects.all()[:50]
-    for article in articles:
-        _ = article.auteur.nom
-    temps_sans = time.time() - start
-    nb_queries_sans = len(connection.queries)
-    
-    # TODO : Test avec select_related
-    start = time.time()
-    reset_queries()
-    # Utilisez : Article.objects.select_related('auteur').all()[:50]
-    articles = # VOTRE CODE ICI
-    for article in articles:
-        _ = article.auteur.nom
-    temps_avec = time.time() - start
-    nb_queries_avec = len(connection.queries)
-    
-    # TODO : Affichez les résultats
-    print(f"Sans : {temps_sans:.3f}s, {nb_queries_sans} requêtes")
-    print(f"Avec : {temps_avec:.3f}s, {nb_queries_avec} requêtes")
-    print(f"Gain : {((temps_sans - temps_avec) / temps_sans * 100):.1f}%")
+for article in articles:
+    print(article.auteur.nom)  # N requêtes supplémentaires !
 
-# TODO : Relations multiples
-def optimiser_relations_multiples():
-    """Optimise plusieurs relations à la fois"""
-    # TODO : Utilisez select_related avec plusieurs relations
-    # Exemple : .select_related('auteur', 'categorie')
-    articles = # VOTRE CODE ICI
-    
-    for article in articles:
-        print(f"{article.titre} - {article.auteur.nom} - {article.categorie.nom}")
+print(f"Nombre de requêtes : {len(connection.queries)}")
+# Résultat : 11 requêtes (1 + 10)
 ```
 
-**Indice** :
-- `select_related()` utilise un JOIN SQL
-- Fonctionne pour ForeignKey et OneToOne
-- Peut chaîner : `select_related('auteur__profil')`
-- N'utilisez PAS pour ManyToMany (utilisez prefetch_related)
-
-**Validation** :
+**Solution avec select_related** :
 
 ```python
-# TODO : Testez dans le shell
-python manage.py shell
+# ✅ OPTIMISÉ avec select_related
+reset_queries()
 
-# TODO : Activez le debug pour voir les requêtes SQL
-from django.conf import settings
-settings.DEBUG = True
+articles = Article.objects.select_related('auteur').all()[:10]  # 1 requête avec JOIN
 
-# TODO : Testez la fonction
-demonstrer_probleme_n1()  # Devrait afficher beaucoup de requêtes
-optimiser_avec_select_related()  # Devrait afficher 1 seule requête
-comparer_performances()  # Devrait montrer un gain significatif
+for article in articles:
+    print(article.auteur.nom)  # Pas de requête supplémentaire !
+
+print(f"Nombre de requêtes : {len(connection.queries)}")
+# Résultat : 1 seule requête !
 ```
+
+**Relations multiples** :
+
+```python
+# Optimiser auteur ET categorie
+articles = Article.objects.select_related('auteur', 'categorie').all()
+
+for article in articles:
+    categorie = article.categorie.nom if article.categorie else "Sans catégorie"
+    print(f"{article.titre} - {article.auteur.nom} - {categorie}")
+
+# 1 seule requête avec 2 JOINs
+```
+
+**Relations imbriquées (nested)** :
+
+```python
+# Suivre les relations : article → auteur → profil
+articles = Article.objects.select_related('auteur__profil').all()
+
+for article in articles:
+    if hasattr(article.auteur, 'profil'):
+        print(f"{article.titre} - Twitter: {article.auteur.profil.twitter}")
+
+# 1 seule requête avec JOINs imbriqués
+```
+
+**Comparaison de performances** :
+
+```python
+import time
+
+# Test sans optimisation
+start = time.time()
+reset_queries()
+articles = Article.objects.all()[:50]
+for article in articles:
+    _ = article.auteur.nom
+temps_sans = time.time() - start
+nb_queries_sans = len(connection.queries)
+
+# Test avec select_related
+start = time.time()
+reset_queries()
+articles = Article.objects.select_related('auteur').all()[:50]
+for article in articles:
+    _ = article.auteur.nom
+temps_avec = time.time() - start
+nb_queries_avec = len(connection.queries)
+
+# Résultats
+print(f"Sans : {temps_sans:.3f}s, {nb_queries_sans} requêtes")
+print(f"Avec : {temps_avec:.3f}s, {nb_queries_avec} requêtes")
+gain = ((temps_sans - temps_avec) / temps_sans * 100) if temps_sans > 0 else 0
+print(f"Gain : {gain:.1f}%")
+```
+
+**Points clés** :
+- ✅ `select_related()` utilise un **JOIN SQL**
+- ✅ Fonctionne pour **ForeignKey** et **OneToOne**
+- ✅ Réduit N+1 requêtes à **1 seule requête**
+- ❌ Ne fonctionne PAS pour ManyToMany (utilisez `prefetch_related`)
 
 ---
 
-## Exercice 6 - Optimisation : prefetch_related (PRATIQUE) ⭐⭐⭐
-
-**Objectif** : Optimiser les requêtes ManyToMany avec prefetch_related.
+## Exercice 6 - Optimisation : prefetch_related (EXEMPLE) ⭐⭐⭐
 
 **Différence avec select_related** :
-- `select_related` : JOIN (pour ForeignKey/OneToOne)
-- `prefetch_related` : 2 requêtes séparées (pour ManyToMany/Reverse FK)
+- `select_related` : JOIN SQL (pour ForeignKey/OneToOne)
+- `prefetch_related` : 2+ requêtes séparées (pour ManyToMany/Reverse FK)
 
-**Consignes** :
-1. Identifiez un problème N+1 avec ManyToMany
-2. Optimisez avec `prefetch_related()`
-3. Comparez les performances
-
-**Squelette - `blog/views.py` ou shell** (à compléter) :
+**Problème N+1 avec ManyToMany** :
 
 ```python
 from django.db import connection, reset_queries
 from blog.models import Article, Auteur
 
-def demonstrer_n1_manytomany():
-    """Problème N+1 avec ManyToMany"""
-    # TODO : Réinitialisez les requêtes
-    reset_queries()
-    
-    # TODO : Récupérez tous les articles (sans optimisation)
-    articles = # VOTRE CODE ICI
-    
-    # TODO : Affichez les tags de chaque article
-    for article in articles:
-        print(f"{article.titre} : {list(article.tags.all())}")  # N requêtes !
-    
-    print(f"Requêtes : {len(connection.queries)}")
+# ❌ PROBLÈME N+1 avec ManyToMany
+reset_queries()
 
-def optimiser_avec_prefetch():
-    """Optimise avec prefetch_related"""
-    # TODO : Réinitialisez les requêtes
-    reset_queries()
-    
-    # TODO : Utilisez prefetch_related('tags')
-    articles = # VOTRE CODE ICI
-    
-    # TODO : Affichez les tags (pas de requête supplémentaire)
-    for article in articles:
-        print(f"{article.titre} : {list(article.tags.all())}")
-    
-    print(f"Requêtes : {len(connection.queries)}")
-    # Devrait afficher : 2 requêtes (1 pour articles + 1 pour tous les tags)
+articles = Article.objects.all()[:10]  # 1 requête
 
-# TODO : Optimiser les relations inverses (Reverse ForeignKey)
-def optimiser_relation_inverse():
-    """Optimise la relation inverse (auteur.articles)"""
-    # TODO : Récupérez les auteurs avec leurs articles
-    # Utilisez : Auteur.objects.prefetch_related('articles')
-    auteurs = # VOTRE CODE ICI
-    
-    # TODO : Affichez les articles de chaque auteur
-    for auteur in auteurs:
-        print(f"{auteur.nom} : {auteur.articles.count()} articles")
-        # VOTRE CODE ICI
+for article in articles:
+    tags = list(article.tags.all())  # N requêtes !
+    print(f"{article.titre} : {[t.nom for t in tags]}")
 
-# TODO : Combiner select_related ET prefetch_related
-def optimisation_combinee():
-    """Combine les deux techniques"""
-    # TODO : Optimisez à la fois auteur (FK) ET tags (M2M)
-    # Utilisez : .select_related('auteur').prefetch_related('tags')
-    articles = # VOTRE CODE ICI
-    
-    for article in articles:
-        tags_str = ", ".join([t.nom for t in article.tags.all()])
-        print(f"{article.titre} par {article.auteur.nom} - Tags: {tags_str}")
+print(f"Requêtes : {len(connection.queries)}")
+# Résultat : 11 requêtes (1 + 10)
 ```
 
-**Indice** :
-- `prefetch_related()` fait 2 requêtes : 1 pour les objets principaux + 1 pour les relations
-- Fonctionne pour ManyToMany et Reverse ForeignKey
-- Peut combiner avec select_related
-
-**Validation** :
+**Solution avec prefetch_related** :
 
 ```python
-# TODO : Testez dans le shell
-demonstrer_n1_manytomany()  # Beaucoup de requêtes
-optimiser_avec_prefetch()  # 2 requêtes seulement !
-optimisation_combinee()  # Le meilleur des deux mondes
+# ✅ OPTIMISÉ avec prefetch_related
+reset_queries()
 
-# ✅ BON : 2 requêtes (1 pour articles + 1 pour tous les tags)
-articles = Article.objects.prefetch_related('tags').all()
+articles = Article.objects.prefetch_related('tags').all()[:10]
+
 for article in articles:
-    print(list(article.tags.all()))  # Pas de requête, données en cache
+    tags = list(article.tags.all())  # Pas de requête !
+    print(f"{article.titre} : {[t.nom for t in tags]}")
 
-# Relation inverse (auteur.articles)
+print(f"Requêtes : {len(connection.queries)}")
+# Résultat : 2 requêtes (1 pour articles + 1 pour tous les tags)
+```
+
+**Relation inverse (Reverse ForeignKey)** :
+
+```python
+# Optimiser auteur.articles
 auteurs = Auteur.objects.prefetch_related('articles').all()
+
 for auteur in auteurs:
-    for article in auteur.articles.all():
-        print(article.titre)
+    articles = list(auteur.articles.all())
+    print(f"{auteur.nom} : {len(articles)} articles")
+    for article in articles[:3]:
+        print(f"  - {article.titre}")
 
-# Prefetch avec filtrage personnalisé
-from django.db.models import Prefetch
+# 2 requêtes : 1 pour auteurs + 1 pour tous leurs articles
+```
 
-articles_publies = Prefetch(
-    'articles',
-    queryset=Article.objects.filter(publie=True).order_by('-date_creation')
-)
-auteurs = Auteur.objects.prefetch_related(articles_publies)
+**Combiner select_related ET prefetch_related** :
 
-# Combiner select_related et prefetch_related
+```python
+# Le meilleur des deux mondes !
 articles = Article.objects.select_related(
-    'auteur'  # ForeignKey → JOIN
+    'auteur'  # ForeignKey → JOIN SQL
 ).prefetch_related(
-    'tags',  # ManyToMany → Requête séparée
-    'commentaires'  # Reverse FK → Requête séparée
+    'tags'  # ManyToMany → Requête séparée
 ).all()
 
-# Prefetch imbriqué
+for article in articles:
+    tags_str = ", ".join([t.nom for t in article.tags.all()])
+    print(f"{article.titre} par {article.auteur.nom} - Tags: {tags_str}")
+
+# 2 requêtes : 1 avec JOIN pour articles+auteurs + 1 pour tous les tags
+```
+
+**Prefetch imbriqué (nested)** :
+
+```python
+# Charger auteurs → articles → tags en une fois
 auteurs = Auteur.objects.prefetch_related(
     'articles',  # Articles de l'auteur
     'articles__tags',  # Tags de chaque article
     'articles__commentaires'  # Commentaires de chaque article
+).all()
+
+for auteur in auteurs:
+    print(f"\n{auteur.nom}")
+    for article in auteur.articles.all()[:2]:
+        tags = [t.nom for t in article.tags.all()]
+        nb_comm = article.commentaires.count()
+        print(f"  - {article.titre} : {tags} ({nb_comm} commentaires)")
+
+# 4 requêtes : auteurs + articles + tags + commentaires
+```
+
+**Prefetch personnalisé avec filtrage** :
+
+```python
+from django.db.models import Prefetch, Count
+
+# Prefetch seulement les articles publiés
+articles_publies = Prefetch(
+    'articles',
+    queryset=Article.objects.filter(publie=True).order_by('-date_publication')
 )
 
+auteurs = Auteur.objects.prefetch_related(articles_publies).all()
+
+for auteur in auteurs:
+    print(f"{auteur.nom} : {auteur.articles.count()} articles publiés")
+
 # Prefetch avec annotations
-articles_avec_nb_commentaires = Prefetch(
+articles_avec_stats = Prefetch(
     'articles',
     queryset=Article.objects.annotate(nb_commentaires=Count('commentaires'))
 )
-auteurs = Auteur.objects.prefetch_related(articles_avec_nb_commentaires)
+
+auteurs = Auteur.objects.prefetch_related(articles_avec_stats).all()
 ```
 
-### Exercice 20 - only() et defer()
+**Points clés** :
+- ✅ `prefetch_related()` fait **2+ requêtes séparées**
+- ✅ Fonctionne pour **ManyToMany** et **Reverse ForeignKey**
+- ✅ Peut se combiner avec `select_related`
+- ✅ Supporte le filtrage et les annotations personnalisées
+- ✅ Évite le problème N+1 : N+1 requêtes → 2+ requêtes
+
+### Exercice 9 - only() et defer() (EXEMPLE)
 
 **Cas d'usage** : Charger seulement certains champs pour réduire la taille des données.
 
@@ -684,7 +681,7 @@ export = Article.objects.all()
 articles_liste = Article.objects.defer('contenu', 'contenu_html')  # Évite charger le HTML
 ```
 
-### Exercice 21 - Bulk operations (Opérations en masse)
+### Exercice 10 - Bulk operations (Opérations en masse) (EXEMPLE)
 
 ```python
 # ❌ MAUVAIS : N requêtes
@@ -733,7 +730,7 @@ article, created = Article.objects.update_or_create(
 )
 ```
 
-### Exercice 22 - Transactions
+### Exercice 11 - Transactions (EXEMPLE)
 
 ```python
 from django.db import transaction
