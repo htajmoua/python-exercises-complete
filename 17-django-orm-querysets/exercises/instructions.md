@@ -12,7 +12,112 @@ Ce module est le **CŒUR** de votre maîtrise de l'ORM Django. Vous apprendrez �
 
 Tous les exercices contiennent du code complet et fonctionnel. Suivez les exemples, testez-les dans le shell Django, et adaptez-les à vos besoins.
 
-**Prérequis** : Avoir complété le module 15 (Fondamentaux des modèles)
+**Prérequis** : Avoir complété le module 16 (Django Models : Fondamentaux)
+
+---
+
+## 📦 Préparation des données
+
+Avant de commencer les exercices, créez des données de test dans le **shell Django** :
+
+```bash
+python manage.py shell
+```
+
+```python
+from blog.models import Article, Auteur, Tag
+from datetime import date
+
+# Créer des auteurs
+auteur1, _ = Auteur.objects.get_or_create(
+    email="alice@example.com",
+    defaults={
+        'nom': "Dupont",
+        'prenom': "Alice",
+        'pseudo': "alice"
+    }
+)
+
+auteur2, _ = Auteur.objects.get_or_create(
+    email="bob@example.com",
+    defaults={
+        'nom': "Martin",
+        'prenom': "Bob",
+        'pseudo': "bob"
+    }
+)
+
+# Créer des tags
+tag_python, _ = Tag.objects.get_or_create(
+    slug="python",
+    defaults={'nom': "Python", 'description': "Langage Python"}
+)
+
+tag_django, _ = Tag.objects.get_or_create(
+    slug="django",
+    defaults={'nom': "Django", 'description': "Framework Django"}
+)
+
+tag_web, _ = Tag.objects.get_or_create(
+    slug="web",
+    defaults={'nom': "Web", 'description': "Développement web"}
+)
+
+# Créer des articles
+article1, _ = Article.objects.get_or_create(
+    slug="introduction-django",
+    defaults={
+        'titre': "Introduction à Django",
+        'contenu': "Django est un framework web puissant...",
+        'auteur': auteur1,
+        'publie': True,
+        'nombre_vues': 1500
+    }
+)
+article1.tags.add(tag_django, tag_python)
+
+article2, _ = Article.objects.get_or_create(
+    slug="python-debutant",
+    defaults={
+        'titre': "Python pour débutants",
+        'contenu': "Apprenez les bases de Python...",
+        'auteur': auteur1,
+        'publie': True,
+        'nombre_vues': 2500
+    }
+)
+article2.tags.add(tag_python)
+
+article3, _ = Article.objects.get_or_create(
+    slug="optimisation-django",
+    defaults={
+        'titre': "Optimisation Django",
+        'contenu': "Comment optimiser vos requêtes Django...",
+        'auteur': auteur2,
+        'publie': True,
+        'nombre_vues': 800
+    }
+)
+article3.tags.add(tag_django, tag_web)
+
+article4, _ = Article.objects.get_or_create(
+    slug="brouillon",
+    defaults={
+        'titre': "Article en cours",
+        'contenu': "Ceci est un brouillon...",
+        'auteur': auteur2,
+        'publie': False,
+        'nombre_vues': 50
+    }
+)
+
+print("Données créées avec succès!")
+print(f"  - {Auteur.objects.count()} auteurs")
+print(f"  - {Article.objects.count()} articles")
+print(f"  - {Tag.objects.count()} tags")
+```
+
+Vous êtes maintenant prêt pour les exercices ! 🚀
 
 ---
 
@@ -24,123 +129,151 @@ Tous les exercices contiennent du code complet et fonctionnel. Suivez les exempl
 from blog.models import Article, Auteur, Tag
 
 # Tous les articles
-Article.objects.all()
+articles = Article.objects.all()
+print(f"Total : {articles.count()} articles")
 
-# Un article spécifique (lève DoesNotExist si absent)
-Article.objects.get(id=1)
-Article.objects.get(slug='introduction-django')
+# Un article spécifique (utilisez le slug, pas l'ID)
+article = Article.objects.get(slug='introduction-django')
+print(f"Article trouvé : {article.titre}")
 
 # Filtrer
-Article.objects.filter(publie=True)
-Article.objects.filter(publie=True, featured=True)  # AND implicite
+articles_publies = Article.objects.filter(publie=True)
+print(f"Articles publiés : {articles_publies.count()}")
 
-# Exclure
-Article.objects.exclude(publie=False)
+# Exclure (articles publiés uniquement)
+articles_sans_brouillon = Article.objects.exclude(publie=False)
+print(f"Sans brouillons : {articles_sans_brouillon.count()}")
 
 # Compter
-Article.objects.count()
-Article.objects.filter(publie=True).count()
+total = Article.objects.count()
+publies = Article.objects.filter(publie=True).count()
+print(f"Total : {total}, Publiés : {publies}")
 
 # Premier et dernier
-Article.objects.first()
-Article.objects.last()
-Article.objects.filter(publie=True).first()
+premier = Article.objects.first()
+dernier = Article.objects.last()
+premier_publie = Article.objects.filter(publie=True).first()
+print(f"Premier : {premier.titre if premier else 'Aucun'}")
 
 # Vérifier l'existence
-Article.objects.filter(slug='test').exists()  # Retourne True/False
+existe = Article.objects.filter(slug='introduction-django').exists()
+print(f"Article 'introduction-django' existe : {existe}")
 
 # Valeurs spécifiques (retourne des dictionnaires)
-Article.objects.values('id', 'titre', 'auteur__nom')
-Article.objects.values_list('id', 'titre', flat=False)
-Article.objects.values_list('titre', flat=True)  # Liste simple
+valeurs = Article.objects.values('id', 'titre', 'auteur__nom')
+print(f"Valeurs : {list(valeurs)[:2]}")  # Affiche 2 premiers
 
-# Distinct
-Article.objects.values('auteur').distinct()
+# Liste simple de titres
+titres = Article.objects.values_list('titre', flat=True)
+print(f"Titres : {list(titres)}")
+
+# Distinct (auteurs ayant au moins 1 article)
+auteurs_distincts = Article.objects.values('auteur').distinct()
+print(f"Nombre d'auteurs distincts : {auteurs_distincts.count()}")
 ```
 
 ## Exercice 2 - Lookups avancés (EXEMPLE)
 
 ```python
 from datetime import datetime, timedelta
+from django.utils import timezone
 
-# Exactement égal
-Article.objects.filter(titre__exact="Django")
-Article.objects.filter(titre__iexact="django")  # Case-insensitive
+# Contient (case-sensitive et insensitive)
+avec_django = Article.objects.filter(titre__contains="Django")
+print(f"Contient 'Django' : {avec_django.count()} articles")
 
-# Contient
-Article.objects.filter(titre__contains="Django")
-Article.objects.filter(titre__icontains="django")  # Case-insensitive
+avec_django_i = Article.objects.filter(titre__icontains="django")
+print(f"Contient 'django' (insensitive) : {avec_django_i.count()} articles")
 
-# Commence/Termine par
-Article.objects.filter(titre__startswith="Introduction")
-Article.objects.filter(titre__istartswith="introduction")
-Article.objects.filter(titre__endswith="Python")
-Article.objects.filter(titre__iendswith="python")
+# Commence par
+commence_intro = Article.objects.filter(titre__startswith="Introduction")
+print(f"Commence par 'Introduction' : {commence_intro.count()}")
 
-# Nombres
-Article.objects.filter(nombre_vues__gt=1000)  # Greater than
-Article.objects.filter(nombre_vues__gte=1000)  # Greater than or equal
-Article.objects.filter(nombre_vues__lt=100)  # Less than
-Article.objects.filter(nombre_vues__lte=100)  # Less than or equal
+# Termine par
+termine_django = Article.objects.filter(titre__endswith="Django")
+print(f"Termine par 'Django' : {termine_django.count()}")
 
-# Range
-Article.objects.filter(nombre_vues__range=(100, 1000))
-Article.objects.filter(id__in=[1, 2, 3, 5, 8])
+# Nombres (comparaisons)
+plus_1000_vues = Article.objects.filter(nombre_vues__gt=1000)
+print(f"Plus de 1000 vues : {plus_1000_vues.count()}")
 
-# Dates
-Article.objects.filter(date_creation__year=2024)
-Article.objects.filter(date_creation__month=12)
-Article.objects.filter(date_creation__day=25)
-Article.objects.filter(date_creation__week=52)
-Article.objects.filter(date_creation__week_day=2)  # 1=dimanche, 2=lundi
+entre_500_2000 = Article.objects.filter(nombre_vues__range=(500, 2000))
+print(f"Entre 500 et 2000 vues : {entre_500_2000.count()}")
 
-# Plages de dates
-date_limite = datetime.now() - timedelta(days=7)
-Article.objects.filter(date_creation__gte=date_limite)
+moins_100_vues = Article.objects.filter(nombre_vues__lt=100)
+print(f"Moins de 100 vues : {moins_100_vues.count()}")
 
-# Date précise
-Article.objects.filter(date_creation__date=datetime.now().date())
+# Dates (année courante)
+annee_actuelle = timezone.now().year
+articles_annee = Article.objects.filter(date_creation__year=annee_actuelle)
+print(f"Articles de {annee_actuelle} : {articles_annee.count()}")
 
-# NULL
-Article.objects.filter(date_suppression__isnull=True)
-Article.objects.filter(date_suppression__isnull=False)
+# Articles récents (derniers 7 jours)
+date_limite = timezone.now() - timedelta(days=7)
+articles_recents = Article.objects.filter(date_creation__gte=date_limite)
+print(f"Articles des 7 derniers jours : {articles_recents.count()}")
 
-# Regex
-Article.objects.filter(titre__regex=r'^[A-Z]')  # Titre commence par majuscule
-Article.objects.filter(titre__iregex=r'python|django')  # Case-insensitive
+# Regex (titres commençant par majuscule)
+majuscule = Article.objects.filter(titre__regex=r'^[A-Z]')
+print(f"Titres avec majuscule : {majuscule.count()}")
+
+# Recherche multiple avec regex
+python_ou_django = Article.objects.filter(titre__iregex=r'python|django')
+print(f"Contient 'python' OU 'django' : {python_ou_django.count()}")
+for article in python_ou_django:
+    print(f"  - {article.titre}")
 ```
 
-### Exercice 2bis - Relations et lookups (EXEMPLE)
+## Exercice 3 - Relations et lookups (EXEMPLE)
 
 ```python
 # Filtrer par champ de relation (double underscore)
-Article.objects.filter(auteur__nom="Dupont")
-Article.objects.filter(auteur__email__endswith="@example.com")
-Article.objects.filter(auteur__date_naissance__year__gte=1990)
+articles_dupont = Article.objects.filter(auteur__nom="Dupont")
+print(f"Articles de Dupont : {articles_dupont.count()}")
+for article in articles_dupont:
+    print(f"  - {article.titre}")
 
-# ManyToMany
-Article.objects.filter(tags__nom="Python")
-Article.objects.filter(tags__nom__in=["Python", "Django"])
+# Email se terminant par @example.com
+articles_example = Article.objects.filter(auteur__email__endswith="@example.com")
+print(f"\nArticles d'auteurs @example.com : {articles_example.count()}")
 
-# Relations inverses
-Auteur.objects.filter(articles__publie=True)
-Auteur.objects.filter(articles__nombre_vues__gt=1000)
+# ManyToMany - Articles avec tag Python
+avec_python = Article.objects.filter(tags__nom="Python")
+print(f"\nArticles avec tag Python : {avec_python.count()}")
+for article in avec_python:
+    print(f"  - {article.titre}")
 
-# Relations profondes
-Article.objects.filter(auteur__profil__twitter__isnull=False)
-Article.objects.filter(categorie__parent__nom="Technologie")
+# ManyToMany - Articles avec plusieurs tags
+avec_python_ou_django = Article.objects.filter(tags__nom__in=["Python", "Django"])
+print(f"\nArticles Python OU Django : {avec_python_ou_django.count()}")
 
-# Compter les relations
+# Relations inverses - Auteurs ayant des articles publiés
 from django.db.models import Count
-Auteur.objects.annotate(nb_articles=Count('articles'))
-Auteur.objects.filter(articles__count__gt=5)  # ERREUR: ne fonctionne pas ainsi
-# Correct :
-Auteur.objects.annotate(nb_articles=Count('articles')).filter(nb_articles__gt=5)
+
+auteurs_publies = Auteur.objects.filter(articles__publie=True).distinct()
+print(f"\nAuteurs avec articles publiés : {auteurs_publies.count()}")
+for auteur in auteurs_publies:
+    print(f"  - {auteur.prenom} {auteur.nom}")
+
+# Auteurs avec articles populaires (>1000 vues)
+auteurs_populaires = Auteur.objects.filter(articles__nombre_vues__gt=1000).distinct()
+print(f"\nAuteurs avec articles >1000 vues : {auteurs_populaires.count()}")
+
+# Compter les articles par auteur
+auteurs_avec_count = Auteur.objects.annotate(nb_articles=Count('articles'))
+for auteur in auteurs_avec_count:
+    print(f"{auteur.prenom} {auteur.nom} : {auteur.nb_articles} article(s)")
+
+# Auteurs avec plus de 1 article
+auteurs_prolifiques = Auteur.objects.annotate(
+    nb_articles=Count('articles')
+).filter(nb_articles__gt=1)
+print(f"\nAuteurs avec >1 article : {auteurs_prolifiques.count()}")
 ```
 
 ---
 
-## Exercice 3 - Q objects / Requêtes complexes (EXEMPLE)
+## Exercice 4 - Q objects / Requêtes complexes (EXEMPLE)
 
 **Les Q objects** permettent de créer des requêtes complexes avec OR, AND, NOT.
 
@@ -154,12 +287,13 @@ articles_or = Article.objects.filter(
 )
 print(f"Articles (OR) : {articles_or.count()}")
 
-# AND : Articles publiés ET featured
+# AND : Articles publiés ET avec plus de 800 vues
 articles_and = Article.objects.filter(
-    Q(publie=True) & Q(featured=True)
+    Q(publie=True) & Q(nombre_vues__gt=800)
 )
+print(f"Articles (AND) : {articles_and.count()}")
 # Équivalent à :
-articles_and = Article.objects.filter(publie=True, featured=True)
+articles_and = Article.objects.filter(publie=True, nombre_vues__gt=800)
 
 # NOT : Articles NON écrits par "Dupont"
 articles_not = Article.objects.filter(
@@ -168,10 +302,11 @@ articles_not = Article.objects.filter(
 print(f"Articles NOT Dupont : {articles_not.count()}")
 
 # Requête complexe avec parenthèses
-# (publie=True AND featured=True) OR (nombre_vues > 1000)
+# (publie=True AND nombre_vues > 800) OR (auteur Martin)
 articles_complexe = Article.objects.filter(
-    (Q(publie=True) & Q(featured=True)) | Q(nombre_vues__gt=1000)
+    (Q(publie=True) & Q(nombre_vues__gt=800)) | Q(auteur__nom="Martin")
 )
+print(f"Articles complexe : {articles_complexe.count()}")
 
 # Plusieurs conditions OR
 articles = Article.objects.filter(
@@ -180,9 +315,10 @@ articles = Article.objects.filter(
 
 # Combiner plusieurs Q objects
 q1 = Q(publie=True)
-q2 = Q(featured=True)
-q3 = Q(nombre_vues__gt=500)
+q2 = Q(nombre_vues__gt=1000)
+q3 = Q(auteur__nom="Dupont")
 articles = Article.objects.filter(q1 & (q2 | q3))
+print(f"Combinaison Q : {articles.count()}")
 ```
 
 **Fonction de recherche dynamique** :
@@ -234,55 +370,62 @@ articles = Article.objects.filter(
     Q(tags__nom="Python") | Q(tags__nom="Django")
 ).distinct()
 
-# Relations profondes
-articles = Article.objects.filter(
-    Q(auteur__profil__twitter__isnull=False) | 
-    Q(categorie__parent__nom="Technologie")
-)
+# Combinaison tags
+articles_python_ou_django = Article.objects.filter(
+    Q(tags__nom="Python") | Q(tags__nom="Django")
+).distinct()
+print(f"Articles Python OU Django : {articles_python_ou_django.count()}")
 ```
 
 ---
 
-## Exercice 4 - F expressions (EXEMPLE) 
+## Exercice 5 - F expressions (EXEMPLE) 
 
 **Comprendre les F expressions** pour manipuler les champs côté base de données.
 
 ```python
 from django.db.models import F
-
-# Comparer des champs entre eux
-Article.objects.filter(nombre_vues__gt=F('nombre_likes') * 10)
+from django.utils import timezone
 
 # Incrémenter un champ (évite race condition)
 # MAUVAIS (race condition possible):
-article = Article.objects.get(id=1)
+article = Article.objects.get(slug='introduction-django')
 article.nombre_vues += 1
 article.save()
+print(f"Vues après incrémentation : {article.nombre_vues}")
 
-# BON (atomique):
-Article.objects.filter(id=1).update(nombre_vues=F('nombre_vues') + 1)
-
-# Opérations arithmétiques
-Article.objects.update(score=F('nombre_vues') + F('nombre_likes') * 2)
-
-# Avec dates
-from django.utils import timezone
-from datetime import timedelta
-Article.objects.update(
-    date_expiration=F('date_publication') + timedelta(days=30)
+# BON (atomique, évite race condition):
+Article.objects.filter(slug='introduction-django').update(
+    nombre_vues=F('nombre_vues') + 1
 )
+article.refresh_from_db()
+print(f"Vues après update atomique : {article.nombre_vues}")
 
-# Références à travers relations
-Article.objects.filter(nombre_vues__gt=F('auteur__profil__nombre_followers'))
+# Incrémenter tous les articles publiés
+Article.objects.filter(publie=True).update(
+    nombre_vues=F('nombre_vues') + 10
+)
+print(f"Tous les articles publiés ont +10 vues")
 
-# Annotations avec F
+# Comparer des champs entre eux (date_modification > date_creation)
+articles_modifies = Article.objects.filter(
+    date_modification__gt=F('date_creation')
+)
+print(f"Articles modifiés après création : {articles_modifies.count()}")
+
+# Filtrer les articles où l'auteur a plusieurs articles
 from django.db.models import Count
-Article.objects.annotate(
-    ratio=F('nombre_likes') * 100.0 / F('nombre_vues')
-).filter(ratio__gt=5)
+auteurs_prolifiques = Auteur.objects.annotate(
+    nb=Count('articles')
+).filter(nb__gt=1)
+
+articles = Article.objects.filter(
+    auteur__in=auteurs_prolifiques
+)
+print(f"Articles d'auteurs prolifiques : {articles.count()}")
 ```
 
-### Exercice 4bis - Agrégation (EXEMPLE)
+## Exercice 6 - Agrégation (EXEMPLE)
 
 ```python
 from django.db.models import Count, Sum, Avg, Max, Min, StdDev, Variance
@@ -295,19 +438,21 @@ stats = Article.objects.aggregate(
     max_vues=Max('nombre_vues'),
     min_vues=Min('nombre_vues')
 )
-# {'total': 150, 'vues_totales': 45000, 'vues_moyenne': 300.0, ...}
+print(f"Stats : {stats}")
 
 # Agrégation avec filtre
-Article.objects.filter(publie=True).aggregate(
+stats_publies = Article.objects.filter(publie=True).aggregate(
     total_publie=Count('id'),
     vues_moyennes_publie=Avg('nombre_vues')
 )
+print(f"Stats articles publiés : {stats_publies}")
 
 # Agrégation sur relations
-Auteur.objects.aggregate(
+stats_auteurs = Auteur.objects.aggregate(
     total_articles=Count('articles'),
     total_vues=Sum('articles__nombre_vues')
 )
+print(f"Stats tous auteurs : {stats_auteurs}")
 
 # Annotation (ajoute le résultat à chaque objet)
 auteurs_avec_stats = Auteur.objects.annotate(
@@ -372,49 +517,51 @@ Article.objects.annotate(
     apercu=Substr('contenu', 1, 100)
 )
 
-# Greatest / Least
-Article.objects.annotate(
-    meilleur_score=Greatest('nombre_vues', 'nombre_likes', 'nombre_partages')
+# Greatest (exemple avec dates)
+from django.db.models.functions import Greatest, Least
+
+articles = Article.objects.annotate(
+    derniere_modif=Greatest('date_creation', 'date_modification')
 )
+for article in articles[:2]:
+    print(f"{article.titre} - Dernière modif: {article.derniere_modif}")
 ```
 
-### Exercice 8 - Case/When (Conditions) (EXEMPLE)
+## Exercice 8 - Case/When (Conditions) (EXEMPLE)
 
 ```python
-from django.db.models import Case, When, Value, IntegerField
+from django.db.models import Case, When, Value, IntegerField, CharField, F
 
 # Ajouter un champ calculé selon des conditions
-Article.objects.annotate(
+articles_avec_popularite = Article.objects.annotate(
     popularite=Case(
-        When(nombre_vues__gte=10000, then=Value('Viral')),
+        When(nombre_vues__gte=2000, then=Value('Viral')),
         When(nombre_vues__gte=1000, then=Value('Populaire')),
-        When(nombre_vues__gte=100, then=Value('Moyen')),
+        When(nombre_vues__gte=500, then=Value('Moyen')),
         default=Value('Faible'),
         output_field=CharField()
     )
 )
 
-# Avec des calculs
-Article.objects.annotate(
-    score=Case(
-        When(featured=True, then=F('nombre_vues') * 2),
-        When(publie=True, then=F('nombre_vues')),
-        default=Value(0),
-        output_field=IntegerField()
-    )
-).order_by('-score')
+for article in articles_avec_popularite:
+    print(f"{article.titre}: {article.popularite} ({article.nombre_vues} vues)")
 
-# Tri conditionnel
-Article.objects.annotate(
+# Tri conditionnel selon statut
+articles_tries = Article.objects.annotate(
     priorite=Case(
-        When(featured=True, then=Value(1)),
+        When(publie=True, nombre_vues__gte=1000, then=Value(1)),
         When(publie=True, then=Value(2)),
         default=Value(3)
     )
 ).order_by('priorite', '-date_creation')
 
+print("\nArticles triés par priorité:")
+for article in articles_tries[:3]:
+    statut = "Publié" if article.publie else "Brouillon"
+    print(f"  - {article.titre} ({statut}, {article.nombre_vues} vues)")
+
 # Compter avec conditions
-Auteur.objects.annotate(
+auteurs_avec_stats = Auteur.objects.annotate(
     articles_publies=Count(
         Case(When(articles__publie=True, then=1))
     ),
@@ -422,11 +569,14 @@ Auteur.objects.annotate(
         Case(When(articles__publie=False, then=1))
     )
 )
+
+for auteur in auteurs_avec_stats:
+    print(f"{auteur.prenom} {auteur.nom}: {auteur.articles_publies} publiés, {auteur.articles_brouillon} brouillons")
 ```
 
 ---
 
-## Exercice 5 - Optimisation : select_related (EXEMPLE) ⭐⭐⭐
+## Exercice 9 - Optimisation : select_related (EXEMPLE) ⭐⭐⭐
 
 **Le problème N+1** : Sans optimisation, chaque accès à une relation ForeignKey génère une requête SQL supplémentaire !
 
@@ -436,7 +586,7 @@ Auteur.objects.annotate(
 from django.db import connection, reset_queries
 from blog.models import Article
 
-# ❌ PROBLÈME N+1
+# PROBLÈME N+1
 reset_queries()
 
 articles = Article.objects.all()[:10]  # 1 requête
@@ -451,7 +601,7 @@ print(f"Nombre de requêtes : {len(connection.queries)}")
 **Solution avec select_related** :
 
 ```python
-# ✅ OPTIMISÉ avec select_related
+# OPTIMISÉ avec select_related
 reset_queries()
 
 articles = Article.objects.select_related('auteur').all()[:10]  # 1 requête avec JOIN
@@ -463,30 +613,18 @@ print(f"Nombre de requêtes : {len(connection.queries)}")
 # Résultat : 1 seule requête !
 ```
 
-**Relations multiples** :
+**Utilisation pratique** :
 
 ```python
-# Optimiser auteur ET categorie
-articles = Article.objects.select_related('auteur', 'categorie').all()
+# select_related pour éviter le N+1
+articles = Article.objects.select_related('auteur').all()
 
 for article in articles:
-    categorie = article.categorie.nom if article.categorie else "Sans catégorie"
-    print(f"{article.titre} - {article.auteur.nom} - {categorie}")
+    # Accès à l'auteur sans nouvelle requête
+    print(f"{article.titre} par {article.auteur.prenom} {article.auteur.nom}")
+    print(f"  Email: {article.auteur.email}")
 
-# 1 seule requête avec 2 JOINs
-```
-
-**Relations imbriquées (nested)** :
-
-```python
-# Suivre les relations : article → auteur → profil
-articles = Article.objects.select_related('auteur__profil').all()
-
-for article in articles:
-    if hasattr(article.auteur, 'profil'):
-        print(f"{article.titre} - Twitter: {article.auteur.profil.twitter}")
-
-# 1 seule requête avec JOINs imbriqués
+# Une seule requête au total !
 ```
 
 **Comparaison de performances** :
@@ -527,268 +665,23 @@ print(f"Gain : {gain:.1f}%")
 
 ---
 
-## Exercice 6 - Optimisation : prefetch_related (EXEMPLE) ⭐⭐⭐
+## 🎉 Félicitations !
 
-**Différence avec select_related** :
-- `select_related` : JOIN SQL (pour ForeignKey/OneToOne)
-- `prefetch_related` : 2+ requêtes séparées (pour ManyToMany/Reverse FK)
+Vous avez complété le module Django ORM QuerySets et Optimisation. Vous maîtrisez maintenant :
 
-**Problème N+1 avec ManyToMany** :
+✅ **QuerySets de base** : filter, exclude, get, count, exists  
+✅ **Lookups avancés** : contains, startswith, gt, lt, range, regex  
+✅ **Q objects** : Requêtes complexes avec OR, AND, NOT  
+✅ **F expressions** : Comparaisons et opérations côté base de données  
+✅ **Agrégations** : Count, Sum, Avg, Max, Min, annotations  
+✅ **Fonctions de base de données** : Concat, Upper, Lower, TruncDate  
+✅ **Case/When** : Conditions et logique conditionnelle  
+✅ **select_related** : Optimisation ForeignKey (JOINs)  
 
-```python
-from django.db import connection, reset_queries
-from blog.models import Article, Auteur
+### 📚 Pour aller plus loin
 
-# ❌ PROBLÈME N+1 avec ManyToMany
-reset_queries()
+- **Django Documentation** : https://docs.djangoproject.com/en/stable/topics/db/queries/
+- **QuerySet API Reference** : https://docs.djangoproject.com/en/stable/ref/models/querysets/
+- **Database Optimization** : https://docs.djangoproject.com/en/stable/topics/db/optimization/
 
-articles = Article.objects.all()[:10]  # 1 requête
-
-for article in articles:
-    tags = list(article.tags.all())  # N requêtes !
-    print(f"{article.titre} : {[t.nom for t in tags]}")
-
-print(f"Requêtes : {len(connection.queries)}")
-# Résultat : 11 requêtes (1 + 10)
-```
-
-**Solution avec prefetch_related** :
-
-```python
-# ✅ OPTIMISÉ avec prefetch_related
-reset_queries()
-
-articles = Article.objects.prefetch_related('tags').all()[:10]
-
-for article in articles:
-    tags = list(article.tags.all())  # Pas de requête !
-    print(f"{article.titre} : {[t.nom for t in tags]}")
-
-print(f"Requêtes : {len(connection.queries)}")
-# Résultat : 2 requêtes (1 pour articles + 1 pour tous les tags)
-```
-
-**Relation inverse (Reverse ForeignKey)** :
-
-```python
-# Optimiser auteur.articles
-auteurs = Auteur.objects.prefetch_related('articles').all()
-
-for auteur in auteurs:
-    articles = list(auteur.articles.all())
-    print(f"{auteur.nom} : {len(articles)} articles")
-    for article in articles[:3]:
-        print(f"  - {article.titre}")
-
-# 2 requêtes : 1 pour auteurs + 1 pour tous leurs articles
-```
-
-**Combiner select_related ET prefetch_related** :
-
-```python
-# Le meilleur des deux mondes !
-articles = Article.objects.select_related(
-    'auteur'  # ForeignKey → JOIN SQL
-).prefetch_related(
-    'tags'  # ManyToMany → Requête séparée
-).all()
-
-for article in articles:
-    tags_str = ", ".join([t.nom for t in article.tags.all()])
-    print(f"{article.titre} par {article.auteur.nom} - Tags: {tags_str}")
-
-# 2 requêtes : 1 avec JOIN pour articles+auteurs + 1 pour tous les tags
-```
-
-**Prefetch imbriqué (nested)** :
-
-```python
-# Charger auteurs → articles → tags en une fois
-auteurs = Auteur.objects.prefetch_related(
-    'articles',  # Articles de l'auteur
-    'articles__tags',  # Tags de chaque article
-    'articles__commentaires'  # Commentaires de chaque article
-).all()
-
-for auteur in auteurs:
-    print(f"\n{auteur.nom}")
-    for article in auteur.articles.all()[:2]:
-        tags = [t.nom for t in article.tags.all()]
-        nb_comm = article.commentaires.count()
-        print(f"  - {article.titre} : {tags} ({nb_comm} commentaires)")
-
-# 4 requêtes : auteurs + articles + tags + commentaires
-```
-
-**Prefetch personnalisé avec filtrage** :
-
-```python
-from django.db.models import Prefetch, Count
-
-# Prefetch seulement les articles publiés
-articles_publies = Prefetch(
-    'articles',
-    queryset=Article.objects.filter(publie=True).order_by('-date_publication')
-)
-
-auteurs = Auteur.objects.prefetch_related(articles_publies).all()
-
-for auteur in auteurs:
-    print(f"{auteur.nom} : {auteur.articles.count()} articles publiés")
-
-# Prefetch avec annotations
-articles_avec_stats = Prefetch(
-    'articles',
-    queryset=Article.objects.annotate(nb_commentaires=Count('commentaires'))
-)
-
-auteurs = Auteur.objects.prefetch_related(articles_avec_stats).all()
-```
-
-**Points clés** :
-- ✅ `prefetch_related()` fait **2+ requêtes séparées**
-- ✅ Fonctionne pour **ManyToMany** et **Reverse ForeignKey**
-- ✅ Peut se combiner avec `select_related`
-- ✅ Supporte le filtrage et les annotations personnalisées
-- ✅ Évite le problème N+1 : N+1 requêtes → 2+ requêtes
-
-### Exercice 9 - only() et defer() (EXEMPLE)
-
-**Cas d'usage** : Charger seulement certains champs pour réduire la taille des données.
-
-```python
-# only() : Charge SEULEMENT les champs spécifiés
-articles = Article.objects.only('id', 'titre', 'slug')
-# Accéder à un champ non chargé génère une requête supplémentaire
-for article in articles:
-    print(article.titre)  # OK, pas de requête
-    print(article.contenu)  # ⚠️ Requête supplémentaire !
-
-# defer() : Charge TOUS les champs SAUF ceux spécifiés  
-articles = Article.objects.defer('contenu', 'metadata')
-for article in articles:
-    print(article.titre)  # OK
-    # article.contenu générerait une requête
-
-# Utilisation pratique
-# Pour une liste : only ID et titre
-liste = Article.objects.only('id', 'titre', 'auteur__nom').select_related('auteur')
-
-# Pour un export : tous les champs
-export = Article.objects.all()
-
-# defer pour champs volumineux
-articles_liste = Article.objects.defer('contenu', 'contenu_html')  # Évite charger le HTML
-```
-
-### Exercice 10 - Bulk operations (Opérations en masse) (EXEMPLE)
-
-```python
-# ❌ MAUVAIS : N requêtes
-for i in range(1000):
-    Article.objects.create(titre=f"Article {i}", ...)
-
-# ✅ BON : 1 seule requête
-articles = [
-    Article(titre=f"Article {i}", contenu="...", auteur=auteur)
-    for i in range(1000)
-]
-Article.objects.bulk_create(articles, batch_size=500)
-
-# bulk_update
-articles = Article.objects.all()[:1000]
-for article in articles:
-    article.nombre_vues += 1
-Article.objects.bulk_update(articles, ['nombre_vues'], batch_size=500)
-
-# update() pour mise à jour en masse
-Article.objects.filter(auteur=auteur).update(publie=True)
-Article.objects.all().update(nombre_vues=F('nombre_vues') + 1)
-
-# get_or_create
-article, created = Article.objects.get_or_create(
-    slug='introduction-django',
-    defaults={
-        'titre': 'Introduction à Django',
-        'contenu': '...',
-        'auteur': auteur
-    }
-)
-if created:
-    print("Article créé")
-else:
-    print("Article existant")
-
-# update_or_create
-article, created = Article.objects.update_or_create(
-    slug='introduction-django',
-    defaults={
-        'titre': 'Introduction à Django (mis à jour)',
-        'contenu': '...',
-        'publie': True
-    }
-)
-```
-
-### Exercice 11 - Transactions (EXEMPLE)
-
-```python
-from django.db import transaction
-
-# Méthode 1 : Décorateur
-@transaction.atomic
-def creer_article_complet(titre, contenu, auteur, tags):
-    article = Article.objects.create(
-        titre=titre,
-        contenu=contenu,
-        auteur=auteur
-    )
-    article.tags.set(tags)
-    
-    # Si erreur ici, TOUT est annulé (rollback)
-    article.auteur.profil.nombre_articles += 1
-    article.auteur.profil.save()
-    
-    return article
-
-# Méthode 2 : Context manager
-def publier_articles(auteur):
-    with transaction.atomic():
-        # Toutes ces opérations sont atomiques
-        articles = Article.objects.filter(
-            auteur=auteur,
-            publie=False
-        )
-        
-        for article in articles:
-            article.publie = True
-            article.date_publication = timezone.now()
-            article.save()
-        
-        auteur.profil.derniere_publication = timezone.now()
-        auteur.profil.save()
-        
-        # Si erreur, rollback automatique
-
-# Savepoints (points de sauvegarde)
-with transaction.atomic():
-    article = Article.objects.create(...)
-    
-    sid = transaction.savepoint()  # Créer un savepoint
-    
-    try:
-        # Opération risquée
-        article.tags.set(tags)
-    except Exception:
-        transaction.savepoint_rollback(sid)  # Rollback au savepoint
-    else:
-        transaction.savepoint_commit(sid)  # Commit le savepoint
-
-# select_for_update (verrouillage)
-with transaction.atomic():
-    # Verrouille les lignes jusqu'à la fin de la transaction
-    article = Article.objects.select_for_update().get(id=1)
-    article.nombre_vues += 1
-    article.save()
-    # Évite les race conditions
-```
+**Prochain module** : 18 - Django ORM PostgreSQL & Projet complet 🚀
