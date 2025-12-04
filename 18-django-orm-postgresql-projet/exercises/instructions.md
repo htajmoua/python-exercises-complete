@@ -6,20 +6,17 @@
 
 **Prérequis** : Modules 15-17 (Django, Models, QuerySets)
 
-**Durée estimée** : 8-10 heures
-
 ---
 
 # 🎬 Contexte du Projet
 
 **BlogPro** est une plateforme de blog professionnelle avec :
 - Articles, catégories, tags
-- Auteurs avec profils enrichis
+- Auteurs avec profils enrichis (ArrayField)
 - Commentaires et système de modération
 - Likes et notes (1-5 étoiles)
-- Recherche full-text performante
-- Dashboard analytics en temps réel
-- Statistiques par auteur/catégorie
+- Classes abstraites réutilisables
+- Soft delete et système de publication
 - Interface admin personnalisée
 
 **Stack technique** :
@@ -65,13 +62,13 @@ volumes:
 
 ```bash
 # Démarrer
-docker-compose up -d
+docker compose up -d
 
 # Vérifier
-docker-compose ps
+docker compose ps
 
 # Logs
-docker-compose logs -f db
+docker compose logs -f db
 ```
 
 ---
@@ -234,8 +231,6 @@ python manage.py migrate
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.postgres.fields import ArrayField
-from django.contrib.postgres.search import SearchVectorField
-from django.contrib.postgres.indexes import GinIndex
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db.models import Q, F, Count, Avg, Sum
 from django.utils import timezone
@@ -314,93 +309,7 @@ class PublishableModel(models.Model):
 
 ---
 
-## Étape 4 : Managers et QuerySets personnalisés
-
-**Ajoutez** dans `blog/models.py` :
-
-```python
-# ============================================================================
-# MANAGERS ET QUERYSETS
-# ============================================================================
-
-class ArticleQuerySet(models.QuerySet):
-    """QuerySet personnalisé avec méthodes chaînables"""
-    
-    def actifs(self):
-        return self.filter(supprime=False)
-    
-    def publies(self):
-        return self.filter(
-            publie=True,
-            supprime=False,
-            date_publication__lte=timezone.now()
-        )
-    
-    def brouillons(self):
-        return self.filter(publie=False, supprime=False)
-    
-    def featured(self):
-        return self.filter(featured=True).publies()
-    
-    def par_auteur(self, auteur):
-        return self.filter(auteur=auteur).actifs()
-    
-    def populaires(self, limite=10):
-        return self.publies().order_by('-nombre_vues')[:limite]
-    
-    def tendance(self, jours=7):
-        date_limite = timezone.now() - timezone.timedelta(days=jours)
-        return self.publies().filter(
-            date_publication__gte=date_limite
-        ).order_by('-nombre_vues', '-date_publication')
-    
-    def avec_stats(self):
-        return self.annotate(
-            nb_commentaires=Count('commentaires', filter=Q(commentaires__approuve=True)),
-            nb_likes=Count('likes'),
-            note_moyenne=Avg('notes__valeur')
-        )
-    
-    def recherche(self, query):
-        return self.filter(
-            Q(titre__icontains=query) | Q(contenu__icontains=query)
-        ).publies()
-
-
-class ArticleManager(models.Manager):
-    """Manager personnalisé"""
-    
-    def get_queryset(self):
-        return ArticleQuerySet(self.model, using=self._db)
-    
-    def actifs(self):
-        return self.get_queryset().actifs()
-    
-    def publies(self):
-        return self.get_queryset().publies()
-    
-    def brouillons(self):
-        return self.get_queryset().brouillons()
-    
-    def featured(self):
-        return self.get_queryset().featured()
-    
-    def populaires(self, limite=10):
-        return self.get_queryset().populaires(limite)
-    
-    def tendance(self, jours=7):
-        return self.get_queryset().tendance(jours)
-    
-    def avec_stats(self):
-        return self.get_queryset().avec_stats()
-    
-    def recherche(self, query):
-        return self.get_queryset().recherche(query)
-```
-
----
-
-## Étape 5 : Modèles principaux
+## Étape 4 : Modèles principaux
 
 **Ajoutez** dans `blog/models.py` :
 
@@ -521,17 +430,11 @@ class Article(TimestampedModel, SoftDeleteModel, PublishableModel, UUIDModel):
     nb_commentaires_cache = models.PositiveIntegerField(default=0)
     note_moyenne_cache = models.DecimalField(max_digits=3, decimal_places=2, default=0.00)
     
-    # Full-text search
-    search_vector = SearchVectorField(null=True, editable=False)
-    
-    objects = ArticleManager()
-    
     class Meta:
         ordering = ['-date_publication', '-date_creation']
         indexes = [
             models.Index(fields=['-date_publication', 'publie']),
             models.Index(fields=['-nombre_vues']),
-            GinIndex(fields=['search_vector']),
         ]
     
     def __str__(self):
@@ -597,217 +500,9 @@ python manage.py migrate
 
 ---
 
-# 📖 PARTIE 3 : FONCTIONNALITÉS POSTGRESQL
+# 📖 PARTIE 3 : DONNÉES DE TEST ET ADMIN
 
-## Étape 6 : Full-text Search
-
-**Créez** `blog/signals.py` :
-
-```python
-from django.db.models.signals import post_save, post_delete, m2m_changed
-from django.dispatch import receiver
-from django.contrib.auth.models import User
-from django.contrib.postgres.search import SearchVector
-from blog.models import Article, Commentaire, Like, Note, ProfilAuteur
-
-
-@receiver(post_save, sender=User)
-def create_profil_auteur(sender, instance, created, **kwargs):
-    if created:
-        ProfilAuteur.objects.create(user=instance)
-
-
-@receiver(post_save, sender=Article)
-def update_search_vector(sender, instance, **kwargs):
-    if not kwargs.get('raw', False):
-        Article.objects.filter(pk=instance.pk).update(
-            search_vector=(
-                SearchVector('titre', weight='A', config='french') +
-                SearchVector('contenu', weight='B', config='french')
-            )
-        )
-
-
-@receiver(post_save, sender=Like)
-@receiver(post_delete, sender=Like)
-def update_article_likes_cache(sender, instance, **kwargs):
-    article = instance.article
-    nb_likes = article.likes.count()
-    Article.objects.filter(pk=article.pk).update(nb_likes_cache=nb_likes)
-
-
-@receiver(post_save, sender=Commentaire)
-@receiver(post_delete, sender=Commentaire)
-def update_article_commentaires_cache(sender, instance, **kwargs):
-    article = instance.article
-    nb = article.commentaires.filter(approuve=True).count()
-    Article.objects.filter(pk=article.pk).update(nb_commentaires_cache=nb)
-
-
-@receiver(post_save, sender=Note)
-@receiver(post_delete, sender=Note)
-def update_article_note_cache(sender, instance, **kwargs):
-    from django.db.models import Avg
-    article = instance.article
-    moyenne = article.notes.aggregate(m=Avg('valeur'))['m'] or 0
-    Article.objects.filter(pk=article.pk).update(note_moyenne_cache=round(moyenne, 2))
-```
-
-**Enregistrez** dans `blog/apps.py` :
-
-```python
-from django.apps import AppConfig
-
-class BlogConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'blog'
-    
-    def ready(self):
-        import blog.signals
-```
-
-**Ajoutez** la recherche full-text au manager (dans `blog/models.py`) :
-
-```python
-# Dans ArticleManager, ajouter :
-def recherche_fulltext(self, query):
-    from django.contrib.postgres.search import SearchQuery, SearchRank
-    search_query = SearchQuery(query, config='french')
-    return self.filter(search_vector=search_query).annotate(
-        rank=SearchRank(models.F('search_vector'), search_query)
-    ).order_by('-rank')
-```
-
----
-
-## Étape 7 : Analytics et statistiques
-
-**Créez** `blog/analytics.py` :
-
-```python
-from django.db.models import Count, Sum, Avg, Q
-from django.db.models.functions import TruncDate
-from django.utils import timezone
-from datetime import timedelta
-from blog.models import Article, Categorie
-from django.contrib.auth.models import User
-
-
-class BlogAnalytics:
-    
-    @staticmethod
-    def stats_globales():
-        return {
-            'total_articles': Article.objects.publies().count(),
-            'total_vues': Article.objects.publies().aggregate(
-                total=Sum('nombre_vues')
-            )['total'] or 0,
-            'total_likes': Article.objects.publies().aggregate(
-                total=Sum('nb_likes_cache')
-            )['total'] or 0,
-            'note_moyenne': Article.objects.publies().aggregate(
-                moyenne=Avg('note_moyenne_cache')
-            )['moyenne'] or 0,
-        }
-    
-    @staticmethod
-    def top_articles(limite=10):
-        return Article.objects.publies().avec_stats().order_by('-nombre_vues')[:limite]
-    
-    @staticmethod
-    def articles_tendance(jours=7):
-        return Article.objects.tendance(jours)[:10]
-    
-    @staticmethod
-    def stats_par_categorie():
-        return Categorie.objects.annotate(
-            nb_articles=Count('articles', filter=Q(articles__publie=True)),
-            total_vues=Sum('articles__nombre_vues', filter=Q(articles__publie=True)),
-        ).order_by('-nb_articles')
-    
-    @staticmethod
-    def stats_par_auteur():
-        return User.objects.annotate(
-            nb_articles=Count('articles', filter=Q(articles__publie=True)),
-            total_vues=Sum('articles__nombre_vues', filter=Q(articles__publie=True)),
-            note_moyenne=Avg('articles__note_moyenne_cache'),
-        ).filter(nb_articles__gt=0).order_by('-total_vues')
-    
-    @staticmethod
-    def articles_par_jour(jours=30):
-        date_limite = timezone.now() - timedelta(days=jours)
-        return Article.objects.filter(
-            date_publication__gte=date_limite
-        ).annotate(
-            jour=TruncDate('date_publication')
-        ).values('jour').annotate(
-            nb_articles=Count('id')
-        ).order_by('jour')
-```
-
----
-
-## Étape 8 : Optimisation et indexes
-
-**Créez** une migration pour les indexes :
-
-```bash
-python manage.py makemigrations --empty blog --name add_custom_indexes
-```
-
-**Modifiez** la migration :
-
-```python
-from django.db import migrations
-
-class Migration(migrations.Migration):
-    dependencies = [
-        ('blog', '0001_initial'),  # Ajustez selon votre dernière migration
-    ]
-    
-    operations = [
-        migrations.RunSQL(
-            """
-            CREATE INDEX idx_article_publie_featured 
-            ON blog_article (publie, featured, date_publication DESC)
-            WHERE supprime = FALSE;
-            """,
-            reverse_sql="DROP INDEX IF EXISTS idx_article_publie_featured;"
-        ),
-        migrations.RunSQL(
-            """
-            CREATE INDEX idx_article_auteur_date 
-            ON blog_article (auteur_id, date_publication DESC)
-            WHERE publie = TRUE AND supprime = FALSE;
-            """,
-            reverse_sql="DROP INDEX IF EXISTS idx_article_auteur_date;"
-        ),
-    ]
-```
-
-```bash
-python manage.py migrate
-```
-
-**Créez** `blog/utils.py` pour analyser les requêtes :
-
-```python
-from django.db import connection
-
-def explain_query(queryset):
-    """Afficher EXPLAIN ANALYZE"""
-    sql, params = queryset.query.sql_with_params()
-    with connection.cursor() as cursor:
-        cursor.execute(f'EXPLAIN ANALYZE {sql}', params)
-        for row in cursor.fetchall():
-            print(row[0])
-```
-
----
-
-# 📖 PARTIE 4 : DONNÉES DE TEST ET ADMIN
-
-## Étape 9 : Créer des données de test
+## Étape 5 : Créer des données de test
 
 **Créez** `blog/management/commands/create_test_data.py` :
 
@@ -867,7 +562,7 @@ class Command(BaseCommand):
             )
             article.tags.set(random.sample(tags, k=2))
         
-        self.stdout.write(self.style.SUCCESS('✅ Données créées !'))
+        self.stdout.write(self.style.SUCCESS('Données créées !'))
 ```
 
 **Exécutez** :
@@ -882,7 +577,7 @@ python manage.py create_test_data
 
 ---
 
-## Étape 10 : Admin Django personnalisé
+## Étape 6 : Admin Django personnalisé
 
 **Créez** `blog/admin.py` :
 
@@ -996,9 +691,9 @@ python manage.py runserver
 
 ---
 
-# 📖 PARTIE 5 : TESTS UNITAIRES
+# 📖 PARTIE 4 : TESTS UNITAIRES
 
-## Étape 11 : Tests complets
+## Étape 7 : Tests complets
 
 **Créez** `blog/tests.py` :
 
@@ -1040,7 +735,7 @@ class ArticleModelTest(TestCase):
         self.assertTrue(self.article.supprime)
 
 
-class ArticleManagerTest(TestCase):
+class ArticleQueryTest(TestCase):
     
     def setUp(self):
         self.user = User.objects.create_user('test', 'test@test.com', 'pass')
@@ -1063,24 +758,22 @@ class ArticleManagerTest(TestCase):
             publie=False
         )
     
-    def test_publies(self):
-        self.assertEqual(Article.objects.publies().count(), 1)
+    def test_articles_publies(self):
+        publies = Article.objects.filter(publie=True, supprime=False)
+        self.assertEqual(publies.count(), 1)
     
-    def test_brouillons(self):
-        self.assertEqual(Article.objects.brouillons().count(), 1)
+    def test_articles_brouillons(self):
+        brouillons = Article.objects.filter(publie=False, supprime=False)
+        self.assertEqual(brouillons.count(), 1)
     
-    def test_chainabilite(self):
-        result = Article.objects.publies().actifs()
+    def test_filtre_combine(self):
+        result = Article.objects.filter(publie=True, supprime=False)
         self.assertGreater(result.count(), 0)
 
 
-class SignalTest(TestCase):
+class LikeTest(TestCase):
     
-    def test_profil_auto_create(self):
-        user = User.objects.create_user('newuser', 'new@test.com', 'pass')
-        self.assertTrue(hasattr(user, 'profil'))
-    
-    def test_like_cache_update(self):
+    def test_like_creation(self):
         user = User.objects.create_user('test', 'test@test.com', 'pass')
         article = Article.objects.create(
             titre='Test',
@@ -1090,10 +783,31 @@ class SignalTest(TestCase):
             date_publication=timezone.now()
         )
         
-        self.assertEqual(article.nb_likes_cache, 0)
+        # Créer un like
+        like = Like.objects.create(article=article, user=user)
+        self.assertIsNotNone(like)
+        
+        # Vérifier le nombre de likes
+        nb_likes = article.likes.count()
+        self.assertEqual(nb_likes, 1)
+    
+    def test_unique_like(self):
+        """Un utilisateur ne peut liker qu'une fois"""
+        user = User.objects.create_user('test', 'test@test.com', 'pass')
+        article = Article.objects.create(
+            titre='Test',
+            contenu='...',
+            auteur=user,
+            publie=True,
+            date_publication=timezone.now()
+        )
+        
         Like.objects.create(article=article, user=user)
-        article.refresh_from_db()
-        self.assertEqual(article.nb_likes_cache, 1)
+        
+        # Essayer de créer un 2e like devrait lever une erreur
+        from django.db import IntegrityError
+        with self.assertRaises(IntegrityError):
+            Like.objects.create(article=article, user=user)
 ```
 
 **Exécutez** :
@@ -1113,9 +827,9 @@ coverage report
 
 ---
 
-# 📖 PARTIE 6 : COMMANDES UTILES ET PRODUCTION
+# 📖 PARTIE 5 : COMMANDES UTILES
 
-## Étape 12 : Commandes de gestion
+## Étape 8 : Commandes de gestion
 
 **Backup PostgreSQL** :
 
@@ -1133,41 +847,63 @@ docker exec -i blogpro_db psql -U bloguser blogpro < backup.sql
 python manage.py shell
 
 from blog.models import *
-from blog.analytics import BlogAnalytics
+from django.db.models import Count, Sum, Avg, Q
+from django.utils import timezone
 
-# Stats globales
-stats = BlogAnalytics.stats_globales()
-print(stats)
+# Articles publiés
+articles = Article.objects.filter(
+    publie=True,
+    supprime=False,
+    date_publication__lte=timezone.now()
+)
+print(f"Total articles publiés : {articles.count()}")
 
-# Top articles
-top = BlogAnalytics.top_articles(5)
+# Top articles par vues
+top = Article.objects.filter(
+    publie=True,
+    supprime=False
+).order_by('-nombre_vues')[:5]
 for a in top:
     print(f"{a.titre}: {a.nombre_vues} vues")
 
-# Recherche full-text
-resultats = Article.objects.recherche_fulltext('django postgresql')
+# Recherche simple (dans titre ou contenu)
+query = 'django'
+resultats = Article.objects.filter(
+    Q(titre__icontains=query) | Q(contenu__icontains=query),
+    publie=True,
+    supprime=False
+)
 for a in resultats:
-    print(f"{a.titre} (rank: {a.rank})")
+    print(f"- {a.titre}")
 
 # Stats par catégorie
-cats = BlogAnalytics.stats_par_categorie()
+cats = Categorie.objects.annotate(
+    nb_articles=Count('articles', filter=Q(articles__publie=True))
+).filter(nb_articles__gt=0)
 for c in cats:
     print(f"{c.nom}: {c.nb_articles} articles")
+
+# Stats par auteur
+from django.contrib.auth.models import User
+auteurs = User.objects.annotate(
+    nb=Count('articles', filter=Q(articles__publie=True)),
+    total_vues=Sum('articles__nombre_vues', filter=Q(articles__publie=True))
+).filter(nb__gt=0)
+for auteur in auteurs:
+    print(f"{auteur.username}: {auteur.nb} articles, {auteur.total_vues} vues")
 ```
 
 ---
 
 # ✅ CHECKLIST FINALE
 
-- ✅ PostgreSQL installé et configuré
-- ✅ Modèles avec classes abstraites créés
-- ✅ Managers et QuerySets personnalisés
-- ✅ Signals configurés
-- ✅ Full-text search fonctionnel
-- ✅ Analytics et statistiques
-- ✅ Indexes optimisés
-- ✅ Admin personnalisé
-- ✅ Tests unitaires (>80% coverage)
+- ✅ PostgreSQL installé et configuré avec Docker
+- ✅ Modèles avec classes abstraites réutilisables
+- ✅ Relations complexes (ForeignKey, ManyToMany, OneToOne)
+- ✅ Soft delete et système de publication
+- ✅ ArrayField PostgreSQL pour les compétences
+- ✅ Admin Django personnalisé
+- ✅ Tests unitaires
 - ✅ Données de test générées
 
 ---
@@ -1184,14 +920,16 @@ Maintenant que vous maîtrisez Django ORM avec PostgreSQL, vous pouvez :
 
 ---
 
-🎉 **Félicitations !** Vous avez créé un système de blog professionnel complet avec Django et PostgreSQL !
+🎉 **Félicitations !** Vous avez créé un système de blog professionnel avec Django et PostgreSQL !
 
 **Votre projet inclut** :
-- Architecture robuste et maintenable
-- Optimisations PostgreSQL avancées
-- Tests complets
+- Architecture robuste avec classes abstraites réutilisables
+- Relations complexes (ForeignKey, ManyToMany, OneToOne)
+- ArrayField PostgreSQL pour les compétences
+- Soft delete et système de publication
+- Tests unitaires complets
 - Interface admin professionnelle
-- Prêt pour la production
+- Données de test générées automatiquement
 
 Pour aller plus loin, consultez :
 - Documentation Django : https://docs.djangoproject.com/
