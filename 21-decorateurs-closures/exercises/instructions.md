@@ -4,447 +4,304 @@ Les décorateurs et closures sont des concepts puissants de Python permettant de
 
 ## Partie 1 - Closures
 
-### Exercice 1 - Comprendre les closures
+### Exercice 1 - Closure factory
 
-**Créez** une closure simple :
+**Objectif** : Créer une factory qui génère des validateurs personnalisés.
 
-```python
-def creer_multiplicateur(n):
-    def multiplicateur(x):
-        return x * n  # n vient du scope externe
-    return multiplicateur
+**Hints** :
+- La factory prend des paramètres de configuration (min, max)
+- Elle retourne une fonction de validation qui utilise ces paramètres
+- Chaque validateur créé a ses propres limites
 
-fois_trois = creer_multiplicateur(3)
-fois_cinq = creer_multiplicateur(5)
+**À faire** :
+1. Créez `creer_validateur(min_val, max_val)`
+2. Retournez une fonction qui vérifie `min_val <= valeur <= max_val`
+3. Créez des validateurs spécialisés : `valider_age(0, 120)`, `valider_note(0, 20)`
 
-print(fois_trois(10))  # 30
-print(fois_cinq(10))   # 50
-
-# Vérifier la closure
-print(fois_trois.__closure__)
-print(fois_trois.__closure__[0].cell_contents)  # 3
-```
-
-### Exercice 2 - Closures avec state
-
-**Créez** un compteur avec closure :
-
-```python
-def creer_compteur():
-    count = 0
-    
-    def incrementer():
-        nonlocal count  # Modifier la variable du scope externe
-        count += 1
-        return count
-    
-    return incrementer
-
-compteur = creer_compteur()
-print(compteur())  # 1
-print(compteur())  # 2
-print(compteur())  # 3
-```
-
-### Exercice 3 - Closure factory
-
-**Créez** une factory de validateurs :
-
-```python
-def creer_validateur(min_val, max_val):
-    def valider(valeur):
-        return min_val <= valeur <= max_val
-    return valider
-
-valider_age = creer_validateur(0, 120)
-valider_note = creer_validateur(0, 20)
-
-print(valider_age(25))   # True
-print(valider_age(150))  # False
-print(valider_note(15))  # True
-```
+**Cas d'usage** : Validation de formulaires, configuration dynamique.
 
 ## Partie 2 - Décorateurs de base
 
-### Exercice 4 - Premier décorateur
+### Exercice 2 - Premier décorateur
 
-**Créez** un décorateur simple :
+**Objectif** : Créer un décorateur simple qui encapsule l'exécution d'une fonction.
 
+**Hints** :
+- Un décorateur est une fonction qui prend une fonction en paramètre
+- Il retourne une nouvelle fonction (wrapper) qui encapsule l'originale
+- `@decorateur` est syntaxe équivalente à `fonction = decorateur(fonction)`
+- Utilisez `*args, **kwargs` pour accepter n'importe quels arguments
+
+**Structure** :
 ```python
 def mon_decorateur(func):
     def wrapper(*args, **kwargs):
-        print("Avant l'appel")
-        result = func(*args, **kwargs)
-        print("Après l'appel")
+        # Avant l'appel
+        result = func(*args, **kwargs)  # Appel de la fonction originale
+        # Après l'appel
         return result
     return wrapper
-
-@mon_decorateur
-def dire_bonjour(nom):
-    print(f"Bonjour, {nom}!")
-
-dire_bonjour("Alice")
-# Avant l'appel
-# Bonjour, Alice!
-# Après l'appel
 ```
 
-### Exercice 5 - Décorateur de timing
+**À faire** :
+1. Affichez "Avant l'appel" avant d'exécuter la fonction
+2. Affichez "Après l'appel" après l'exécution
+3. N'oubliez pas de retourner le résultat !
 
-**Mesurez** le temps d'exécution :
+### Exercice 3 - Décorateur de timing
 
-```python
-import time
-from functools import wraps
+**Objectif** : Mesurer le temps d'exécution d'une fonction.
 
-def timer(func):
-    @wraps(func)  # Préserve les métadonnées
-    def wrapper(*args, **kwargs):
-        start = time.time()
-        result = func(*args, **kwargs)
-        end = time.time()
-        print(f"{func.__name__} a pris {end - start:.4f}s")
-        return result
-    return wrapper
+**Hints** :
+- Utilisez `time.time()` pour obtenir le timestamp actuel
+- Calculez la différence entre le temps de fin et de début
+- `@wraps(func)` de `functools` préserve les métadonnées de la fonction originale
+- Affichez le temps en secondes avec 4 décimales
 
-@timer
-def calcul_lent():
-    time.sleep(1)
-    return "Terminé"
+**À faire** :
+1. Importez `time` et `functools.wraps`
+2. Enregistrez `start = time.time()` avant l'appel
+3. Enregistrez `end = time.time()` après l'appel
+4. Affichez `f"{func.__name__} a pris {end - start:.4f}s"`
 
-calcul_lent()
+**Question** : Pourquoi utiliser `@wraps` ?
+
+### Exercice 4 - Décorateur de logging
+
+**Objectif** : Logger les appels de fonction avec leurs arguments et résultats.
+
+**Hints** :
+- Affichez les informations avant ET après l'exécution
+- Capturez le résultat pour pouvoir l'afficher et le retourner
+- Utilisez des f-strings pour formater le message
+
+**Format attendu** :
 ```
-
-### Exercice 6 - Décorateur de logging
-
-**Loggez** les appels de fonction :
-
-```python
-def logger(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        print(f"Appel de {func.__name__} avec args={args}, kwargs={kwargs}")
-        result = func(*args, **kwargs)
-        print(f"{func.__name__} a retourné {result}")
-        return result
-    return wrapper
-
-@logger
-def addition(a, b):
-    return a + b
-
-addition(5, 3)
+Appel de fonction_nom avec args=(1, 2), kwargs={'key': 'value'}
+fonction_nom a retourné resultat
 ```
 
 ## Partie 3 - Décorateurs avec paramètres
 
-### Exercice 7 - Décorateur paramétré
+### Exercice 5 - Décorateur paramétré
 
-**Créez** un décorateur avec paramètres :
+**Objectif** : Créer un décorateur qui accepte des paramètres.
 
+**Hints** :
+- Un décorateur paramétré a **3 niveaux de fonctions** :
+  1. Fonction qui prend les paramètres → retourne le décorateur
+  2. Décorateur qui prend la fonction → retourne le wrapper
+  3. Wrapper qui exécute la fonction
+
+**Structure** :
 ```python
-def repeat(times):
-    def decorator(func):
+def repeat(times):          # 1. Prend les paramètres
+    def decorator(func):     # 2. Prend la fonction
         @wraps(func)
-        def wrapper(*args, **kwargs):
-            results = []
-            for _ in range(times):
-                results.append(func(*args, **kwargs))
-            return results
+        def wrapper(*args, **kwargs):  # 3. Exécute
+            # Votre code ici
         return wrapper
     return decorator
-
-@repeat(3)
-def dire_hello():
-    return "Hello"
-
-print(dire_hello())  # ['Hello', 'Hello', 'Hello']
 ```
 
-### Exercice 8 - Décorateur de retry
+**À faire** :
+1. Exécutez la fonction `times` fois
+2. Stockez les résultats dans une liste
+3. Retournez la liste des résultats
 
-**Réessayez** en cas d'échec :
+### Exercice 6 - Décorateur de retry
 
-```python
-def retry(max_attempts=3, delay=1):
-    def decorator(func):
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            for attempt in range(max_attempts):
-                try:
-                    return func(*args, **kwargs)
-                except Exception as e:
-                    if attempt == max_attempts - 1:
-                        raise
-                    print(f"Tentative {attempt + 1} échouée : {e}")
-                    time.sleep(delay)
-        return wrapper
-    return decorator
+**Objectif** : Réessayer automatiquement une fonction en cas d'échec.
 
-@retry(max_attempts=3, delay=0.5)
-def fonction_instable():
-    import random
-    if random.random() < 0.7:
-        raise ValueError("Erreur aléatoire")
-    return "Succès"
+**Hints** :
+- Utilisez une boucle `for attempt in range(max_attempts)`
+- Encapsulez l'appel dans un `try/except`
+- Si c'est la dernière tentative, laissez l'exception se propager avec `raise`
+- Sinon, affichez un message et attendez avec `time.sleep(delay)`
+- Si succès, retournez immédiatement avec `return`
 
-print(fonction_instable())
-```
+**À faire** :
+1. Créez `retry(max_attempts=3, delay=1)` avec 3 niveaux
+2. Gérez les exceptions et les retentatives
+3. Testez avec une fonction qui échoue aléatoirement
+
+**Cas d'usage** : Appels réseau, opérations I/O.
 
 ## Partie 4 - Décorateurs de classe
 
-### Exercice 9 - Décorateur de classe simple
+### Exercice 7 - Décorateur de classe (Singleton)
 
-**Décorez** une classe :
+**Objectif** : Implémenter le pattern Singleton avec un décorateur.
 
+**Hints** :
+- Le pattern Singleton garantit qu'une classe n'a qu'une seule instance
+- Utilisez un dictionnaire `instances = {}` pour stocker les instances
+- La clé est la classe elle-même : `instances[cls]`
+- Vérifiez si l'instance existe avant d'en créer une nouvelle
+
+**Structure** :
 ```python
 def singleton(cls):
     instances = {}
-    
-    @wraps(cls)
     def get_instance(*args, **kwargs):
         if cls not in instances:
-            instances[cls] = cls(*args, **kwargs)
-        return instances[cls]
-    
+            # Créer et stocker l'instance
+        return # L'instance
     return get_instance
-
-@singleton
-class Database:
-    def __init__(self):
-        print("Connexion à la base de données")
-
-db1 = Database()  # Connexion à la base de données
-db2 = Database()  # Pas de nouvelle connexion
-print(db1 is db2)  # True
 ```
 
-### Exercice 10 - Décorateur avec classe
+**À tester** : `db1 = Database()` et `db2 = Database()` → `db1 is db2` doit être `True`
 
-**Utilisez** une classe comme décorateur :
+### Exercice 8 - Classe comme décorateur
 
+**Objectif** : Utiliser une classe comme décorateur avec `__call__`.
+
+**Hints** :
+- Une classe peut être un décorateur en implémentant `__init__` et `__call__`
+- `__init__(self, func)` : Reçoit la fonction à décorer
+- `__call__(self, *args, **kwargs)` : Appelé quand on utilise la fonction
+- Vous pouvez stocker un état dans `self`
+
+**Structure** :
 ```python
 class CountCalls:
     def __init__(self, func):
-        self.func = func
-        self.count = 0
+        # Initialiser func et count
     
     def __call__(self, *args, **kwargs):
-        self.count += 1
-        print(f"Appel #{self.count} de {self.func.__name__}")
-        return self.func(*args, **kwargs)
-
-@CountCalls
-def say_hello():
-    print("Hello!")
-
-say_hello()  # Appel #1
-say_hello()  # Appel #2
-say_hello()  # Appel #3
+        # Incrémenter count, afficher, appeler func
 ```
+
+**Avantage** : Stockage d'état plus propre qu'avec une closure.
 
 ## Partie 5 - Chaînage de décorateurs
 
-### Exercice 11 - Chaîner plusieurs décorateurs
+### Exercice 9 - Chaîner plusieurs décorateurs
 
-**Combinez** des décorateurs :
+**Objectif** : Comprendre l'ordre d'application des décorateurs empilés.
 
+**Hints** :
+- Les décorateurs s'appliquent de bas en haut (closest to function first)
+- Mais s'exécutent de haut en bas à l'appel
+
+**Exemple** :
 ```python
-def uppercase(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        result = func(*args, **kwargs)
-        return result.upper()
-    return wrapper
-
-def exclamation(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        result = func(*args, **kwargs)
-        return result + "!"
-    return wrapper
-
-@uppercase
-@exclamation
+@uppercase       # 2. Appliqué en second
+@exclamation     # 1. Appliqué en premier
 def greet(name):
     return f"Hello, {name}"
-
-print(greet("Alice"))  # HELLO, ALICE!
 ```
+
+**À faire** :
+1. Créez `uppercase` : transforme le résultat en majuscules
+2. Créez `exclamation` : ajoute "!" à la fin
+3. Testez l'ordre : `greet("Alice")` → `"HELLO, ALICE!"`
+
+**Question** : Que se passe-t-il si vous inversez l'ordre ?
 
 ## Partie 6 - Design Patterns avec décorateurs
 
-### Exercice 12 - Pattern Observer
+### Exercice 10 - Pattern Observer
 
-**Implémentez** un système d'événements :
+**Objectif** : Implémenter un système d'événements avec décorateurs.
 
+**Hints** :
+- L'EventManager stocke les subscribers dans un dictionnaire
+- Clé = nom de l'événement, Valeur = liste de fonctions
+- Le décorateur `subscribe` ajoute la fonction à la liste
+- `trigger` appelle toutes les fonctions abonnées
+
+**Structure** :
 ```python
 class EventManager:
     def __init__(self):
         self.subscribers = {}
     
     def subscribe(self, event_name):
-        def decorator(func):
-            if event_name not in self.subscribers:
-                self.subscribers[event_name] = []
-            self.subscribers[event_name].append(func)
-            return func
-        return decorator
+        # Décorateur qui ajoute func à self.subscribers[event_name]
     
     def trigger(self, event_name, *args, **kwargs):
-        if event_name in self.subscribers:
-            for subscriber in self.subscribers[event_name]:
-                subscriber(*args, **kwargs)
-
-# Utilisation
-events = EventManager()
-
-@events.subscribe("user_login")
-def send_welcome_email(user):
-    print(f"Email envoyé à {user}")
-
-@events.subscribe("user_login")
-def log_login(user):
-    print(f"Login loggé pour {user}")
-
-events.trigger("user_login", "Alice")
-# Email envoyé à Alice
-# Login loggé pour Alice
+        # Appelle toutes les fonctions abonnées
 ```
 
-## TP Final - Pipeline de consommateurs de données
+**Cas d'usage** : Systèmes d'événements, plugins, notifications.
 
-**Créez** un pipeline de traitement de données :
+## TP Final 1 - Pipeline de consommateurs de données
 
+**Objectif** : Créer un pipeline qui applique plusieurs transformations à des données.
+
+**Hints** :
+- Créez un décorateur `pipeline(*decorators)` qui combine plusieurs décorateurs
+- Appliquez-les dans l'ordre avec `reversed()` (car les décorateurs s'appliquent de bas en haut)
+- Chaque consommateur transforme les données et passe le résultat au suivant
+
+**Transformations à implémenter** :
+1. `filter_even` : Garde seulement les nombres pairs
+2. `multiply_by_two` : Multiplie chaque nombre par 2
+3. `sum_all` : Somme tous les nombres
+
+**Utilisation** :
 ```python
-def pipeline(*decorators):
-    """Combine plusieurs décorateurs en un pipeline"""
-    def decorator(func):
-        for dec in reversed(decorators):
-            func = dec(func)
-        return func
-    return decorator
-
-# Consommateurs de données
-def filter_even(func):
-    @wraps(func)
-    def wrapper(data):
-        filtered = [x for x in data if x % 2 == 0]
-        return func(filtered)
-    return wrapper
-
-def multiply_by_two(func):
-    @wraps(func)
-    def wrapper(data):
-        multiplied = [x * 2 for x in data]
-        return func(multiplied)
-    return wrapper
-
-def sum_all(func):
-    @wraps(func)
-    def wrapper(data):
-        total = sum(data)
-        return func(total)
-    return wrapper
-
 @pipeline(filter_even, multiply_by_two, sum_all)
 def process_data(result):
     return result
 
 data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-print(process_data(data))  # 60 (2+4+6+8+10)*2 summed
+print(process_data(data))  # Résultat attendu : 60
 ```
 
-### TP - Système d'abonnement aux événements
+**Calcul** : [2,4,6,8,10] → [4,8,12,16,20] → sum = 60
 
-**Créez** un système complet :
+## TP Final 2 - Système d'événements avec priorités
 
+**Objectif** : Créer un système d'événements avancé avec priorités.
+
+**Hints** :
+- Stockez les handlers avec leur priorité : `(priority, func)`
+- Triez par priorité décroissante : `sort(key=lambda x: x[0], reverse=True)`
+- Les handlers avec priorité plus élevée s'exécutent en premier
+
+**Structure** :
 ```python
 class EventSystem:
-    def __init__(self):
-        self.events = {}
-    
     def on(self, event_name, priority=0):
-        """Décorateur pour s'abonner à un événement"""
-        def decorator(func):
-            if event_name not in self.events:
-                self.events[event_name] = []
-            self.events[event_name].append((priority, func))
-            self.events[event_name].sort(key=lambda x: x[0], reverse=True)
-            return func
-        return decorator
+        # Décorateur qui ajoute (priority, func) et trie
     
     def emit(self, event_name, *args, **kwargs):
-        """Déclencher un événement"""
-        if event_name in self.events:
-            for priority, func in self.events[event_name]:
-                func(*args, **kwargs)
-
-# Utilisation
-app = EventSystem()
-
-@app.on("user_register", priority=10)
-def create_user_account(username, email):
-    print(f"Compte créé pour {username}")
-
-@app.on("user_register", priority=5)
-def send_confirmation_email(username, email):
-    print(f"Email de confirmation envoyé à {email}")
-
-@app.on("user_register", priority=1)
-def log_registration(username, email):
-    print(f"Inscription loggée : {username}")
-
-app.emit("user_register", "Alice", "alice@example.com")
-# Compte créé pour Alice
-# Email de confirmation envoyé à alice@example.com
-# Inscription loggée : Alice
+        # Appelle les handlers dans l'ordre de priorité
 ```
 
-### TP - Générateurs et pipeline
+**Exemple** :
+- Priority 10 : Créer compte
+- Priority 5 : Envoyer email
+- Priority 1 : Logger
 
-**Créez** un pipeline avec générateurs :
+## TP Final 3 - Pipeline de générateurs
 
+**Objectif** : Combiner décorateurs et générateurs pour un traitement lazy.
+
+**Hints** :
+- Un pipeline de générateurs ne charge pas toutes les données en mémoire
+- Chaque étape est un générateur qui `yield` les éléments transformés
+- Utilisez `for item in data: yield transform(item)`
+
+**Étapes à implémenter** :
+1. `filter_positives` : Ne yield que les nombres > 0
+2. `square` : Yield le carré de chaque nombre
+3. `limit(n)` : Yield seulement les n premiers éléments
+
+**Structure** :
 ```python
 def generator_pipeline(*steps):
-    """Pipeline de générateurs"""
     def decorator(generator):
-        @wraps(generator)
         def wrapper(*args, **kwargs):
             data = generator(*args, **kwargs)
-            for step in steps:
-                data = step(data)
-            return data
+            # Appliquer chaque step au générateur
         return wrapper
     return decorator
-
-def filter_positives(data):
-    for item in data:
-        if item > 0:
-            yield item
-
-def square(data):
-    for item in data:
-        yield item ** 2
-
-def limit(n):
-    def limiter(data):
-        count = 0
-        for item in data:
-            if count >= n:
-                break
-            yield item
-            count += 1
-    return limiter
-
-@generator_pipeline(filter_positives, square, limit(5))
-def number_stream():
-    for i in range(-10, 20):
-        yield i
-
-for num in number_stream():
-    print(num)
 ```
+
+**Avantage** : Traitement paresseux, économie de mémoire.
 
 ## Checklist de validation
 
@@ -455,5 +312,5 @@ for num in number_stream():
 -  Chaînage de décorateurs fonctionnel
 -  Pattern Observer implémenté
 -  TP pipeline de consommateurs réalisé
--  TP système d'événements complet
+-  TP système d'événements avec priorités complet
 -  Générateurs dans pipeline utilisés

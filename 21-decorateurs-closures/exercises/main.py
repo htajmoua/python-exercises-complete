@@ -6,235 +6,346 @@ from functools import wraps
 
 # ============= PARTIE 1 : CLOSURES =============
 
-# Exercice 1 - Closure simple
-def creer_multiplicateur(n):
-    """Créez une closure qui multiplie par n"""
-    def multiplicateur(x):
-        return x * n
-    return multiplicateur
-
-
-# Exercice 2 - Closure avec state
-def creer_compteur():
-    """Créez un compteur avec closure"""
-    count = 0
-    
-    def incrementer():
-        nonlocal count
-        count += 1
-        return count
-    
-    return incrementer
-
-
-# Exercice 3 - Closure factory
+# Exercice 1 - Closure factory
 def creer_validateur(min_val, max_val):
-    """Factory de validateurs"""
-    def valider(valeur):
-        return min_val <= valeur <= max_val
-    return valider
+    """Factory de validateurs
+    
+    Hints :
+    - Créez une fonction interne valider(valeur)
+    - Retournez min_val <= valeur <= max_val
+    """
+    # À compléter
+    pass
 
 
 # ============= PARTIE 2 : DÉCORATEURS DE BASE =============
 
-# Exercice 4 - Premier décorateur
+# Exercice 2 - Premier décorateur
 def mon_decorateur(func):
-    """Décorateur simple"""
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        print("Avant l'appel")
-        result = func(*args, **kwargs)
-        print("Après l'appel")
-        return result
-    return wrapper
+    """Décorateur simple
+    
+    Hints :
+    - Définissez une fonction wrapper(*args, **kwargs)
+    - Affichez "Avant l'appel"
+    - Appelez func(*args, **kwargs) et stockez le résultat
+    - Affichez "Après l'appel"
+    - Retournez le résultat
+    - N'oubliez pas @wraps(func)
+    """
+    # À compléter
+    pass
 
 
-# Exercice 5 - Décorateur de timing
+# Exercice 3 - Décorateur de timing
 def timer(func):
-    """Mesure le temps d'exécution"""
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        start = time.time()
-        result = func(*args, **kwargs)
-        end = time.time()
-        print(f"{func.__name__} a pris {end - start:.4f}s")
-        return result
-    return wrapper
+    """Mesure le temps d'exécution
+    
+    Hints :
+    - start = time.time() avant l'appel
+    - Appelez la fonction
+    - end = time.time() après l'appel
+    - Affichez f"{func.__name__} a pris {end - start:.4f}s"
+    """
+    # À compléter
+    pass
 
 
-# Exercice 6 - Décorateur de logging
+# Exercice 4 - Décorateur de logging
 def logger(func):
-    """Logue les appels de fonction"""
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        print(f"Appel de {func.__name__} avec args={args}, kwargs={kwargs}")
-        result = func(*args, **kwargs)
-        print(f"{func.__name__} a retourné {result}")
-        return result
-    return wrapper
+    """Logue les appels de fonction
+    
+    Hints :
+    - Affichez avant : f"Appel de {func.__name__} avec args={args}, kwargs={kwargs}"
+    - Exécutez la fonction et capturez le résultat
+    - Affichez après : f"{func.__name__} a retourné {result}"
+    - Retournez le résultat
+    """
+    # À compléter
+    pass
 
 
 # ============= PARTIE 3 : DÉCORATEURS AVEC PARAMÈTRES =============
 
-# Exercice 7 - Décorateur paramétré
+# Exercice 5 - Décorateur paramétré
 def repeat(times):
-    """Répète l'exécution d'une fonction"""
-    def decorator(func):
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            results = []
-            for _ in range(times):
-                results.append(func(*args, **kwargs))
-            return results
-        return wrapper
-    return decorator
+    """Répète l'exécution d'une fonction
+    
+    Hints :
+    - 3 niveaux : repeat(times) -> decorator(func) -> wrapper(*args, **kwargs)
+    - Dans wrapper : bouclez times fois
+    - Stockez chaque résultat dans une liste
+    - Retournez la liste
+    """
+    # À compléter
+    pass
 
 
-# Exercice 8 - Décorateur de retry
+# Exercice 6 - Décorateur de retry
 def retry(max_attempts=3, delay=1):
-    """Réessaye en cas d'échec"""
-    def decorator(func):
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            for attempt in range(max_attempts):
-                try:
-                    return func(*args, **kwargs)
-                except Exception as e:
-                    if attempt == max_attempts - 1:
-                        raise
-                    print(f"Tentative {attempt + 1} échouée : {e}")
-                    time.sleep(delay)
-        return wrapper
-    return decorator
+    """Réessaye en cas d'échec
+    
+    Hints :
+    - 3 niveaux de fonctions
+    - for attempt in range(max_attempts):
+    - try: return func(*args, **kwargs)
+    - except Exception as e:
+    -   Si dernière tentative : raise
+    -   Sinon : afficher message et time.sleep(delay)
+    """
+    # À compléter
+    pass
 
 
 # ============= PARTIE 4 : DÉCORATEURS DE CLASSE =============
 
-# Exercice 9 - Singleton avec décorateur
+# Exercice 7 - Singleton avec décorateur
 def singleton(cls):
-    """Pattern Singleton"""
-    instances = {}
+    """Pattern Singleton
     
-    @wraps(cls)
-    def get_instance(*args, **kwargs):
-        if cls not in instances:
-            instances[cls] = cls(*args, **kwargs)
-        return instances[cls]
-    
-    return get_instance
+    Hints :
+    - Créez un dictionnaire instances = {}
+    - Définissez get_instance(*args, **kwargs)
+    - if cls not in instances: instances[cls] = cls(*args, **kwargs)
+    - return instances[cls]
+    """
+    # À compléter
+    pass
 
 
-# Exercice 10 - Classe comme décorateur
+# Exercice 8 - Classe comme décorateur
 class CountCalls:
-    """Compte les appels de fonction"""
-    def __init__(self, func):
-        self.func = func
-        self.count = 0
+    """Compte les appels de fonction
     
-    def __call__(self, *args, **kwargs):
-        self.count += 1
-        print(f"Appel #{self.count} de {self.func.__name__}")
-        return self.func(*args, **kwargs)
+    Hints :
+    - __init__(self, func): stocker func et initialiser count à 0
+    - __call__(self, *args, **kwargs):
+    -   Incrémenter self.count
+    -   Afficher f"Appel #{self.count} de {self.func.__name__}"
+    -   Retourner self.func(*args, **kwargs)
+    """
+    # À compléter
+    pass
 
 
-# ============= PARTIE 5 : DESIGN PATTERNS =============
+# ============= PARTIE 5 : CHAÎNAGE DE DÉCORATEURS =============
 
-# Exercice 12 - Pattern Observer avec événements
+# Exercice 9 - Chaîner plusieurs décorateurs
+def uppercase(func):
+    """Transforme le résultat en majuscules
+    
+    Hints :
+    - wrapper doit appeler func(*args, **kwargs)
+    - Retourner result.upper()
+    - N'oubliez pas @wraps(func)
+    """
+    # À compléter
+    pass
+
+
+def exclamation(func):
+    """Ajoute un point d'exclamation
+    
+    Hints :
+    - wrapper doit appeler func(*args, **kwargs)
+    - Retourner result + "!"
+    """
+    # À compléter
+    pass
+
+
+# Exemple d'utilisation :
+# @uppercase
+# @exclamation
+# def greet(name):
+#     return f"Hello, {name}"
+# 
+# print(greet("Alice"))  # "HELLO, ALICE!"
+
+
+# ============= PARTIE 6 : DESIGN PATTERNS =============
+
+# Exercice 10 - Pattern Observer avec événements
 class EventManager:
-    """Système d'événements avec décorateurs"""
-    def __init__(self):
-        self.subscribers = {}
+    """Système d'événements avec décorateurs
     
-    def subscribe(self, event_name):
-        """Décorateur pour s'abonner à un événement"""
-        def decorator(func):
-            if event_name not in self.subscribers:
-                self.subscribers[event_name] = []
-            self.subscribers[event_name].append(func)
-            return func
-        return decorator
+    Hints pour __init__ :
+    - self.subscribers = {}
     
-    def trigger(self, event_name, *args, **kwargs):
-        """Déclenche un événement"""
-        if event_name in self.subscribers:
-            for subscriber in self.subscribers[event_name]:
-                subscriber(*args, **kwargs)
+    Hints pour subscribe(self, event_name) :
+    - Retourner un décorateur
+    - Le décorateur ajoute func à self.subscribers[event_name]
+    - Créer la liste si elle n'existe pas
+    
+    Hints pour trigger(self, event_name, *args, **kwargs) :
+    - Vérifier si event_name in self.subscribers
+    - Boucler sur tous les subscribers et les appeler
+    """
+    # À compléter
+    pass
 
 
 # ============= TP FINAL : PIPELINE =============
 
 def pipeline(*decorators):
-    """Combine plusieurs décorateurs en pipeline"""
-    def decorator(func):
-        for dec in reversed(decorators):
-            func = dec(func)
-        return func
-    return decorator
+    """Combine plusieurs décorateurs en pipeline
+    
+    Hints :
+    - Définir decorator(func)
+    - for dec in reversed(decorators): func = dec(func)
+    - return func
+    - return decorator
+    
+    Pourquoi reversed ? Les décorateurs s'appliquent de bas en haut
+    """
+    # À compléter
+    pass
 
 
 # Consommateurs de données pour le pipeline
 def filter_even(func):
-    """Filtre les nombres pairs"""
-    @wraps(func)
-    def wrapper(data):
-        filtered = [x for x in data if x % 2 == 0]
-        return func(filtered)
-    return wrapper
+    """Filtre les nombres pairs
+    
+    Hints :
+    - wrapper(data) reçoit les données
+    - filtered = [x for x in data if x % 2 == 0]
+    - return func(filtered)
+    """
+    # À compléter
+    pass
 
 
 def multiply_by_two(func):
-    """Multiplie par 2"""
-    @wraps(func)
-    def wrapper(data):
-        multiplied = [x * 2 for x in data]
-        return func(multiplied)
-    return wrapper
+    """Multiplie par 2
+    
+    Hints :
+    - multiplied = [x * 2 for x in data]
+    - return func(multiplied)
+    """
+    # À compléter
+    pass
 
 
 def sum_all(func):
-    """Somme tous les éléments"""
-    @wraps(func)
-    def wrapper(data):
-        total = sum(data)
-        return func(total)
-    return wrapper
+    """Somme tous les éléments
+    
+    Hints :
+    - total = sum(data)
+    - return func(total)
+    """
+    # À compléter
+    pass
 
 
-# ============= EXEMPLES D'UTILISATION =============
-
-@mon_decorateur
-def dire_bonjour(nom):
-    print(f"Bonjour, {nom}!")
-    return f"Salut {nom}"
-
-
-@timer
-def calcul_lent():
-    time.sleep(0.5)
-    return "Terminé"
-
-
-@repeat(3)
-def dire_hello():
-    return "Hello"
+# TP 2 : Système d'événements avec priorités
+class EventSystem:
+    """Système d'événements avancé avec priorités
+    
+    Hints pour on(self, event_name, priority=0) :
+    - Retourner un décorateur
+    - Ajouter (priority, func) à self.events[event_name]
+    - Trier : self.events[event_name].sort(key=lambda x: x[0], reverse=True)
+    
+    Hints pour emit(self, event_name, *args, **kwargs) :
+    - Pour chaque (priority, func) dans self.events[event_name]
+    - Appeler func(*args, **kwargs)
+    """
+    # À compléter
+    pass
 
 
-@singleton
-class Database:
-    def __init__(self):
-        print("Connexion à la base de données")
-        self.connection = "Connected"
+# TP 3 : Pipeline de générateurs
+def generator_pipeline(*steps):
+    """Pipeline de générateurs
+    
+    Hints :
+    - decorator(generator) -> wrapper(*args, **kwargs)
+    - data = generator(*args, **kwargs)
+    - for step in steps: data = step(data)
+    - return data
+    """
+    # À compléter
+    pass
 
 
-@CountCalls
-def say_hello():
-    print("Hello!")
+def filter_positives(data):
+    """Générateur qui filtre les positifs
+    
+    Hints :
+    - for item in data:
+    -     if item > 0:
+    -         yield item
+    """
+    # À compléter
+    pass
 
 
-@pipeline(filter_even, multiply_by_two, sum_all)
-def process_data(result):
-    """Pipeline complet"""
-    return result
+def square(data):
+    """Générateur qui calcule les carrés
+    
+    Hints :
+    - for item in data:
+    -     yield item ** 2
+    """
+    # À compléter
+    pass
+
+
+def limit(n):
+    """Factory qui crée un limiteur
+    
+    Hints :
+    - Retourner une fonction limiter(data)
+    - count = 0
+    - for item in data:
+    -     if count >= n: break
+    -     yield item
+    -     count += 1
+    """
+    # À compléter
+    pass
+
+
+# ============= EXEMPLES D'UTILISATION (à décommenter après implémentation) =============
+
+# @mon_decorateur
+# def dire_bonjour(nom):
+#     print(f"Bonjour, {nom}!")
+#     return f"Salut {nom}"
+
+
+# @timer
+# def calcul_lent():
+#     time.sleep(0.5)
+#     return "Terminé"
+
+
+# @repeat(3)
+# def dire_hello():
+#     return "Hello"
+
+
+# @singleton
+# class Database:
+#     def __init__(self):
+#         print("Connexion à la base de données")
+#         self.connection = "Connected"
+
+
+# @CountCalls
+# def say_hello():
+#     print("Hello!")
+
+
+# @uppercase
+# @exclamation
+# def greet(name):
+#     return f"Hello, {name}"
+
+
+# @pipeline(filter_even, multiply_by_two, sum_all)
+# def process_data(result):
+#     """Pipeline complet"""
+#     return result
 
 
 # ============= TESTS =============
@@ -242,54 +353,60 @@ def process_data(result):
 if __name__ == "__main__":
     print("=== Tests Décorateurs et Closures ===\n")
     
-    # Test 1 : Closures
-    print("Test 1 : Closures")
-    fois_trois = creer_multiplicateur(3)
-    print(f"5 × 3 = {fois_trois(5)}")
+    # Décommentez les tests au fur et à mesure de votre progression
     
-    compteur = creer_compteur()
-    print(f"Compteur: {compteur()}, {compteur()}, {compteur()}")
+    # Test 1 : Closure factory
+    # print("Test 1 : Closure factory")
+    # valider_age = creer_validateur(0, 120)
+    # print(f"valider_age(25): {valider_age(25)}")  # True
+    # print(f"valider_age(150): {valider_age(150)}")  # False
     
     # Test 2 : Décorateurs simples
-    print("\nTest 2 : Décorateurs simples")
-    dire_bonjour("Alice")
+    # print("\nTest 2 : Décorateurs simples")
+    # dire_bonjour("Alice")
     
     # Test 3 : Timer
-    print("\nTest 3 : Timer")
-    calcul_lent()
+    # print("\nTest 3 : Timer")
+    # calcul_lent()
     
     # Test 4 : Repeat
-    print("\nTest 4 : Repeat")
-    print(dire_hello())
+    # print("\nTest 4 : Repeat")
+    # print(dire_hello())
     
     # Test 5 : Singleton
-    print("\nTest 5 : Singleton")
-    db1 = Database()
-    db2 = Database()
-    print(f"db1 is db2: {db1 is db2}")
+    # print("\nTest 5 : Singleton")
+    # db1 = Database()
+    # db2 = Database()
+    # print(f"db1 is db2: {db1 is db2}")
     
     # Test 6 : CountCalls
-    print("\nTest 6 : CountCalls")
-    say_hello()
-    say_hello()
-    say_hello()
+    # print("\nTest 6 : CountCalls")
+    # say_hello()
+    # say_hello()
+    # say_hello()
     
-    # Test 7 : EventManager
-    print("\nTest 7 : EventManager")
-    events = EventManager()
+    # Test 7 : Chaînage de décorateurs
+    # print("\nTest 7 : Chaînage de décorateurs")
+    # print(greet("Alice"))  # HELLO, ALICE!
     
-    @events.subscribe("user_login")
-    def send_email(user):
-        print(f"Email envoyé à {user}")
-    
-    @events.subscribe("user_login")
-    def log_login(user):
-        print(f"Login loggé pour {user}")
-    
-    events.trigger("user_login", "Alice")
+    # Test 8 : EventManager
+    # print("\nTest 8 : EventManager")
+    # events = EventManager()
+    # 
+    # @events.subscribe("user_login")
+    # def send_email(user):
+    #     print(f"Email envoyé à {user}")
+    # 
+    # @events.subscribe("user_login")
+    # def log_login(user):
+    #     print(f"Login loggé pour {user}")
+    # 
+    # events.trigger("user_login", "Alice")
     
     # TP : Pipeline
-    print("\n=== TP : Pipeline de données ===")
-    data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-    result = process_data(data)
-    print(f"Résultat du pipeline : {result}")
+    # print("\n=== TP : Pipeline de données ===")
+    # data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    # result = process_data(data)
+    # print(f"Résultat du pipeline : {result}")  # Attendu : 60
+    
+    print("\nDécommentez les tests au fur et à mesure de votre progression !")
