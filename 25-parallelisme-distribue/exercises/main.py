@@ -1,256 +1,211 @@
-# Écrivez votre code ici !
-# Consultez le fichier instructions.md pour les consignes
+"""
+TP 25 - Parallélisme et Calcul Distribué
+
+Ce fichier contient des exercices à compléter sur concurrent.futures.
+Suivez les TODO et les syntaxes d'exemple pour implémenter chaque exercice.
+
+Consultez le fichier instructions.md pour les consignes détaillées.
+"""
 
 import time
-import threading
-from multiprocessing import Process, Pool, Queue, Value, Array
 from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor, as_completed
 
-# ============= PARTIE 1 : THREADING VS MULTIPROCESSING =============
+# ============= PARTIE 1 : THREADING AVEC CONCURRENT.FUTURES =============
 
-# Exercice 1 - Comprendre le GIL
-def calcul_lourd():
-    """Tâche CPU-intensive"""
-    total = 0
-    for i in range(10000000):
-        total += i
-    return total
+# Exercice 1 - ThreadPoolExecutor pour I/O-bound
+import urllib.request
 
+urls = [
+    'https://www.python.org',
+    'https://www.github.com',
+    'https://pypi.org',
+    'https://docs.python.org',
+    'http://example.com'
+]
 
-def demo_gil():
-    """Démontre que le threading ne parallélise pas le CPU-bound"""
-    print("=== Démonstration du GIL ===")
-    
-    # Sans threading
-    start = time.time()
-    calcul_lourd()
-    calcul_lourd()
-    temps_sequentiel = time.time() - start
-    print(f"Sans threading : {temps_sequentiel:.2f}s")
-    
-    # Avec threading (pas plus rapide pour CPU-bound!)
-    def worker():
-        calcul_lourd()
-    
-    start = time.time()
-    t1 = threading.Thread(target=worker)
-    t2 = threading.Thread(target=worker)
-    t1.start()
-    t2.start()
-    t1.join()
-    t2.join()
-    temps_threading = time.time() - start
-    print(f"Avec threading : {temps_threading:.2f}s")
-    print(f"Gain: {temps_sequentiel/temps_threading:.2f}x (pas d'amélioration)")
-
-
-# Exercice 2 - Threading pour I/O-bound
-def telecharger_simulation(url):
-    """Simule un téléchargement (I/O-bound)"""
-    time.sleep(1)  # Simule I/O
-    return f"Downloaded {url}"
+def telecharger(url):
+    """Télécharge une URL et retourne la taille"""
+    # TODO: Implémenter le téléchargement
+    # Syntaxe:
+    #   try:
+    #       with urllib.request.urlopen(url, timeout=5) as response:
+    #           data = response.read()
+    #           print(f"✓ Téléchargé {url}: {len(data)} bytes")
+    #           return len(data)
+    #   except Exception as e:
+    #       print(f"✗ Erreur {url}: {e}")
+    #       return 0
+    pass
 
 
 def demo_threading_io():
-    """Threading est bon pour I/O-bound"""
-    print("\n=== Threading pour I/O ===")
+    """ThreadPoolExecutor est bon pour I/O-bound"""
+    print("=== Exercice 1 : ThreadPoolExecutor pour I/O ===")
     
-    urls = ['url1', 'url2', 'url3', 'url4', 'url5']
+    # 1. Sans threading - approche séquentielle
+    # TODO: Chronométrer l'exécution séquentielle
+    # Syntaxe:
+    #   start = time.time()
+    #   for url in urls:
+    #       telecharger(url)
+    #   temps_sequentiel = time.time() - start
+    #   print(f"Sans threading : {temps_sequentiel:.2f}s")
     
-    # Sans threading
-    start = time.time()
-    for url in urls:
-        telecharger_simulation(url)
-    temps_sequentiel = time.time() - start
-    print(f"Sans threading : {temps_sequentiel:.2f}s")
+    # 2. Avec ThreadPoolExecutor
+    # TODO: Utiliser ThreadPoolExecutor pour paralléliser
+    # Syntaxe:
+    #   start = time.time()
+    #   with ThreadPoolExecutor(max_workers=5) as executor:
+    #       results = list(executor.map(telecharger, urls))
+    #   temps_parallel = time.time() - start
+    #   print(f"Avec ThreadPoolExecutor : {temps_parallel:.2f}s")
+    # 
+    # executor.map() applique la fonction à chaque élément de la liste
+    # et retourne les résultats dans le même ordre
     
-    # Avec threading
-    start = time.time()
-    threads = []
-    for url in urls:
-        thread = threading.Thread(target=telecharger_simulation, args=(url,))
-        threads.append(thread)
-        thread.start()
-    
-    for thread in threads:
-        thread.join()
-    
-    temps_threading = time.time() - start
-    print(f"Avec threading : {temps_threading:.2f}s")
-    print(f"Gain: {temps_sequentiel/temps_threading:.1f}x plus rapide")
+    # TODO: Comparer les temps d'exécution
+    #   print(f"Gain: {temps_sequentiel/temps_parallel:.1f}x plus rapide !")
+    pass
 
 
-# ============= PARTIE 2 : MULTIPROCESSING =============
+# ============= PARTIE 2 : MULTIPROCESSING AVEC CONCURRENT.FUTURES =============
 
-# Exercice 3 - Process simple
+# Exercice 2 - ProcessPoolExecutor simple
 def worker_process(name):
     """Worker simple"""
-    import os
-    print(f"Worker {name} dans process {os.getpid()}")
+    # TODO: Importer os
+    # TODO: Afficher le nom du worker et son PID avec os.getpid()
+    # TODO: Retourner f"Terminé: {name}"
+    pass
 
 
 def demo_process():
-    """Démonstration de multiprocessing"""
-    print("\n=== Multiprocessing ===")
+    """Démonstration de ProcessPoolExecutor"""
+    print("\n=== Exercice 2 : ProcessPoolExecutor ===")
     
-    processes = []
-    for i in range(5):
-        p = Process(target=worker_process, args=(f"Process-{i}",))
-        processes.append(p)
-        p.start()
-    
-    for p in processes:
-        p.join()
+    # TODO: Créer 5 processus avec ProcessPoolExecutor
+    # Syntaxe:
+    #   with ProcessPoolExecutor(max_workers=5) as executor:
+    #       # submit() soumet une tâche et retourne un Future
+    #       futures = [executor.submit(fonction, arg) for arg in liste]
+    #       # Récupérer les résultats avec .result()
+    #       results = [f.result() for f in futures]
+    pass
 
 
-# Exercice 4 - Pool pour CPU-bound
+# Exercice 3 - ProcessPoolExecutor pour CPU-bound
 def calcul_carre(n):
     """Calcule le carré"""
-    return n * n
+    # TODO: Retourner n * n
+    pass
 
 
 def demo_pool():
-    """Démonstration de Pool"""
-    print("\n=== Multiprocessing Pool ===")
+    """Démonstration de ProcessPoolExecutor avec map"""
+    print("\n=== Exercice 3 : ProcessPoolExecutor pour CPU-bound ===")
     
     data = list(range(10000))
     
-    # Sans Pool
-    start = time.time()
-    resultats = [calcul_carre(i) for i in data]
-    temps_sequentiel = time.time() - start
-    print(f"Sans Pool : {temps_sequentiel:.4f}s")
+    # 1. Sans ProcessPoolExecutor - approche séquentielle
+    # TODO: Chronométrer le calcul séquentiel
+    # Syntaxe: resultats = [calcul_carre(i) for i in data]
     
-    # Avec Pool
-    start = time.time()
-    with Pool(processes=4) as pool:
-        resultats = pool.map(calcul_carre, data)
-    temps_pool = time.time() - start
-    print(f"Avec Pool : {temps_pool:.4f}s")
-    print(f"Gain: {temps_sequentiel/temps_pool:.1f}x plus rapide")
-
-
-# Exercice 5 - Communication avec Queue
-def producteur(queue):
-    """Producteur de données"""
-    for i in range(5):
-        queue.put(i)
-        print(f"Produit : {i}")
-        time.sleep(0.5)
-
-
-def consommateur(queue):
-    """Consommateur de données"""
-    while True:
-        item = queue.get()
-        if item is None:
-            break
-        print(f"Consommé : {item}")
-
-
-def demo_queue():
-    """Démonstration de Queue"""
-    print("\n=== Queue (communication inter-process) ===")
+    # 2. Avec ProcessPoolExecutor
+    # TODO: Utiliser ProcessPoolExecutor.map() pour paralléliser
+    # Syntaxe:
+    #   with ProcessPoolExecutor(max_workers=4) as executor:
+    #       resultats = list(executor.map(fonction, data))
+    # 
+    # Note: map() est idéal quand on a une liste de données
+    # et qu'on veut appliquer la même fonction à chaque élément
     
-    queue = Queue()
-    
-    p1 = Process(target=producteur, args=(queue,))
-    p2 = Process(target=consommateur, args=(queue,))
-    
-    p1.start()
-    p2.start()
-    
-    p1.join()
-    queue.put(None)  # Signal de fin
-    p2.join()
+    # TODO: Comparer les temps d'exécution
+    # Attention: Pour de petits calculs, le overhead du multiprocessing
+    # peut être plus grand que le gain de performance!
+    pass
 
 
-# Exercice 6 - Shared memory
-def incrementer(compteur, tableau):
-    """Incrémente des valeurs partagées"""
-    for i in range(100):
-        with compteur.get_lock():
-            compteur.value += 1
-        for j in range(len(tableau)):
-            with tableau.get_lock():
-                tableau[j] += 1
-
-
-def demo_shared_memory():
-    """Démonstration de mémoire partagée"""
-    print("\n=== Shared Memory ===")
-    
-    compteur = Value('i', 0)
-    tableau = Array('i', [0] * 5)
-    
-    processes = [Process(target=incrementer, args=(compteur, tableau)) for _ in range(4)]
-    
-    for p in processes:
-        p.start()
-    for p in processes:
-        p.join()
-    
-    print(f"Compteur final : {compteur.value}")
-    print(f"Tableau final : {list(tableau)}")
-
-
-# ============= PARTIE 3 : CONCURRENT.FUTURES =============
-
-# Exercice 7 - ThreadPoolExecutor
+# Exercice 4 - ThreadPoolExecutor avancé
 def tache_io(n):
     """Tâche I/O"""
-    time.sleep(0.5)
-    return n * n
+    # TODO: Simuler une opération I/O avec time.sleep(0.5)
+    # TODO: Retourner n * n
+    pass
 
 
-def demo_threadpoolexecutor():
-    """Démonstration de ThreadPoolExecutor"""
-    print("\n=== ThreadPoolExecutor ===")
+def demo_threadpoolexecutor_avance():
+    """Démonstration avancée de ThreadPoolExecutor"""
+    print("\n=== Exercice 4 : ThreadPoolExecutor avancé ===")
     
-    with ThreadPoolExecutor(max_workers=5) as executor:
-        futures = [executor.submit(tache_io, i) for i in range(10)]
-        
-        for future in futures:
-            print(f"Résultat : {future.result()}")
+    # TODO: Utiliser submit() pour soumettre 10 tâches
+    # Syntaxe:
+    #   with ThreadPoolExecutor(max_workers=5) as executor:
+    #       # submit() retourne un Future pour chaque tâche
+    #       futures = [executor.submit(tache_io, i) for i in range(10)]
+    #       
+    #       # Récupérer les résultats avec .result()
+    #       for i, future in enumerate(futures):
+    #           resultat = future.result()  # Bloque jusqu'à ce que la tâche soit terminée
+    #           print(f"Résultat {i} : {resultat}")
+    pass
 
 
-# Exercice 8 - ProcessPoolExecutor
+# Exercice 5 - ProcessPoolExecutor avancé
 def calcul_intensif(n):
     """Calcul CPU-intensif"""
-    total = 0
-    for i in range(n):
-        total += i ** 2
-    return total
+    # TODO: Calculer la somme des carrés de 0 à n
+    # Syntaxe: total = 0
+    #          for i in range(n):
+    #              total += i ** 2
+    # TODO: Retourner le total
+    pass
 
 
-def demo_processpoolexecutor():
-    """Démonstration de ProcessPoolExecutor"""
-    print("\n=== ProcessPoolExecutor ===")
+def demo_processpoolexecutor_avance():
+    """Démonstration avancée de ProcessPoolExecutor"""
+    print("\n=== Exercice 5 : ProcessPoolExecutor avancé ===")
     
-    with ProcessPoolExecutor(max_workers=4) as executor:
-        resultats = list(executor.map(calcul_intensif, [1000000] * 8))
-        print(f"Résultats : {resultats[:3]}...")
+    # TODO: Utiliser ProcessPoolExecutor.map() pour exécuter
+    # calcul_intensif sur 8 valeurs de 1000000
+    # Syntaxe:
+    #   with ProcessPoolExecutor(max_workers=4) as executor:
+    #       # map() exécute la fonction sur chaque élément de la liste
+    #       resultats = list(executor.map(calcul_intensif, [1000000] * 8))
+    #       print(f"Résultats : {resultats[:3]}...")
+    # 
+    # Note: Ici, 4 workers vont se partager 8 tâches
+    pass
 
 
-# Exercice 9 - as_completed
+# Exercice 6 - as_completed
 def tache_variable(n):
     """Tâche avec durée variable"""
-    import random
-    duree = random.uniform(0.5, 2)
-    time.sleep(duree)
-    return n, duree
+    # TODO: Importer random
+    # TODO: Générer une durée aléatoire entre 0.5 et 2 secondes
+    # Syntaxe: duree = random.uniform(0.5, 2)
+    # TODO: Attendre cette durée avec time.sleep(duree)
+    # TODO: Retourner (n, duree)
+    pass
 
 
 def demo_as_completed():
     """Traite les résultats dès qu'ils arrivent"""
-    print("\n=== as_completed ===")
+    print("\n=== Exercice 6 : as_completed ===")
     
-    with ProcessPoolExecutor(max_workers=4) as executor:
-        futures = {executor.submit(tache_variable, i): i for i in range(5)}
-        
-        for future in as_completed(futures):
-            n, duree = future.result()
-            print(f"Tâche {n} terminée en {duree:.2f}s")
+    # TODO: Utiliser as_completed pour traiter les résultats dès qu'ils sont prêts
+    # Syntaxe:
+    #   with ProcessPoolExecutor(max_workers=4) as executor:
+    #       # Créer un dictionnaire {Future: valeur}
+    #       futures = {executor.submit(tache_variable, i): i for i in range(5)}
+    #       
+    #       # as_completed() retourne les futures dès qu'elles sont terminées
+    #       for future in as_completed(futures):
+    #           n, duree = future.result()
+    #           print(f"Tâche {n} terminée en {duree:.2f}s")
+    # 
+    # Note: Contrairement à map(), as_completed() ne préserve pas l'ordre
+    # mais permet de traiter les résultats dès qu'ils arrivent
+    pass
 
 
 # ============= PARTIE 4 : CELERY (EXEMPLES) =============
@@ -358,32 +313,34 @@ def map_reduce_simple(data, chunk_size=100):
 
 # ============= BENCHMARK COMPLET =============
 
+def tache_cpu_benchmark(n):
+    """Tâche CPU pour le benchmark"""
+    return sum(i**2 for i in range(n))
+
+
 def benchmark_complet():
     """Benchmark de toutes les approches"""
     print("\n=== Benchmark Complet ===")
-    
-    def tache_cpu(n):
-        return sum(i**2 for i in range(n))
     
     data = [10000] * 20
     
     # Séquentiel
     start = time.time()
-    resultats = [tache_cpu(n) for n in data]
+    resultats = [tache_cpu_benchmark(n) for n in data]
     temps_seq = time.time() - start
     print(f"Séquentiel: {temps_seq:.2f}s")
     
     # Threading (pas bon pour CPU)
     start = time.time()
     with ThreadPoolExecutor(max_workers=4) as executor:
-        resultats = list(executor.map(tache_cpu, data))
+        resultats = list(executor.map(tache_cpu_benchmark, data))
     temps_thread = time.time() - start
     print(f"Threading: {temps_thread:.2f}s (gain: {temps_seq/temps_thread:.2f}x)")
     
     # Multiprocessing (bon pour CPU)
     start = time.time()
     with ProcessPoolExecutor(max_workers=4) as executor:
-        resultats = list(executor.map(tache_cpu, data))
+        resultats = list(executor.map(tache_cpu_benchmark, data))
     temps_process = time.time() - start
     print(f"Multiprocessing: {temps_process:.2f}s (gain: {temps_seq/temps_process:.2f}x)")
 
@@ -394,36 +351,22 @@ if __name__ == "__main__":
     print("=== Tests Parallélisme et Calcul Distribué ===\n")
     
     # ATTENTION : Les tests avec multiprocessing peuvent être lents
-    # Commentez ceux que vous ne voulez pas exécuter
+    # Décommentez les exercices au fur et à mesure que vous les complétez
     
-    # 1. GIL
-    demo_gil()
+    # Exercices concurrent.futures (à compléter)
+    # demo_threading_io()          # Exercice 1
+    # demo_process()               # Exercice 2
+    # demo_pool()                  # Exercice 3
+    # demo_threadpoolexecutor_avance()  # Exercice 4
+    # demo_processpoolexecutor_avance() # Exercice 5
+    # demo_as_completed()          # Exercice 6
     
-    # 2. Threading pour I/O
-    demo_threading_io()
+    # Exemples avancés (décommentez après avoir complété les exercices de base)
+    # data = list(range(1000))
+    # result = map_reduce_simple(data)
+    # print(f"\nMap-Reduce résultat: {result}")
     
-    # 3. Multiprocessing
-    demo_process()
-    
-    # 4. Pool
-    demo_pool()
-    
-    # 5. ThreadPoolExecutor
-    demo_threadpoolexecutor()
-    
-    # 6. ProcessPoolExecutor
-    demo_processpoolexecutor()
-    
-    # 7. as_completed
-    demo_as_completed()
-    
-    # 8. Map-Reduce
-    data = list(range(1000))
-    result = map_reduce_simple(data)
-    print(f"\nMap-Reduce résultat: {result}")
-    
-    # 9. Benchmark
-    benchmark_complet()
+    # benchmark_complet()
     
     # Exemples Celery
     print("\n=== Code Celery (à créer séparément) ===")
@@ -434,7 +377,8 @@ if __name__ == "__main__":
     print("\n" + "="*50)
     print("Pour Celery:")
     print("1. pip install celery redis")
-    print("2. brew install redis && brew services start redis")
+    print("2. docker compose up -d  # Lancer Redis")
     print("3. Créez celery_app.py et tasks.py")
     print("4. celery -A tasks worker --loglevel=info")
+    print("\nAlternative: brew install redis && brew services start redis")
     print("\nConsultez instructions.md pour les exercices détaillés !")
