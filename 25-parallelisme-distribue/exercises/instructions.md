@@ -247,6 +247,31 @@ app.conf.update(
 
 ✅ **Ce fichier est prêt à l'emploi, vous n'avez pas besoin de le modifier.**
 
+**🔍 Bonus : Visualiser Redis** (optionnel)
+
+**Option 1 - Interface graphique RedisInsight** :
+1. Télécharger **RedisInsight** : https://redis.io/insight/
+2. Se connecter à `localhost:6379`
+3. Explorer les clés `celery-task-meta-*` (résultats) et `celery` (file d'attente)
+
+**Option 2 - Ligne de commande** :
+```bash
+# Se connecter à Redis
+redis-cli
+
+# Voir toutes les clés
+KEYS *
+
+# Voir les résultats de tâches stockés
+KEYS celery-task-meta-*
+
+# Voir le contenu d'un résultat (remplacer <task-id> par un ID réel)
+GET celery-task-meta-<task-id>
+
+# Quitter
+exit
+```
+
 ### Exercice 8 - Première tâche Celery
 
 Le fichier `tasks.py` est **déjà fourni** avec une structure de base et des commentaires d'aide.
