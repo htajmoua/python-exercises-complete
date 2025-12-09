@@ -256,9 +256,13 @@ app.conf.update(
 
 **Option 2 - Ligne de commande** :
 ```bash
-# Se connecter à Redis
+# Via Docker (pas d'installation requise) :
+docker exec -it CONTAINER_NAME redis-cli
+
+# Ou si redis-cli est installé localement :
 redis-cli
 
+# Une fois connecté, utiliser ces commandes :
 # Voir toutes les clés
 KEYS *
 
